@@ -26,5 +26,7 @@ typedef struct RegistersVariable{
 }registro;
 
 
+void funcionalidade1();
+
 #endif
 
