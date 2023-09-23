@@ -34,6 +34,6 @@ typedef struct registroCabecalho{
 
 
 void funcionalidade1();
-
+void criarRegistroCab(registroCab *rC);
 #endif
 
