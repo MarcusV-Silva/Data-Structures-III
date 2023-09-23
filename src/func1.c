@@ -14,9 +14,12 @@ void funcionalidade1(char *dataCSV, char *dataBIN){
         printf("Erro ao abrir arquivo\n");
     }
 
-
-    while(fread(&r1, sizeof(r1), 1, csv) != 0){
+    while(fread(&r1, sizeof(r1), 1, csv) != 0 ){
         fwrite(&r1, sizeof(r1), 1, bin);
+        if(ftell(csv)< TAMREGISTRO)
+            for(int i = 0; i<TAMREGISTRO-ftell(csv); i++){
+            fwrite("$", 1, 1, bin);
+        }
     }
 
     fclose(csv);

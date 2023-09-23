@@ -11,7 +11,7 @@
 */ 
 
 int main(){
-    char *dataBin = "saidaBin.bin";
+    char *dataBin = "saida1.bin";
     char *dataCSV = "../data/tecnologia.csv";
  
     funcionalidade1(dataCSV, dataBin);
