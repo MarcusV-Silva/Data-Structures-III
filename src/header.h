@@ -15,6 +15,7 @@ typedef struct stringVariable{
 }sVariable;
 
 typedef struct RegistersVariable{
+    char removido;
     int grupo;
     int popularidade;
     int peso;
@@ -23,6 +24,13 @@ typedef struct RegistersVariable{
     int tamTecnologiaDestino;
     sVariable *nmTecnologiaDestino;
 }registro;
+
+typedef struct registroCabecalho{
+    char status;
+    int proxRRN;
+    int nroTecnologias;
+    int nroParesTecnologias;
+}registroCab;
 
 
 void funcionalidade1();

@@ -15,7 +15,7 @@ int main(){
     char *dataCSV = "../data/tecnologia.csv";
  
     funcionalidade1(dataCSV, dataBin);
-    binarioNaTela(dataBin);
+    //binarioNaTela(dataBin);
     
     return 0;
 }

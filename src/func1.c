@@ -4,7 +4,6 @@ void funcionalidade1(char *dataCSV, char *dataBIN){
     char buf[TAMREGISTRO];
 
     FILE *csv = fopen(dataCSV, "r");
-
     if(!csv){
         printf("Erro ao abrir arquivo\n");
     }
