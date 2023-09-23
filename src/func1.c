@@ -1,11 +1,10 @@
 #include "header.h"
 
 void funcionalidade1(char *dataCSV, char *dataBIN){
-    char buf[TAMREGISTRO];
     registro *r1 =(registro *) malloc(sizeof(registro));
 
-    registroCab *rC;
-    criarRegistroCab(rC);
+    registroCab *rC= malloc(sizeof(registroCab));
+
 
     FILE *csv = fopen(dataCSV, "r");
     if(!csv){
@@ -16,6 +15,11 @@ void funcionalidade1(char *dataCSV, char *dataBIN){
     if(!bin){
         printf("Erro ao abrir arquivo\n");
     }
+
+    rC->status = '1';
+    rC->proxRRN = 0;
+    rC->nroTecnologias = 0;
+    rC->nroParesTecnologias = 0;
 
     fwrite(rC, sizeof(registroCab), 1, bin );
 
@@ -29,16 +33,4 @@ void funcionalidade1(char *dataCSV, char *dataBIN){
     free(rC);
     fclose(csv);
     fclose(bin);
-}
-
-
-
-
-void criarRegistroCab(registroCab *rC){
-    rC=(registroCab *) malloc(sizeof(registroCab*));
-
-    rC->status = '1';
-    rC->proxRRN = 0;
-    rC->nroTecnologias = 0;
-    rC->nroParesTecnologia = 0;
 }
