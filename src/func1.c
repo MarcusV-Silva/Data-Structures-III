@@ -2,7 +2,8 @@
 
 void funcionalidade1(char *dataCSV, char *dataBIN){
     char buf[TAMREGISTRO];
-    registro r1;
+    registro *r1 =(registro *) malloc(sizeof(registro));
+    registroCab *rC =(registroCab *) malloc(sizeof(registroCab));
 
     FILE *csv = fopen(dataCSV, "r");
     if(!csv){
@@ -14,12 +15,16 @@ void funcionalidade1(char *dataCSV, char *dataBIN){
         printf("Erro ao abrir arquivo\n");
     }
 
-    while(fread(&r1, sizeof(r1), 1, csv) != 0 ){
-        fwrite(&r1, sizeof(r1), 1, bin);
-        if(ftell(csv)< TAMREGISTRO)
-            for(int i = 0; i<TAMREGISTRO-ftell(csv); i++){
-            fwrite("$", 1, 1, bin);
-        }
+
+    rC->status = '1';
+    rC->proxRRN = 0;
+    rC->nroTecnologias = 0;
+    rC->nroParesTecnologias = 0;
+
+    fwrite(rC, sizeof(registroCab), 1, bin );
+    
+    while(fread(r1, sizeof(r1), 1, csv) != 0 ){
+        fwrite(r1, sizeof(r1), 1, bin);
     }
 
     fclose(csv);
