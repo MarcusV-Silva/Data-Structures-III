@@ -2,6 +2,7 @@
 
 void funcionalidade1(char *dataCSV, char *dataBIN){
     char buf[TAMREGISTRO];
+    registro r1;
 
     FILE *csv = fopen(dataCSV, "r");
     if(!csv){
@@ -13,8 +14,9 @@ void funcionalidade1(char *dataCSV, char *dataBIN){
         printf("Erro ao abrir arquivo\n");
     }
 
-    while(fgets(buf, sizeof(buf),csv)!=NULL){
-        fwrite(buf, sizeof(buf), 1, bin);
+
+    while(fread(&r1, sizeof(r1), 1, csv) != 0){
+        fwrite(&r1, sizeof(r1), 1, bin);
     }
 
     fclose(csv);
