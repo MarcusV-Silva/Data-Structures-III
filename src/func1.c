@@ -32,7 +32,7 @@ void funcionalidade1(char *dataCSV, char *dataBIN){
     //(ISSUE: esta escrevendo em 3 bytes a mais)
     fwrite(rC, sizeof(registroCab), 1, binFile);
     
-char linha[256];
+    char linha[256];
     while (fgets(linha, sizeof(linha), csvFile) != NULL) {
         registro r1;
         memset(&r1, 0, sizeof(registro)); // Inicialize a estrutura
@@ -72,8 +72,6 @@ char linha[256];
         criarRegistro76Bytes(&r1, registro76Bytes);
 
         // Escreva a representação de registro no arquivo binário
-
-        // Escreva a representação de registro no arquivo binário
         fwrite(registro76Bytes, sizeof(char), 76, binFile);
 
         // Libere a memória alocada para as strings
@@ -84,27 +82,27 @@ char linha[256];
     fclose(csvFile);
     fclose(binFile);
 
-    fclose(csvFile);
-    fclose(binFile);
-
 }
+
 void criarRegistro76Bytes(registro *r, char *registro76Bytes) {
     int offset = 0;
 
     // Copiar o campo 'removido'
     registro76Bytes[offset++] = r->removido;
 
-    // Copiar o campo 'grupo', 'popularidade' e 'peso' como bytes de alta ordem
+    // Copiar o campo 'grupo'
     registro76Bytes[offset++] = (r->grupo >> 24) & 0xFF;
     registro76Bytes[offset++] = (r->grupo >> 16) & 0xFF;
     registro76Bytes[offset++] = (r->grupo >> 8) & 0xFF;
     registro76Bytes[offset++] = r->grupo & 0xFF;
 
+    // Copiar o campo 'popularidade'
     registro76Bytes[offset++] = (r->popularidade >> 24) & 0xFF;
     registro76Bytes[offset++] = (r->popularidade >> 16) & 0xFF;
     registro76Bytes[offset++] = (r->popularidade >> 8) & 0xFF;
     registro76Bytes[offset++] = r->popularidade & 0xFF;
 
+    // Copiar o campo 'peso'
     registro76Bytes[offset++] = (r->peso >> 24) & 0xFF;
     registro76Bytes[offset++] = (r->peso >> 16) & 0xFF;
     registro76Bytes[offset++] = (r->peso >> 8) & 0xFF;
