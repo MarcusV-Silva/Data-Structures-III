@@ -34,49 +34,58 @@ void funcionalidade1(char *dataCSV, char *dataBIN){
     
     char linha[256];
     while (fgets(linha, sizeof(linha), csvFile) != NULL) {
-        registro r1;
-        memset(&r1, 0, sizeof(registro)); // Inicialize a estrutura
+        registro *r1 = malloc(sizeof(registro));
+        
+        memset(r1, 0, sizeof(registro)); // Inicialize a estrutura
 
         char *token = strtok(linha, ",");
         if (token == NULL) {
             continue; // Linha vazia
         }
-
-        r1.removido = '1';
-        r1.grupo = atoi(token);
+        r1->nmTecnologiaOrigem = malloc(sizeof(token));
+        r1->tamTecnologiaOrigem = strlen(token);
+        strcpy(r1->nmTecnologiaOrigem, token);
+        
+        
+        r1->removido = '1';
 
         token = strtok(NULL, ",");
         if (token != NULL) {
-            r1.popularidade = atoi(token);
+           r1->grupo = atoi(token);
         }
 
         token = strtok(NULL, ",");
         if (token != NULL) {
-            r1.peso = atoi(token);
+            r1->popularidade = atoi(token);
         }
 
         token = strtok(NULL, ",");
         if (token != NULL) {
-            r1.tamTecnologiaOrigem = strlen(token);
-            r1.nmTecnologiaOrigem = strdup(token);
+            r1->nmTecnologiaDestino = malloc(sizeof(token));
+            r1->tamTecnologiaDestino = strlen(token);
+            strcpy(r1->nmTecnologiaDestino,token);
         }
 
         token = strtok(NULL, ",");
         if (token != NULL) {
-            r1.tamTecnologiaDestino = strlen(token);
-            r1.nmTecnologiaDestino = strdup(token);
+            r1->peso = atoi(token);
         }
 
-        // Crie uma representação de registro com 76 bytes
-        char registro76Bytes[76];
-        criarRegistro76Bytes(&r1, registro76Bytes);
-
-        // Escreva a representação de registro no arquivo binário
-        fwrite(registro76Bytes, sizeof(char), 76, binFile);
-
-        // Libere a memória alocada para as strings
-        free(r1.nmTecnologiaOrigem);
-        free(r1.nmTecnologiaDestino);
+        
+        fwrite(r1, sizeof(registro), 1, binFile);
+        /*
+        printf("\nremovido: %c\n", r1->removido);
+        printf("grupo: %d\n", r1->grupo);
+        printf("popularidade: %d \n", r1->popularidade);
+        printf("peso: %d\n", r1->peso);
+        printf("tamTecnologiaOrigem: %d\n", r1->tamTecnologiaOrigem);
+        printf("nmTecnologiaOrigem: %s\n", r1->nmTecnologiaOrigem);
+        printf("tamTecnologiaDestino: %d\n", r1->tamTecnologiaDestino);
+        printf("nmTecnologiaDestino: %s\n", r1->nmTecnologiaDestino);
+        */
+        free(r1->nmTecnologiaOrigem);
+        free(r1->nmTecnologiaDestino);
+        free(r1);
     }
 
     fclose(csvFile);
@@ -84,48 +93,3 @@ void funcionalidade1(char *dataCSV, char *dataBIN){
 
 }
 
-void criarRegistro76Bytes(registro *r, char *registro76Bytes) {
-    int offset = 0;
-
-    // Copiar o campo 'removido'
-    registro76Bytes[offset++] = r->removido;
-
-    // Copiar o campo 'grupo'
-    registro76Bytes[offset++] = (r->grupo >> 24) & 0xFF;
-    registro76Bytes[offset++] = (r->grupo >> 16) & 0xFF;
-    registro76Bytes[offset++] = (r->grupo >> 8) & 0xFF;
-    registro76Bytes[offset++] = r->grupo & 0xFF;
-
-    // Copiar o campo 'popularidade'
-    registro76Bytes[offset++] = (r->popularidade >> 24) & 0xFF;
-    registro76Bytes[offset++] = (r->popularidade >> 16) & 0xFF;
-    registro76Bytes[offset++] = (r->popularidade >> 8) & 0xFF;
-    registro76Bytes[offset++] = r->popularidade & 0xFF;
-
-    // Copiar o campo 'peso'
-    registro76Bytes[offset++] = (r->peso >> 24) & 0xFF;
-    registro76Bytes[offset++] = (r->peso >> 16) & 0xFF;
-    registro76Bytes[offset++] = (r->peso >> 8) & 0xFF;
-    registro76Bytes[offset++] = r->peso & 0xFF;
-
-    // Copiar o campo 'tamTecnologiaOrigem' como bytes de alta ordem
-    registro76Bytes[offset++] = (r->tamTecnologiaOrigem >> 8) & 0xFF;
-    registro76Bytes[offset++] = r->tamTecnologiaOrigem & 0xFF;
-
-    // Copiar o campo 'nmTecnologiaOrigem'
-    memcpy(&registro76Bytes[offset], r->nmTecnologiaOrigem, r->tamTecnologiaOrigem);
-    offset += r->tamTecnologiaOrigem;
-
-    // Copiar o campo 'tamTecnologiaDestino' como bytes de alta ordem
-    registro76Bytes[offset++] = (r->tamTecnologiaDestino >> 8) & 0xFF;
-    registro76Bytes[offset++] = r->tamTecnologiaDestino & 0xFF;
-
-    // Copiar o campo 'nmTecnologiaDestino'
-    memcpy(&registro76Bytes[offset], r->nmTecnologiaDestino, r->tamTecnologiaDestino);
-    offset += r->tamTecnologiaDestino;
-
-    // Preencher o restante do registro com "$" se necessário
-    while (offset < 76) {
-        registro76Bytes[offset++] = '$';
-    }
-}
