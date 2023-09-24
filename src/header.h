@@ -15,9 +15,9 @@ typedef struct RegistersVariable{
     int popularidade;
     int peso;
     int tamTecnologiaOrigem;
-    char *nmTecnologiaOrigem;
+    char nmTecnologiaOrigem[20];
     int tamTecnologiaDestino;
-    char *nmTecnologiaDestino;
+    char nmTecnologiaDestino[20];
 }registro;
 
 typedef struct registroCabecalho{
@@ -29,6 +29,6 @@ typedef struct registroCabecalho{
 
 
 void funcionalidade1();
-void criarRegistroCab(registroCab *rC);
+
 #endif
 
