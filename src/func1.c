@@ -82,6 +82,7 @@ void funcionalidade1(char *dataCSV, char *dataBIN){
         
         int byteoffsets = 21 + r1->tamTecnologiaOrigem + r1->tamTecnologiaDestino;
         char *lixo = "$";
+        
         while(byteoffsets < 76){ 
             fwrite(lixo, sizeof(char), 1, binFile );
             byteoffsets++;
