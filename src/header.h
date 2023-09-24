@@ -27,7 +27,7 @@ typedef struct registroCabecalho{
     int nroParesTecnologias;
 }registroCab;
 
-
+void binarioNaTela(char *nomeArquivoBinario);
 void funcionalidade1();
 
 #endif

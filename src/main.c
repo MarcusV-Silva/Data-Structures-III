@@ -13,12 +13,17 @@
 int main(){
     char *dataBin = "saida1.bin";
     char *dataCSV = "../data/tecnologia.csv";
- 
+    char *dataCerto = "../data/binario4.bin";
     funcionalidade1(dataCSV, dataBin);
-    //binarioNaTela(dataBin);
     
+    printf("\nNossos dados:");
+    binarioNaTela(dataBin);
+
+    printf("\nDados do arquivo pronto:");
+    binarioNaTela(dataCerto);
     return 0;
 }
+
 
 
 
