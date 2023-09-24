@@ -17,6 +17,7 @@ void funcionalidade1(char *dataCSV, char *dataBIN){
 
     //ignora a primeira linha do .csv
     int c;
+    char f;
     while ((c = fgetc(csvFile)) != EOF && c != '\n') {
     }
 
@@ -31,9 +32,8 @@ void funcionalidade1(char *dataCSV, char *dataBIN){
     fwrite(rC, sizeof(registroCab), 1, binFile);
 
     //escreve os dados do .csv no .bin
-    char *linha = malloc(sizeof(char) * 100);
-    while(fgets(linha, 100, csvFile)){
-        fwrite(linha, sizeof(linha), 1, binFile);
+    while(fread(&r, sizeof(char), 1, csvFile) != 0 ){
+        fwrite(&r, sizeof(char), 1, binFile);
     }
 
     free(r1);
