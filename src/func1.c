@@ -25,12 +25,14 @@ void funcionalidade1(char *dataCSV, char *dataBIN){
     //inicializa registro de cabeçalho .bin
     rC->status = '1';
     rC->proxRRN = 0;
-    rC->nroTecnologias = 0;
-    rC->nroParesTecnologias = 0;
+    rC->nroTecnologias = 4;
+    rC->nroParesTecnologias = 5;
 
-    //escreve os dados da struct de cabeçalho no .bin 
-    //(ISSUE: esta escrevendo em 3 bytes a mais)
-    fwrite(rC, sizeof(registroCab), 1, binFile);
+  
+    fwrite(&rC->status, sizeof(char), 1, binFile);
+    fwrite(&rC->proxRRN, sizeof(int), 1, binFile);
+    fwrite(&rC->nroTecnologias, sizeof(int), 1, binFile);
+    fwrite(&rC->nroParesTecnologias, sizeof(int), 1, binFile);
     
     char linha[256];
     while (fgets(linha, sizeof(linha), csvFile) != NULL) {
@@ -40,15 +42,11 @@ void funcionalidade1(char *dataCSV, char *dataBIN){
 
         char *token = strtok(linha, ",");
         if (token == NULL) {
-            continue; // Linha vazia
+            continue; 
         }
-        r1->nmTecnologiaOrigem = malloc(sizeof(token));
         r1->tamTecnologiaOrigem = strlen(token);
         strcpy(r1->nmTecnologiaOrigem, token);
         
-        
-        r1->removido = '1';
-
         token = strtok(NULL, ",");
         if (token != NULL) {
            r1->grupo = atoi(token);
@@ -61,7 +59,6 @@ void funcionalidade1(char *dataCSV, char *dataBIN){
 
         token = strtok(NULL, ",");
         if (token != NULL) {
-            r1->nmTecnologiaDestino = malloc(sizeof(token));
             r1->tamTecnologiaDestino = strlen(token);
             strcpy(r1->nmTecnologiaDestino,token);
         }
@@ -72,7 +69,24 @@ void funcionalidade1(char *dataCSV, char *dataBIN){
         }
 
         
-        fwrite(r1, sizeof(registro), 1, binFile);
+        r1->removido = '0';
+
+        fwrite(&r1->removido, sizeof(char), 1, binFile );
+        fwrite(&r1->grupo, sizeof(int), 1, binFile );
+        fwrite(&r1->popularidade, sizeof(int), 1, binFile );
+        fwrite(&r1->peso, sizeof(int), 1, binFile );
+        fwrite(&r1->tamTecnologiaOrigem, sizeof(int), 1, binFile );
+        fwrite(&r1->nmTecnologiaOrigem, sizeof(char), r1->tamTecnologiaOrigem, binFile );
+        fwrite(&r1->tamTecnologiaDestino, sizeof(int), 1, binFile );
+        fwrite(&r1->nmTecnologiaDestino,  sizeof(char), r1->tamTecnologiaDestino, binFile );
+        
+        int byteoffsets = 21 + r1->tamTecnologiaOrigem + r1->tamTecnologiaDestino;
+        char *lixo = "$";
+        while(byteoffsets < 76){ 
+            fwrite(lixo, sizeof(char), 1, binFile );
+            byteoffsets++;
+        }
+        
         /*
         printf("\nremovido: %c\n", r1->removido);
         printf("grupo: %d\n", r1->grupo);
@@ -83,8 +97,6 @@ void funcionalidade1(char *dataCSV, char *dataBIN){
         printf("tamTecnologiaDestino: %d\n", r1->tamTecnologiaDestino);
         printf("nmTecnologiaDestino: %s\n", r1->nmTecnologiaDestino);
         */
-        free(r1->nmTecnologiaOrigem);
-        free(r1->nmTecnologiaDestino);
         free(r1);
     }
 
