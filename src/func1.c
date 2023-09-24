@@ -3,7 +3,7 @@
 void funcionalidade1(char *dataCSV, char *dataBIN){
     registro *r1 =(registro *) malloc(sizeof(registro));
     registroCab *rC = (registroCab *) malloc(sizeof(registroCab));
-
+    char *r;
 
     FILE *csvFile = fopen(dataCSV, "r");
     if(!csvFile){
@@ -17,7 +17,7 @@ void funcionalidade1(char *dataCSV, char *dataBIN){
 
     //ignora a primeira linha do .csv
     int c;
-    while ((c =  fgetc(csvFile)) != EOF && c != '\n') {
+    while ((c = fgetc(csvFile)) != EOF && c != '\n') {
     }
 
     //inicializa registro de cabeçalho .bin
@@ -31,8 +31,9 @@ void funcionalidade1(char *dataCSV, char *dataBIN){
     fwrite(rC, sizeof(registroCab), 1, binFile);
 
     //escreve os dados do .csv no .bin
-    while(fread(r1, sizeof(r1), 1, csvFile) != 0 ){
-        fwrite(r1, sizeof(r1), 1, binFile);
+    char *linha = malloc(sizeof(char) * 100);
+    while(fgets(linha, 100, csvFile)){
+        fwrite(linha, sizeof(linha), 1, binFile);
     }
 
     free(r1);

@@ -9,20 +9,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef struct stringVariable{
-    char* value;
-    int length;
-}sVariable;
-
 typedef struct RegistersVariable{
     char removido;
     int grupo;
     int popularidade;
     int peso;
     int tamTecnologiaOrigem;
-    sVariable *nmTecnologiaOrigem;
+    char nmTecnologiaOrigem[32];
     int tamTecnologiaDestino;
-    sVariable *nmTecnologiaDestino;
+    char nmTecnologiaDestino[32];
 }registro;
 
 typedef struct registroCabecalho{
