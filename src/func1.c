@@ -24,9 +24,9 @@ void funcionalidade1(char *dataCSV, char *dataBIN){
 
     //inicializa registro de cabeçalho .bin
     rC->status = '1';
-    rC->proxRRN = 0;
-    rC->nroTecnologias = 4;
-    rC->nroParesTecnologias = 5;
+    rC->proxRRN = 490;
+    rC->nroTecnologias = 142;
+    rC->nroParesTecnologias = 490;
 
   
     fwrite(&rC->status, sizeof(char), 1, binFile);
@@ -67,7 +67,6 @@ void funcionalidade1(char *dataCSV, char *dataBIN){
         if (token != NULL) {
             r1->peso = atoi(token);
         }
-
         
         r1->removido = '0';
 
@@ -82,7 +81,7 @@ void funcionalidade1(char *dataCSV, char *dataBIN){
         
         int byteoffsets = 21 + r1->tamTecnologiaOrigem + r1->tamTecnologiaDestino;
         char *lixo = "$";
-        
+
         while(byteoffsets < 76){ 
             fwrite(lixo, sizeof(char), 1, binFile );
             byteoffsets++;
@@ -103,6 +102,5 @@ void funcionalidade1(char *dataCSV, char *dataBIN){
 
     fclose(csvFile);
     fclose(binFile);
-
 }
 
