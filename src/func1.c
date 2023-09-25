@@ -25,7 +25,7 @@ void funcionalidade1(char *dataCSV, char *dataBIN){
     //inicializa registro de cabeçalho .bin
     rC->status = '1';
     rC->proxRRN = 490;
-    rC->nroTecnologias = 142;
+    rC->nroTecnologias = 115;
     rC->nroParesTecnologias = 490;
 
   
