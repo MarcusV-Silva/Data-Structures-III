@@ -34,85 +34,48 @@ void funcionalidade1(char *dataCSV, char *dataBIN){
     fwrite(&rC->nroTecnologias, sizeof(int), 1, binFile);
     fwrite(&rC->nroParesTecnologias, sizeof(int), 1, binFile);
     
+
     char linha[256];
-    while (fgets(linha, sizeof(linha), csvFile) != NULL) {
+    while (fgets(linha, sizeof(linha), csvFile)) {
+        int posicao = 0;
         registro *r1 = malloc(sizeof(registro));
-        
-        memset(r1, 0, sizeof(registro)); // Inicialize a estrutura
 
-        char *token = strtok(linha, ",");
-        if (token == NULL) {
-            continue; 
-        }
-        r1->tamTecnologiaOrigem = strlen(token);
-        strcpy(r1->nmTecnologiaOrigem, token);
-        
-        token = strtok(NULL, ",");
-        if (token != NULL) {
-           r1->grupo = atoi(token);
-        }else{
-            r1->peso = -1;
-        }
-
-        token = strtok(NULL, ",");
-        if (token != NULL) {
-            r1->popularidade = atoi(token);
-        }else{
-            r1->peso = -1;
-        }
-
-        token = strtok(NULL, ",");
-        if (token != NULL) {
-            r1->tamTecnologiaDestino = strlen(token);
-            strcpy(r1->nmTecnologiaDestino,token);
-        }else{
-             r1->tamTecnologiaDestino = 0;
-        }
-
-        token = strtok(NULL, ",");
-        if (token != NULL) {
-            r1->peso = atoi(token);
-        }else{
-            r1->peso = -1;
-        }
-
-        
+        r1->nmTecnologiaOrigem = armCampo(linha, &posicao);
+        r1->grupo = atoi(armCampo(linha, &posicao));
+        r1->popularidade = atoi(armCampo(linha, &posicao));
+        r1->nmTecnologiaDestino = armCampo(linha, &posicao);
+        r1->peso = atoi(armCampo(linha, &posicao));
         r1->removido = '0';
+        r1->tamTecnologiaOrigem = strlen(r1->nmTecnologiaOrigem);
+        r1->tamTecnologiaDestino = strlen(r1->nmTecnologiaDestino);
 
-        //fwrite(r1, sizeof(registro), 1 , binFile);
-        
-        fwrite(&r1->removido, sizeof(char), 1, binFile );
-        fwrite(&r1->grupo, sizeof(int), 1, binFile );
-        fwrite(&r1->popularidade, sizeof(int), 1, binFile );
-        fwrite(&r1->peso, sizeof(int), 1, binFile );
-        fwrite(&r1->tamTecnologiaOrigem, sizeof(int), 1, binFile );
-        fwrite(&r1->nmTecnologiaOrigem, sizeof(char), r1->tamTecnologiaOrigem, binFile );
-        fwrite(&r1->tamTecnologiaDestino, sizeof(int), 1, binFile );
-        fwrite(&r1->nmTecnologiaDestino,  sizeof(char), r1->tamTecnologiaDestino, binFile );
-        
-        int byteoffsets = 21 + r1->tamTecnologiaOrigem + r1->tamTecnologiaDestino;
-        char *lixo = "$";
-        
-        while(byteoffsets < 76){ 
-            fwrite(lixo, sizeof(char), 1, binFile );
-            byteoffsets++;
+        fwrite(&r1->removido, sizeof(char), 1, binFile);
+        fwrite(&r1->grupo, sizeof(int), 1, binFile);
+        fwrite(&r1->popularidade, sizeof(int), 1, binFile);
+        fwrite(&r1->peso, sizeof(int), 1, binFile);
+        fwrite(&r1->tamTecnologiaOrigem, sizeof(int), 1, binFile);
+        fwrite(r1->nmTecnologiaOrigem, sizeof(char), r1->tamTecnologiaOrigem, binFile);
+        fwrite(&r1->tamTecnologiaDestino, sizeof(int), 1, binFile);
+        fwrite(r1->nmTecnologiaDestino, sizeof(char), r1->tamTecnologiaDestino, binFile);
+
+        for(int l = 21+r1->tamTecnologiaDestino+r1->tamTecnologiaOrigem; l<76; l++){
+            fwrite("$", sizeof(char), 1, binFile);
+            posicao++;
         }
-        
-        /*
-        printf("\nremovido: %c\n", r1->removido);
-        printf("grupo: %d\n", r1->grupo);
-        printf("popularidade: %d \n", r1->popularidade);
-        printf("peso: %d\n", r1->peso);
-        printf("tamTecnologiaOrigem: %d\n", r1->tamTecnologiaOrigem);
-        printf("nmTecnologiaOrigem: %s\n", r1->nmTecnologiaOrigem);
-        printf("tamTecnologiaDestino: %d\n", r1->tamTecnologiaDestino);
-        printf("nmTecnologiaDestino: %s\n", r1->nmTecnologiaDestino);
-        */
         free(r1);
     }
-
+    
     fclose(csvFile);
     fclose(binFile);
-
 }
 
+char *armCampo(char *linha, int *posicao) {
+    char *campo = malloc(256); // Supondo o tamanho máximo do campo
+    int i = 0;
+    while (linha[*posicao] != ',' && linha[*posicao] != '\0') {
+        campo[i++] = linha[(*posicao)++];
+    }
+    campo[i] = '\0';
+    (*posicao)++; // Pule a vírgula
+    return campo;
+}
