@@ -8,6 +8,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <stdlib.h>
+#include <string.h>
 
 typedef struct RegistersVariable{
     char removido;
@@ -15,9 +17,9 @@ typedef struct RegistersVariable{
     int popularidade;
     int peso;
     int tamTecnologiaOrigem;
-    char nmTecnologiaOrigem[20];
+    char *nmTecnologiaOrigem;
     int tamTecnologiaDestino;
-    char nmTecnologiaDestino[20];
+    char *nmTecnologiaDestino;
 }registro;
 
 typedef struct registroCabecalho{
@@ -29,6 +31,8 @@ typedef struct registroCabecalho{
 
 
 void funcionalidade1();
+char *armCampo(char *linha, int tamanho, int *posicao);
+int lenCampo(char *linha, int posicao) ;
 
 #endif
 
