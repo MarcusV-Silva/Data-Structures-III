@@ -50,11 +50,15 @@ void funcionalidade1(char *dataCSV, char *dataBIN){
         token = strtok(NULL, ",");
         if (token != NULL) {
            r1->grupo = atoi(token);
+        }else{
+            r1->peso = -1;
         }
 
         token = strtok(NULL, ",");
         if (token != NULL) {
             r1->popularidade = atoi(token);
+        }else{
+            r1->peso = -1;
         }
 
         token = strtok(NULL, ",");
@@ -62,12 +66,14 @@ void funcionalidade1(char *dataCSV, char *dataBIN){
             r1->tamTecnologiaDestino = strlen(token);
             strcpy(r1->nmTecnologiaDestino,token);
         }else{
-            
+             r1->tamTecnologiaDestino = 0;
         }
 
         token = strtok(NULL, ",");
         if (token != NULL) {
             r1->peso = atoi(token);
+        }else{
+            r1->peso = -1;
         }
 
         
