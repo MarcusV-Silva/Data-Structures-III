@@ -31,8 +31,8 @@ typedef struct registroCabecalho{
 
 
 void funcionalidade1();
-char *armCampo(char *linha, int tamanho, int *posicao);
-int lenCampo(char *linha, int posicao) ;
+char *armCampo(char *linha,int *posicao);
+void binarioNaTela(char *nomeArquivoBinario);
 
 #endif
 
