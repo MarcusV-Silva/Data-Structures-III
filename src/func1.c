@@ -61,6 +61,8 @@ void funcionalidade1(char *dataCSV, char *dataBIN){
         if (token != NULL) {
             r1->tamTecnologiaDestino = strlen(token);
             strcpy(r1->nmTecnologiaDestino,token);
+        }else{
+            
         }
 
         token = strtok(NULL, ",");
@@ -71,6 +73,8 @@ void funcionalidade1(char *dataCSV, char *dataBIN){
         
         r1->removido = '0';
 
+        //fwrite(r1, sizeof(registro), 1 , binFile);
+        
         fwrite(&r1->removido, sizeof(char), 1, binFile );
         fwrite(&r1->grupo, sizeof(int), 1, binFile );
         fwrite(&r1->popularidade, sizeof(int), 1, binFile );

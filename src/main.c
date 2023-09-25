@@ -12,8 +12,9 @@
 
 int main(){
     char *dataBin = "saida1.bin";
-    char *dataCSV = "../data/tecnologia.csv";
+    char *dataCSV = "../data/dados2.csv";
     char *dataCerto = "../data/binario5.bin";
+    
     funcionalidade1(dataCSV, dataBin);
     
     printf("\nNossos dados:");
