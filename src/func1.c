@@ -50,9 +50,16 @@ void funcionalidade1(char *dataCSV, char *dataBIN){
         r1->tamTecnologiaDestino = strlen(r1->nmTecnologiaDestino);
 
         fwrite(&r1->removido, sizeof(char), 1, binFile);
+
+        if(r1->grupo == 0){r1->grupo = -1;}
         fwrite(&r1->grupo, sizeof(int), 1, binFile);
+
+        if(r1->popularidade == 0){r1->popularidade = -1;}
         fwrite(&r1->popularidade, sizeof(int), 1, binFile);
+        
+        if(r1->peso == 0){r1->peso = -1;}
         fwrite(&r1->peso, sizeof(int), 1, binFile);
+
         fwrite(&r1->tamTecnologiaOrigem, sizeof(int), 1, binFile);
         fwrite(r1->nmTecnologiaOrigem, sizeof(char), r1->tamTecnologiaOrigem, binFile);
         fwrite(&r1->tamTecnologiaDestino, sizeof(int), 1, binFile);
@@ -70,12 +77,13 @@ void funcionalidade1(char *dataCSV, char *dataBIN){
 }
 
 char *armCampo(char *linha, int *posicao) {
-    char *campo = malloc(256); // Supondo o tamanho máximo do campo
+    char *campo = malloc(256); 
     int i = 0;
     while (linha[*posicao] != ',' && linha[*posicao] != '\0') {
         campo[i++] = linha[(*posicao)++];
     }
-    campo[i] = '\0';
-    (*posicao)++; // Pule a vírgula
+    
+    (*posicao)++; 
     return campo;
 }
+

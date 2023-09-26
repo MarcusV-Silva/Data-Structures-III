@@ -15,9 +15,9 @@ typedef struct RegistersVariable{
     int popularidade;
     int peso;
     int tamTecnologiaOrigem;
-    char nmTecnologiaOrigem[20];
+    char *nmTecnologiaOrigem;
     int tamTecnologiaDestino;
-    char nmTecnologiaDestino[20];
+    char *nmTecnologiaDestino;
 }registro;
 
 typedef struct registroCabecalho{
@@ -29,6 +29,7 @@ typedef struct registroCabecalho{
 
 void binarioNaTela(char *nomeArquivoBinario);
 void funcionalidade1();
+char *armCampo(char *linha,int *posicao);
 
 #endif
 
