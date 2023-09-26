@@ -1,7 +1,7 @@
 #include "registro.h"
 
 void funcionalidade1(char *dataCSV, char *dataBIN){
-    registroCab *registroC = createCabecalho();
+    registroCab *rC = (registroCab *) malloc(sizeof(registroCab));
     
     FILE *csvFile = fopen(dataCSV, "r");
     if(!csvFile){
@@ -13,6 +13,23 @@ void funcionalidade1(char *dataCSV, char *dataBIN){
         printf("Erro ao abrir arquivo\n");
     }
 
+    //ignora a primeira linha do .csv
+    int c;
+    while ((c = fgetc(csvFile)) != EOF && c != '\n') {
+    }
+
+    //inicializa registro de cabeçalho .bin
+    rC->status = '1';
+    rC->proxRRN = 0;
+    rC->nroTecnologias = 0;
+    rC->nroParesTecnologias = 0;
+
+  
+    fwrite(&rC->status, sizeof(char), 1, binFile);
+    fwrite(&rC->proxRRN, sizeof(int), 1, binFile);
+    fwrite(&rC->nroTecnologias, sizeof(int), 1, binFile);
+    fwrite(&rC->nroParesTecnologias, sizeof(int), 1, binFile);
+    
     char tecnologiasUnicas[700][40];
     int numTecnologiasUnicas = 0;
 
@@ -20,17 +37,15 @@ void funcionalidade1(char *dataCSV, char *dataBIN){
     int numParesUnicos = 0;
 
     char linha[100];
-    fgets(linha, sizeof(linha), csvFile);
     while (fgets(linha, sizeof(linha), csvFile)) {
         int posicao = 0;
-        registroDados *r1 = malloc(sizeof(registroDados));
-        int var1;
+        registro *r1 = malloc(sizeof(registro));
 
-        r1->nmTecnologiaOrigem = lenCampo(linha, &posicao);
-        r1->grupo = atoi(lenCampo(linha, &posicao));
-        r1->popularidade = atoi(lenCampo(linha, &posicao));
-        r1->nmTecnologiaDestino = lenCampo(linha, &posicao);
-        r1->peso = atoi(lenCampo(linha, &posicao));
+        r1->nmTecnologiaOrigem = armCampo(linha, &posicao);
+        r1->grupo = atoi(armCampo(linha, &posicao));
+        r1->popularidade = atoi(armCampo(linha, &posicao));
+        r1->nmTecnologiaDestino = armCampo(linha, &posicao);
+        r1->peso = atoi(armCampo(linha, &posicao));
         r1->removido = NAOREMOVIDO;
         r1->tamTecnologiaOrigem = strlen(r1->nmTecnologiaOrigem);
         r1->tamTecnologiaDestino = strlen(r1->nmTecnologiaDestino);
@@ -49,7 +64,6 @@ void funcionalidade1(char *dataCSV, char *dataBIN){
         fwrite(&r1->tamTecnologiaOrigem, sizeof(int), 1, binFile);
         fwrite(r1->nmTecnologiaOrigem, sizeof(char), r1->tamTecnologiaOrigem, binFile);
         fwrite(&r1->tamTecnologiaDestino, sizeof(int), 1, binFile);
-        if(r1->nmTecnologiaDestino == 0){r1->nmTecnologiaDestino = NULL;}
         fwrite(r1->nmTecnologiaDestino, sizeof(char), r1->tamTecnologiaDestino, binFile);
 
         for(int l = 21+r1->tamTecnologiaDestino+r1->tamTecnologiaOrigem; l<76; l++){
@@ -58,21 +72,22 @@ void funcionalidade1(char *dataCSV, char *dataBIN){
         }
 
         armTec(r1, paresUnicos, tecnologiasUnicas, &numTecnologiasUnicas, &numParesUnicos);
-
-        setHeader(registroC,numParesUnicos, numTecnologiasUnicas);
         
+        rC->proxRRN = rC->proxRRN + 1;
+        rC->nroParesTecnologias = numParesUnicos;
+        rC->nroTecnologias = numTecnologiasUnicas;
         free(r1->nmTecnologiaOrigem);
         free(r1->nmTecnologiaDestino);
-        
         free(r1);
     }
-    writeHeaderBin(binFile, registroC);
 
+    newRegCab(binFile,rC);
+    free(rC);
     fclose(csvFile);
     fclose(binFile);
 }
 
-void armTec(registroDados *r1, char paresUnicos[][2][40], char tecnologiasUnicas[][40], int *numTecnologiasUnicas, int *numParesUnicos) {
+void armTec(registro *r1, char paresUnicos[][2][40], char tecnologiasUnicas[][40], int *numTecnologiasUnicas, int *numParesUnicos) {
 
     int tecnologiaOrigemUnica = 1;
     for (int i = 0; i < *numTecnologiasUnicas; i++) {
@@ -103,8 +118,8 @@ void armTec(registroDados *r1, char paresUnicos[][2][40], char tecnologiasUnicas
     }
 }
     
-char *lenCampo(char *linha, int *posicao) {
-    char *campo = malloc(sizeof(char)*256); 
+char *armCampo(char *linha, int *posicao) {
+    char *campo = malloc(256); 
     int i = 0;
     while (linha[*posicao] != ',' && linha[*posicao] != '\0') {
         campo[i++] = linha[(*posicao)++];
@@ -113,3 +128,10 @@ char *lenCampo(char *linha, int *posicao) {
     return campo;
 }
 
+void newRegCab(FILE *binFile, registroCab *r1){
+    fseek(binFile, 1, SEEK_SET);
+    fwrite(&r1->proxRRN, sizeof(int), 1, binFile);
+    fwrite(&r1->nroTecnologias, sizeof(int), 1, binFile);
+    fwrite(&r1->nroParesTecnologias, sizeof(int), 1, binFile);
+}
+    

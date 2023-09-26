@@ -1,4 +1,4 @@
-#include "header.h"
+#include "registro.h"
 
 
 void funcionalidade2(char *dataBin){
