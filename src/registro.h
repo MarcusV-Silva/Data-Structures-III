@@ -4,6 +4,7 @@
 #define REMOVIDO '1'
 #define NAOREMOVIDO '0'
 #define TAMREGISTRO 76
+#define TAMREGISTROFIXO 21
 #define LIXO "$"
 #define MAX_TECNOLOGIAS 1000
 
