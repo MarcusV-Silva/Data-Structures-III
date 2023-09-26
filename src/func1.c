@@ -6,7 +6,7 @@
 
 void funcionalidade1(char *dataCSV, char *dataBIN){
     registroCab *rC = (registroCab *) malloc(sizeof(registroCab));
-
+    
     FILE *csvFile = fopen(dataCSV, "r");
     if(!csvFile){
         printf("Erro ao abrir arquivo\n");
@@ -45,7 +45,7 @@ void funcionalidade1(char *dataCSV, char *dataBIN){
         r1->popularidade = atoi(armCampo(linha, &posicao));
         r1->nmTecnologiaDestino = armCampo(linha, &posicao);
         r1->peso = atoi(armCampo(linha, &posicao));
-        r1->removido = '0';
+        r1->removido = NAOREMOVIDO;
         r1->tamTecnologiaOrigem = strlen(r1->nmTecnologiaOrigem);
         r1->tamTecnologiaDestino = strlen(r1->nmTecnologiaDestino);
 
@@ -66,7 +66,7 @@ void funcionalidade1(char *dataCSV, char *dataBIN){
         fwrite(r1->nmTecnologiaDestino, sizeof(char), r1->tamTecnologiaDestino, binFile);
 
         for(int l = 21+r1->tamTecnologiaDestino+r1->tamTecnologiaOrigem; l<76; l++){
-            fwrite("$", sizeof(char), 1, binFile);
+            fwrite(LIXO, sizeof(char), 1, binFile);
             posicao++;
         }
         free(r1);
@@ -82,8 +82,8 @@ char *armCampo(char *linha, int *posicao) {
     while (linha[*posicao] != ',' && linha[*posicao] != '\0') {
         campo[i++] = linha[(*posicao)++];
     }
-    
     (*posicao)++; 
     return campo;
 }
+
 

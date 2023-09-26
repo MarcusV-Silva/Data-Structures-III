@@ -4,7 +4,7 @@
 #define REMOVIDO '1'
 #define NAOREMOVIDO '0'
 #define TAMREGISTRO 76
-#define LIXO '$'
+#define LIXO "$"
 
 #include <stdio.h>
 #include <stdlib.h>
