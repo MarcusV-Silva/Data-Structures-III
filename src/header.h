@@ -8,6 +8,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
 
 typedef struct RegistersVariable{
     char removido;
@@ -29,6 +31,7 @@ typedef struct registroCabecalho{
 
 void binarioNaTela(char *nomeArquivoBinario);
 void funcionalidade1();
+void funcionalidade2();
 char *armCampo(char *linha,int *posicao);
 
 #endif

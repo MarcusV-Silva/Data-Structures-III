@@ -1,7 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
 #include "header.h"
 
 /*
@@ -16,6 +12,7 @@ int main(){
     char *dataCerto = "../data/binario4.bin";
     
     funcionalidade1(dataCSV, dataBin);
+    //funcionalidade2(dataBin);
     
     printf("\nNossos dados:");
     binarioNaTela(dataBin);
