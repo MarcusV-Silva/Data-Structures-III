@@ -9,7 +9,7 @@
 int main(){
     char *dataBin = "saida1.bin";
     char *dataCSV = "../data/dados2.csv";
-    char *dataCerto = "../data/binario4.bin";
+    char *dataCerto = "../data/binario3.bin";
     
     funcionalidade1(dataCSV, dataBin);
     //funcionalidade2(dataBin);

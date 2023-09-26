@@ -20,9 +20,9 @@ void funcionalidade1(char *dataCSV, char *dataBIN){
 
     //inicializa registro de cabeçalho .bin
     rC->status = '1';
-    rC->proxRRN = 490;
-    rC->nroTecnologias = 115;
-    rC->nroParesTecnologias = 490;
+    rC->proxRRN = 0;
+    rC->nroTecnologias = 0;
+    rC->nroParesTecnologias = 0;
 
   
     fwrite(&rC->status, sizeof(char), 1, binFile);
@@ -31,7 +31,14 @@ void funcionalidade1(char *dataCSV, char *dataBIN){
     fwrite(&rC->nroParesTecnologias, sizeof(int), 1, binFile);
     
 
-    char linha[256];
+    char tecnologiasUnicas[700][40];
+    int numTecnologiasUnicas = 0;
+
+    char paresUnicos[700][2][40];
+    int numParesUnicos = 0;
+
+
+    char linha[100];
     while (fgets(linha, sizeof(linha), csvFile)) {
         int posicao = 0;
         registro *r1 = malloc(sizeof(registro));
@@ -65,13 +72,52 @@ void funcionalidade1(char *dataCSV, char *dataBIN){
             fwrite(LIXO, sizeof(char), 1, binFile);
             posicao++;
         }
+        armTec(r1, paresUnicos, tecnologiasUnicas, &numTecnologiasUnicas, &numParesUnicos);
+        rC->proxRRN = rC->proxRRN + 1;
         free(r1);
     }
-    
+    rC->nroParesTecnologias = numParesUnicos;
+    rC->nroTecnologias = numTecnologiasUnicas;
+    newRegCab(binFile,rC);
+
     fclose(csvFile);
     fclose(binFile);
 }
 
+void armTec(registro *r1, char paresUnicos[][2][40], char tecnologiasUnicas[][40], int *numTecnologiasUnicas, int *numParesUnicos) {
+    // Verifica se a tecnologia de origem é única
+    int tecnologiaOrigemUnica = 1;
+    for (int i = 0; i < *numTecnologiasUnicas; i++) {
+        if (strcmp(r1->nmTecnologiaOrigem, tecnologiasUnicas[i]) == 0) {
+            tecnologiaOrigemUnica = 0;
+            break;
+        }
+    }
+
+    // Se for única, adiciona ao conjunto de tecnologias únicas
+    if (tecnologiaOrigemUnica) {
+        strcpy(tecnologiasUnicas[*numTecnologiasUnicas], r1->nmTecnologiaOrigem);
+        (*numTecnologiasUnicas)++;
+    }
+
+    // Verifica se o par é único
+    int parUnico = 1;
+    for (int i = 0; i < *numParesUnicos; i++) {
+        if (strcmp(r1->nmTecnologiaOrigem, paresUnicos[i][0]) == 0 &&
+            strcmp(r1->nmTecnologiaDestino, paresUnicos[i][1]) == 0) {
+            parUnico = 0;
+            break;
+        }
+    }
+
+    // Se for único, adiciona ao conjunto de pares únicos
+    if (parUnico) {
+        strcpy(paresUnicos[*numParesUnicos][0], r1->nmTecnologiaOrigem);
+        strcpy(paresUnicos[*numParesUnicos][1], r1->nmTecnologiaDestino);
+        (*numParesUnicos)++;
+    }
+}
+    
 char *armCampo(char *linha, int *posicao) {
     char *campo = malloc(256); 
     int i = 0;
@@ -82,4 +128,10 @@ char *armCampo(char *linha, int *posicao) {
     return campo;
 }
 
-
+void newRegCab(FILE *binFile, registroCab *r1){
+    fseek(binFile, 1, SEEK_SET);
+    fwrite(&r1->proxRRN, sizeof(int), 1, binFile);
+    fwrite(&r1->nroTecnologias, sizeof(int), 1, binFile);
+    fwrite(&r1->nroParesTecnologias, sizeof(int), 1, binFile);
+    
+}
