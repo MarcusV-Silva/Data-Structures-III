@@ -74,10 +74,10 @@ void funcionalidade1(char *dataCSV, char *dataBIN){
         }
         armTec(r1, paresUnicos, tecnologiasUnicas, &numTecnologiasUnicas, &numParesUnicos);
         rC->proxRRN = rC->proxRRN + 1;
+        rC->nroParesTecnologias = numParesUnicos;
+        rC->nroTecnologias = numTecnologiasUnicas;
         free(r1);
     }
-    rC->nroParesTecnologias = numParesUnicos;
-    rC->nroTecnologias = numTecnologiasUnicas;
     newRegCab(binFile,rC);
 
     fclose(csvFile);
