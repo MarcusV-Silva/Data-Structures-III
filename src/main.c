@@ -12,7 +12,7 @@ int main(){
     char *dataCerto = "../data/binario5.bin";
     
     funcionalidade1(dataCSV, dataBin);
-    //funcionalidade2(dataBin);
+    funcionalidade2(dataBin);
     
     printf("\nNossos dados:");
     binarioNaTela(dataBin);
