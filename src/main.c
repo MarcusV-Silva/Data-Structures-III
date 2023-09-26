@@ -1,4 +1,4 @@
-#include "header.h"
+#include "registro.h"
 
 /*
 *    Analises:
@@ -8,8 +8,8 @@
 
 int main(){
     char *dataBin = "saida1.bin";
-    char *dataCSV = "../data/dados2.csv";
-    char *dataCerto = "../data/binario3.bin";
+    char *dataCSV = "../data/dados1.csv";
+    char *dataCerto = "../data/binario5.bin";
     
     funcionalidade1(dataCSV, dataBin);
     //funcionalidade2(dataBin);
