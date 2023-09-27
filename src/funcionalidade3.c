@@ -23,27 +23,24 @@ void funcionalidade3(char *dataBin, int n){
         for(int j = 0; j < rC.nroTecnologias; j++) {
             funcLer(&r1, binFile);
             if (strcmp(tmp1, "nomeTecnologiaOrigem") == 0 && strcmp(r1.nmTecnologiaOrigem, tmp2) == 0) {
-                printRegistro(r1);
                 registroEncontrado = 1;
-                break;
             } else if (strcmp(tmp1, "nomeTecnologiaDestino") == 0 && strcmp(r1.nmTecnologiaDestino, tmp2) == 0) {
-                printRegistro(r1);
                 registroEncontrado = 1;
-                break;
             } else if (strcmp(tmp1, "grupo") == 0 && r1.grupo == atoi(tmp2)){
-                printRegistro(r1);
                 registroEncontrado = 1;
-                break;
             } else if (strcmp(tmp1, "popularidade") == 0 && r1.popularidade == atoi(tmp2)){
-                printRegistro(r1);
                 registroEncontrado = 1;
-                break;
             } else if (strcmp(tmp1, "peso") == 0 && r1.peso == atoi(tmp2)){
-                printRegistro(r1);
                 registroEncontrado = 1;
+            }
+
+            if(registroEncontrado){
+                printRegistro(r1);
                 break;
             }
         }
+        if(!registroEncontrado)
+            printf("Registro não encontrado");        
 
     }
     fclose(binFile);
@@ -64,8 +61,9 @@ void funcLer(registro *r, FILE *dataBinFile){
     int qntLida = 21 + r->tamTecnologiaDestino + r->tamTecnologiaOrigem;
 
     int i;
-    if(qntLida < 76){
+    while(qntLida < 76){
         fread(&i, 1, 1, dataBinFile);
+        qntLida++;
     }
 }
 
@@ -74,7 +72,6 @@ void funcLerCab(registroCab *r, FILE *dataBinFile){
     fread(&r->proxRRN, sizeof(int), 1, dataBinFile);
     fread(&r->nroTecnologias, sizeof(int), 1, dataBinFile);
     fread(&r->nroParesTecnologias, sizeof(int), 1, dataBinFile);
-
 }
 
 void printRegistro(registro r1){
