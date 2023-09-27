@@ -47,7 +47,6 @@ void funcionalidade2(char *dataBin) {
 
     free(r->nmTecnologiaOrigem);
     free(r->nmTecnologiaDestino);
-    free(r);
     free(rc);
     fclose(dataBinFile);
 }
