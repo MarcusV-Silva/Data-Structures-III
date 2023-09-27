@@ -20,7 +20,7 @@ void funcionalidade3(char *dataBin, int n){
         
         int registroEncontrado = 0;
         registro r1;
-        for(int j = 0; j < rC.nroTecnologias; j++) {
+        for(int j = 0; j < 490; j++) {
             funcLer(&r1, binFile);
             if (strcmp(tmp1, "nomeTecnologiaOrigem") == 0 && strcmp(r1.nmTecnologiaOrigem, tmp2) == 0) {
                 registroEncontrado = 1;
