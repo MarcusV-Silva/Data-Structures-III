@@ -1,4 +1,4 @@
-#include "registro.h"
+/*#include "registro.h"
 
 registroCab *newHeader(){
     registroCab *rC = (registroCab *) malloc(sizeof(registroCab));
@@ -21,4 +21,4 @@ void writeHeaderBin(FILE *binFile, registroCab *rC){
     fwrite(&rC->proxRRN, sizeof(int), 1, binFile);
     fwrite(&rC->nroTecnologias, sizeof(int), 1, binFile);
     fwrite(&rC->nroParesTecnologias, sizeof(int), 1, binFile);
-}
+}*/

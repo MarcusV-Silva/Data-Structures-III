@@ -7,18 +7,14 @@
 */ 
 
 int main(){
-    char *dataBin = "saida1.bin";
-    char *dataCSV = "../data/dados1.csv";
+    //char *dataBin = "saida1.bin";
+    //char *dataCSV = "../data/dados1.csv";
     char *dataCerto = "../data/binario5.bin";
     
-    funcionalidade1(dataCSV, dataBin);
-    funcionalidade2(dataBin);
-    
-    printf("\nNossos dados:");
-    binarioNaTela(dataBin);
+    //funcionalidade1(dataCSV, dataBin);
+    //funcionalidade2(dataBin);
+    funcionalidade3(dataCerto,1);
 
-    printf("\nDados do arquivo pronto:");
-    binarioNaTela(dataCerto);
     return 0;
 }
 

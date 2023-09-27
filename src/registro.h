@@ -32,10 +32,17 @@ typedef struct registroCabecalho{
 }registroCab;
 
 void binarioNaTela(char *nomeArquivoBinario);
+
 void funcionalidade1();
 void funcionalidade2();
+void funcionalidade3();
+void funcionalidade4();
+
+void *alocarMemoria (size_t dado);
 char *armCampo(char *linha,int *posicao);
 void armTec(registro *r1, char paresUnicos[][2][40], char tecnologiasUnicas[][40], int *numTecnologiasUnicas, int *numParesUnicos) ;
 void newRegCab(FILE *binFile, registroCab *r1);
-
+void scan_quote_string(char *str);
+void funcLer(registro *r, FILE *dataBinFile);
+void printRegistro(registro r1);
 #endif
