@@ -29,18 +29,43 @@ void funcionalidade2(char *dataBin) {
         }
 
         fread(&r->grupo, sizeof(int), 1, dataBinFile);
+        if(r->grupo == -1){
+            char nome[4] = "NULO";
+            //r->grupo = strdup(nome);
+        }
+
         fread(&r->popularidade, sizeof(int), 1, dataBinFile);
+        if(r->popularidade == -1){
+            char nome[4] = "NULO";
+            //r->popularidade = strdup(nome);
+        }
+
         fread(&r->peso, sizeof(int), 1, dataBinFile);
+        if(r->peso == -1){
+            char nome[4] = "NULO";
+            //r->peso = strdup(nome);
+        }
 
         fread(&r->tamTecnologiaOrigem, sizeof(int), 1, dataBinFile);
         r->nmTecnologiaOrigem = malloc(r->tamTecnologiaOrigem);
         fread(r->nmTecnologiaOrigem, 1, r->tamTecnologiaOrigem, dataBinFile);
 
+        if(r->tamTecnologiaOrigem == 1){
+            char nome[4] = "NULO";
+            r->nmTecnologiaOrigem = nome; 
+        }
+
         fread(&r->tamTecnologiaDestino, sizeof(int), 1, dataBinFile);
         r->nmTecnologiaDestino = malloc(r->tamTecnologiaDestino);
         fread(r->nmTecnologiaDestino, 1, r->tamTecnologiaDestino, dataBinFile);
 
+        if(r->tamTecnologiaDestino == 0){
+            char nome[4] = "NULO";
+            r->nmTecnologiaDestino = nome; 
+        }
+
         printf("%s, %d, %d, %s, %d \n", r->nmTecnologiaOrigem, r->grupo, r->popularidade, r->nmTecnologiaDestino, r->peso);
+
         int deslocamento = TAMREGISTRO - TAMREGISTROFIXO - r->tamTecnologiaOrigem - r->tamTecnologiaDestino;
         fseek(dataBinFile, deslocamento, SEEK_CUR);
     }
