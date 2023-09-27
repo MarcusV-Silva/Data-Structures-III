@@ -45,4 +45,5 @@ void newRegCab(FILE *binFile, registroCab *r1);
 void scan_quote_string(char *str);
 void funcLer(registro *r, FILE *dataBinFile);
 void printRegistro(registro r1);
+void funcLerCab(registroCab *r, FILE *dataBinFile);
 #endif
