@@ -19,33 +19,34 @@ void funcionalidade3(char *dataBin, int n){
         scan_quote_string(tmp2);
         
         int registroEncontrado = 0;
-        registro r1;
         for(int j = 0; j < 490; j++) {
-            funcLer(&r1, binFile);
-            if (strcmp(tmp1, "nomeTecnologiaOrigem") == 0 && strcmp(r1.nmTecnologiaOrigem, tmp2) == 0) {
+            registro *r1 = malloc(sizeof(registro));
+            funcLer(r1, binFile);
+            if (strcmp(tmp1, "nomeTecnologiaOrigem") == 0 && strcmp(r1->nmTecnologiaOrigem, tmp2) == 0) {
                 registroEncontrado = 1;
-            } else if (strcmp(tmp1, "nomeTecnologiaDestino") == 0 && strcmp(r1.nmTecnologiaDestino, tmp2) == 0) {
+            } else if (strcmp(tmp1, "nomeTecnologiaDestino") == 0 && strcmp(r1->nmTecnologiaDestino, tmp2) == 0) {
                 registroEncontrado = 1;
-            } else if (strcmp(tmp1, "grupo") == 0 && r1.grupo == atoi(tmp2)){
+            } else if (strcmp(tmp1, "grupo") == 0 && r1->grupo == atoi(tmp2)){
                 registroEncontrado = 1;
-            } else if (strcmp(tmp1, "popularidade") == 0 && r1.popularidade == atoi(tmp2)){
+            } else if (strcmp(tmp1, "popularidade") == 0 && r1->popularidade == atoi(tmp2)){
                 registroEncontrado = 1;
-            } else if (strcmp(tmp1, "peso") == 0 && r1.peso == atoi(tmp2)){
+            } else if (strcmp(tmp1, "peso") == 0 && r1->peso == atoi(tmp2)){
                 registroEncontrado = 1;
             }
-
             if(registroEncontrado){
-                printRegistro(r1);
+                printRegistro(*r1);
+                free(r1);
                 break;
             }
+            free(r1);
         }
+
         if(!registroEncontrado)
             printf("Registro não encontrado");        
 
     }
     fclose(binFile);
 }
-
 
 void funcLer(registro *r, FILE *dataBinFile){
     fread(&r->removido, 1, 1, dataBinFile);
@@ -59,6 +60,11 @@ void funcLer(registro *r, FILE *dataBinFile){
     r->nmTecnologiaDestino = malloc(r->tamTecnologiaDestino);
     fread(r->nmTecnologiaDestino, 1, r->tamTecnologiaDestino, dataBinFile);
     int qntLida = 21 + r->tamTecnologiaDestino + r->tamTecnologiaOrigem;
+
+    char *nulo = "NULO";
+    if(r->tamTecnologiaDestino == 0){
+        strcpy(r->nmTecnologiaDestino, nulo);
+    }
 
     int i;
     while(qntLida < 76){
@@ -75,5 +81,26 @@ void funcLerCab(registroCab *r, FILE *dataBinFile){
 }
 
 void printRegistro(registro r1){
-    printf("%s, %d, %d, %s, %d\n",  r1.nmTecnologiaOrigem, r1.grupo, r1.popularidade,r1.nmTecnologiaDestino, r1.peso);
+
+    printf("%s, ", r1.nmTecnologiaOrigem);
+
+    if (r1.grupo != -1) {
+        printf("%d, ", r1.grupo);
+    } else {
+        printf("NULO, ");
+    }
+
+    if (r1.popularidade != -1) {
+        printf("%d, ", r1.popularidade);
+    } else {
+        printf("NULO, ");
+    }
+
+    printf("%s, ", r1.nmTecnologiaDestino);
+
+    if (r1.peso != -1) {
+        printf("%d", r1.peso);
+    } else {
+        printf("NULO");
+    }
 }
