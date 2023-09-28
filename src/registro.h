@@ -39,15 +39,17 @@ void funcionalidade2(char *dataBin) ;
 void funcionalidade3();
 void funcionalidade4();
 
-registroCab *createCabecalho();
+registroCab createCabecalho();
 void readCabecalho(registroCab *r, FILE *dataBinFile);
 void setCabecalho(registroCab *rC, int numParesUnicos, int numTecnologiasUnicas);
-void writeCabecalho(FILE *binFile, registroCab rC);
+void writeCabecalho(FILE *binFile, registroCab *rC);
 
+void writeRegistro(registro *r1, FILE *binFile, int posicao)
 void readRegistro(registro *r, FILE *dataBinFile);
 void printRegistro(registro r1);
 
 char *armCampo(char *linha,int *posicao);
 void armTec(registro *r1, char paresUnicos[][2][40], char tecnologiasUnicas[][40], int *numTecnologiasUnicas, int *numParesUnicos) ;
 
+void checkFile(FILE *arquivo);
 #endif

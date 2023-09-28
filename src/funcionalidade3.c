@@ -6,10 +6,7 @@ void funcionalidade3(){
 
     scanf("%s %d", dataBin, &n);
     FILE *binFile = fopen(dataBin, "rb");
-    if (!binFile) {
-        printf("Erro ao abrir arquivo\n");
-        return;
-    }
+    checkFile(binFile);
 
     free(dataBin);
     registroCab rC;

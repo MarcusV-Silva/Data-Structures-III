@@ -6,24 +6,15 @@ void funcionalidade4(){
     scanf("%s %d", dataBin, &RRN);
 
     FILE *binFile = fopen(dataBin, "rb");
+    checkFile(binFile);
 
-    if (!binFile) {
-        printf("Erro ao abrir arquivo\n");
-        return;
-    }
-
-    free(dataBin);
-    registroCab rC;
-    readCabecalho(&rC, binFile);
-
-    int rrnDestino = (RRN*TAMREGISTRO) ;
-
+    int rrnDestino = (RRN*TAMREGISTRO) +13;
     registro *r1 = malloc(sizeof(registro));
-    for(int posicaoAtual = 0; posicaoAtual<=rrnDestino; posicaoAtual+=76){
-        readRegistro(r1, binFile);
-    }
 
+    fseek(binFile, rrnDestino, SEEK_SET);
+    readRegistro(r1, binFile);
     printRegistro(*r1);
 
+    free(r1);
     fclose(binFile);
 }

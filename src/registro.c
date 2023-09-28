@@ -1,11 +1,11 @@
 #include "registro.h"
 
-registroCab *createCabecalho(){
-    registroCab *rC = (registroCab *) malloc(sizeof(registroCab));
-    rC->status = '1';
-    rC->proxRRN = 0;
-    rC->nroTecnologias = 0;
-    rC->nroParesTecnologias = 0;
+registroCab createCabecalho(){
+    registroCab rC;
+    rC.status = '0';
+    rC.proxRRN = 0;
+    rC.nroTecnologias = 0;
+    rC.nroParesTecnologias = 0;
 
     return rC;
 }
@@ -16,12 +16,12 @@ void setCabecalho(registroCab *rC, int numParesUnicos, int numTecnologiasUnicas)
     rC->nroTecnologias = numTecnologiasUnicas;
 }
 
-void writeCabecalho(FILE *binFile, registroCab rC){
+void writeCabecalho(FILE *binFile, registroCab *rC){
     fseek(binFile, 0, SEEK_SET);
-    fwrite(&rC.status, sizeof(char), 1, binFile);
-    fwrite(&rC.proxRRN, sizeof(int), 1, binFile);
-    fwrite(&rC.nroTecnologias, sizeof(int), 1, binFile);
-    fwrite(&rC.nroParesTecnologias, sizeof(int), 1, binFile);
+    fwrite(&rC->status, sizeof(char), 1, binFile);
+    fwrite(&rC->proxRRN, sizeof(int), 1, binFile);
+    fwrite(&rC->nroTecnologias, sizeof(int), 1, binFile);
+    fwrite(&rC->nroParesTecnologias, sizeof(int), 1, binFile);
 }
 
 void readCabecalho(registroCab *r, FILE *dataBinFile){
@@ -30,6 +30,27 @@ void readCabecalho(registroCab *r, FILE *dataBinFile){
     fread(&r->nroTecnologias, sizeof(int), 1, dataBinFile);
     fread(&r->nroParesTecnologias, sizeof(int), 1, dataBinFile);
 }
+
+void writeRegistro(registro *r1, FILE *binFile, int posicao){
+    if(r1->grupo == 0){r1->grupo = -1;}
+    if(r1->popularidade == 0){r1->popularidade = -1;}
+    if(r1->peso == 0){r1->peso = -1;}
+
+    fwrite(&r1->removido, sizeof(char), 1, binFile);
+    fwrite(&r1->grupo, sizeof(int), 1, binFile);
+    fwrite(&r1->popularidade, sizeof(int), 1, binFile);
+    fwrite(&r1->peso, sizeof(int), 1, binFile);
+    fwrite(&r1->tamTecnologiaOrigem, sizeof(int), 1, binFile);
+    fwrite(r1->nmTecnologiaOrigem, sizeof(char), r1->tamTecnologiaOrigem, binFile);
+    fwrite(&r1->tamTecnologiaDestino, sizeof(int), 1, binFile);
+    fwrite(r1->nmTecnologiaDestino, sizeof(char), r1->tamTecnologiaDestino, binFile);
+
+    for(int l = 21+r1->tamTecnologiaDestino+r1->tamTecnologiaOrigem; l<76; l++){
+        fwrite(LIXO, sizeof(char), 1, binFile);
+        posicao++;
+    }
+}
+
 
 void readRegistro(registro *r, FILE *dataBinFile){
     r->nmTecnologiaDestino = malloc(r->tamTecnologiaDestino);

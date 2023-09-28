@@ -6,14 +6,14 @@
 */ 
 
 int main(){
-    //char *dataBin = "saida1.bin";
-    //char *dataCSV = "../data/dados1.csv";
+    char *dataBin = "saida1.bin";
+    char *dataCSV = "../data/dados1.csv";
     //char *dataCerto = "../data/binario4.bin";
     
-    //funcionalidade1(dataCSV, dataBin);
+    funcionalidade1(dataCSV, dataBin);
     //funcionalidade2(dataBin);
-    funcionalidade3();
-    funcionalidade4();
+    //funcionalidade3();
+    //funcionalidade4();
 
     return 0;
 }
