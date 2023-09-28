@@ -40,7 +40,6 @@ void funcionalidade3(char *dataBin, int n){
             }
             free(r1);
         }
-
         if(!registroEncontrado)
             printf("Registro não encontrado");        
 

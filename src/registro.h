@@ -33,10 +33,10 @@ typedef struct registroCabecalho{
 
 void binarioNaTela(char *nomeArquivoBinario);
 
-void funcionalidade1();
-void funcionalidade2();
-void funcionalidade3();
-void funcionalidade4();
+void funcionalidade1(char *dataCSV, char *dataBIN);
+void funcionalidade2(char *dataBin) ;
+void funcionalidade3(char *dataBin, int n);
+void funcionalidade4(char *dataBin, int RRN);
 
 void *alocarMemoria (size_t dado);
 char *armCampo(char *linha,int *posicao);
