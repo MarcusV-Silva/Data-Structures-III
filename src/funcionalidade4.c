@@ -1,5 +1,9 @@
 #include "registro.h"
-void funcionalidade4(char *dataBin, int RRN){
+void funcionalidade4(){
+    char *dataBin = malloc(sizeof(char)*40);
+    int RRN;
+    scanf("%s %d", dataBin, &RRN);
+
     FILE *binFile = fopen(dataBin, "rb");
 
     if (!binFile) {
@@ -7,18 +11,19 @@ void funcionalidade4(char *dataBin, int RRN){
         return;
     }
 
+    free(dataBin);
     registroCab rC;
-    funcLerCab(&rC, binFile);
+    readCabecalho(&rC, binFile);
 
-    int posicaoAtual = 0;
-    int rrnDestino = (RRN-1)* TAMREGISTRO;
+    int rrnDestino = (RRN*TAMREGISTRO) ;
 
     registro *r1 = malloc(sizeof(registro));
-    while(posicaoAtual<rrnDestino){
-        funcLer(r1, binFile);
-        posicaoAtual+=76;
+    for(int posicaoAtual = 0; posicaoAtual<=rrnDestino; posicaoAtual+=76){
+        readRegistro(r1, binFile);
     }
 
     printRegistro(*r1);
+
+    fclose(binFile);
 
 }
