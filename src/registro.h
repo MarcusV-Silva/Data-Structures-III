@@ -35,7 +35,8 @@ void binarioNaTela(char *nomeArquivoBinario);
 void funcionalidade1();
 void funcionalidade2();
 char *armCampo(char *linha,int *posicao);
-void armTec(registro *r1, char paresUnicos[][2][40], char tecnologiasUnicas[][40], int *numTecnologiasUnicas, int *numParesUnicos) ;
+void armTec(registro *r1, char paresUnicos[][2][40], char tecnologiasUnicas[][40], int *numTecnologiasUnicas, int *numParesUnicos);
+void readHeaderBin(FILE *binFile);
 void newRegCab(FILE *binFile, registroCab *r1);
 
 #endif

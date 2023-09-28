@@ -22,3 +22,19 @@ void writeHeaderBin(FILE *binFile, registroCab *rC){
     fwrite(&rC->nroTecnologias, sizeof(int), 1, binFile);
     fwrite(&rC->nroParesTecnologias, sizeof(int), 1, binFile);
 }
+
+
+//Função que lê o cabeçalho do arquivo
+void readHeaderBin(FILE *dataBinFile){
+    
+    registroCab *rC;
+
+    rC = malloc(sizeof(registroCab));
+
+    fread(&rC->status, sizeof(char), 1, dataBinFile);
+    fread(&rC->proxRRN, sizeof(int), 1, dataBinFile);
+    fread(&rC->nroTecnologias, sizeof(int), 1, dataBinFile);
+    fread(&rC->nroParesTecnologias, sizeof(int), 1, dataBinFile);
+
+    free(rC);
+}
