@@ -45,7 +45,7 @@ void writeRegistro(registro *r1, FILE *binFile, int posicao){
     fwrite(&r1->tamTecnologiaDestino, sizeof(int), 1, binFile);
     fwrite(r1->nmTecnologiaDestino, sizeof(char), r1->tamTecnologiaDestino, binFile);
 
-    for(int l = 21+r1->tamTecnologiaDestino+r1->tamTecnologiaOrigem; l<76; l++){
+    for(int l = TAMREGISTROFIXO + r1->tamTecnologiaDestino + r1->tamTecnologiaOrigem; l < TAMREGISTRO; l++){
         fwrite(LIXO, sizeof(char), 1, binFile);
         posicao++;
     }
@@ -65,9 +65,9 @@ void readRegistro(registro *r, FILE *dataBinFile){
     fread(&r->tamTecnologiaDestino, sizeof(int), 1, dataBinFile);
     fread(r->nmTecnologiaDestino, 1, r->tamTecnologiaDestino, dataBinFile);
 
-    int qntLida = 21 + r->tamTecnologiaDestino + r->tamTecnologiaOrigem;
+    int qntLida = TAMREGISTROFIXO + r->tamTecnologiaDestino + r->tamTecnologiaOrigem;
     int i;
-    while(qntLida < 76){
+    while(qntLida < TAMREGISTROFIXO){
         fread(&i, 1, 1, dataBinFile);
         qntLida++;
     }
