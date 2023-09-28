@@ -19,7 +19,7 @@ void funcionalidade1(char *dataCSV, char *dataBIN){
     }
 
     //inicializa registro de cabeçalho .bin
-    rC->status = '1';
+    rC->status = '0';
     rC->proxRRN = 0;
     rC->nroTecnologias = 0;
     rC->nroParesTecnologias = 0;
@@ -81,7 +81,8 @@ void funcionalidade1(char *dataCSV, char *dataBIN){
         free(r1);
     }
 
-    newRegCab(binFile,rC);
+    rC->status = '1';
+    writeCabecalho(binFile,*rC);
     free(rC);
     fclose(csvFile);
     fclose(binFile);
@@ -127,11 +128,3 @@ char *armCampo(char *linha, int *posicao) {
     (*posicao)++; 
     return campo;
 }
-
-void newRegCab(FILE *binFile, registroCab *r1){
-    fseek(binFile, 1, SEEK_SET);
-    fwrite(&r1->proxRRN, sizeof(int), 1, binFile);
-    fwrite(&r1->nroTecnologias, sizeof(int), 1, binFile);
-    fwrite(&r1->nroParesTecnologias, sizeof(int), 1, binFile);
-}
-    
