@@ -44,7 +44,7 @@ void readCabecalho(registroCab *r, FILE *dataBinFile);
 void setCabecalho(registroCab *rC, int numParesUnicos, int numTecnologiasUnicas);
 void writeCabecalho(FILE *binFile, registroCab *rC);
 
-void writeRegistro(registro *r1, FILE *binFile, int posicao)
+void writeRegistro(registro *r1, FILE *binFile, int posicao);
 void readRegistro(registro *r, FILE *dataBinFile);
 void printRegistro(registro r1);
 
