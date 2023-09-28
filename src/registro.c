@@ -6,7 +6,6 @@ registroCab createCabecalho(){
     rC.proxRRN = 0;
     rC.nroTecnologias = 0;
     rC.nroParesTecnologias = 0;
-
     return rC;
 }
 
@@ -67,7 +66,7 @@ void readRegistro(registro *r, FILE *dataBinFile){
 
     int qntLida = TAMREGISTROFIXO + r->tamTecnologiaDestino + r->tamTecnologiaOrigem;
     int i;
-    while(qntLida < TAMREGISTROFIXO){
+    while(qntLida < TAMREGISTRO){
         fread(&i, 1, 1, dataBinFile);
         qntLida++;
     }

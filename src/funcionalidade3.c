@@ -23,7 +23,9 @@ void funcionalidade3(){
         for(int j = 0; j < 490; j++) {
             int registroEncontrado = 0;
             registro *r1 = malloc(sizeof(registro));
+            
             readRegistro(r1, binFile);
+
             if (strcmp(tmp1, "nomeTecnologiaOrigem") == 0 && strcmp(r1->nmTecnologiaOrigem, tmp2) == 0) {
                 registroEncontrado = 1;
             } else if (strcmp(tmp1, "nomeTecnologiaDestino") == 0 && strcmp(r1->nmTecnologiaDestino, tmp2) == 0) {
