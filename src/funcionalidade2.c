@@ -1,4 +1,3 @@
-/*
 #include "registro.h"
 
 void funcionalidade2(char *dataBin) {
@@ -78,4 +77,3 @@ void funcionalidade2(char *dataBin) {
     free(r->nmTecnologiaDestino);
     fclose(dataBinFile);
 }
-*/
