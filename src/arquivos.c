@@ -1,7 +1,8 @@
 #include "registro.h"
 
 void checkFile(FILE *arquivo){
-    if(!arquivo){
-        printf("Erro ao abrir arquivo\n");
+    if (arquivo == NULL) {
+        printf("Falha no processamento do arquivo.\n");
+        exit(0);
     }
 }

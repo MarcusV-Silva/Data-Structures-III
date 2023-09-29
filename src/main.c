@@ -8,7 +8,7 @@
 int main(){
     int command;
     scanf("%d", &command);
-    
+
     switch (command){
         case 1:
             funcionalidade1();

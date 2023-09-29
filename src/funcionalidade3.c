@@ -3,21 +3,21 @@
 void funcionalidade3(){
     char *dataBin = malloc(sizeof(char)*40);
     int n;
-
     scanf("%s %d", dataBin, &n);
     FILE *binFile = fopen(dataBin, "rb");
     checkFile(binFile);
 
-    free(dataBin);
     registroCab rC;
     readCabecalho(&rC, binFile);
 
-    for(int i = 0; i<n; i++){
+    
+    for(int numBuscas = 0; numBuscas<n; numBuscas++){
         char tmp1[40];
         char tmp2[40];
 
         scanf("%s", tmp1);
         scan_quote_string(tmp2);
+        
         
         int flag = 0;
         for(int j = 0; j < 490; j++) {
@@ -47,6 +47,9 @@ void funcionalidade3(){
             printf("Registro inexistente.\n");
 
         fseek(binFile, 13, SEEK_SET);
+
     }
+    
+    free(dataBin);
     fclose(binFile);
 }

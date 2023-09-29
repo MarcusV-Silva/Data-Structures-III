@@ -57,13 +57,13 @@ void funcionalidade1(){
     
     free(rC);
 
+    fclose(csvFile);
+    fclose(binFile);
+
     binarioNaTela(dataBIN);
 
     free(dataBIN);
     free(dataCSV);
-
-    fclose(csvFile);
-    fclose(binFile);
 }
 
 void adicionarTecnologiaUnica(char tecnologiasUnicas[][40], char *tecnologia, int *numTecnologiasUnicas) {
