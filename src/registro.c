@@ -10,7 +10,6 @@ registroCab createCabecalho(){
 }
 
 void setCabecalho(registroCab *rC, int numParesUnicos, int numTecnologiasUnicas){
-    rC->proxRRN = rC->proxRRN + 1;
     rC->nroParesTecnologias = numParesUnicos;
     rC->nroTecnologias = numTecnologiasUnicas;
 }

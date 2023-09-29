@@ -1,8 +1,12 @@
 #include "registro.h"
 
-void funcionalidade1(char *dataCSV, char *dataBIN){
+void funcionalidade1(){
+    char *dataBIN = malloc(sizeof(char)*40);
+    char *dataCSV = malloc(sizeof(char)*40);
+    scanf("%s %s", dataCSV, dataBIN);
+
     registroCab *rC = (registroCab *) malloc(sizeof(registroCab));
-    
+
     FILE *csvFile = fopen(dataCSV, "r");
     checkFile(csvFile);
 
@@ -14,12 +18,11 @@ void funcionalidade1(char *dataCSV, char *dataBIN){
     
     char tecnologiasUnicas[700][40];
     int numTecnologiasUnicas = 0;
-
-    char paresUnicos[700][2][40];
-    int numParesUnicos = 0;
+    //char paresUnicos[700][2][40];
+    //int numParesUnicos = 0;
 
     char linha[100];
-    fgets(linha, sizeof(linha), csvFile);
+    fgets(linha,sizeof(linha) , csvFile);
     while (fgets(linha, sizeof(linha), csvFile)) {
         int posicao = 0;
         registro *r1 = malloc(sizeof(registro));
@@ -35,58 +38,81 @@ void funcionalidade1(char *dataCSV, char *dataBIN){
 
         writeRegistro(r1, binFile, posicao);
 
-        armTec(r1, paresUnicos, tecnologiasUnicas, &numTecnologiasUnicas, &numParesUnicos);
-        
-        setCabecalho(rC, numParesUnicos, numTecnologiasUnicas);
+        adicionarTecnologiaUnica(tecnologiasUnicas, r1->nmTecnologiaOrigem, &numTecnologiasUnicas);
+        //adicionarParUnico(paresUnicos, r1->nmTecnologiaOrigem, r1->nmTecnologiaDestino, &numParesUnicos);
+
+        rC->proxRRN = rC->proxRRN + 1;
+        rC->nroParesTecnologias = rC->nroParesTecnologias + 1;
+
         free(r1->nmTecnologiaOrigem);
         free(r1->nmTecnologiaDestino);
         free(r1);
     }
 
+
+    //setCabecalho(rC, numParesUnicos, numTecnologiasUnicas);
+    rC->nroTecnologias = numTecnologiasUnicas;
     rC->status = '1';
     writeCabecalho(binFile, rC);
+    
     free(rC);
+
+    binarioNaTela(dataBIN);
+
+    free(dataBIN);
+    free(dataCSV);
+
     fclose(csvFile);
     fclose(binFile);
 }
 
-void armTec(registro *r1, char paresUnicos[][2][40], char tecnologiasUnicas[][40], int *numTecnologiasUnicas, int *numParesUnicos) {
-
-    int tecnologiaOrigemUnica = 1;
+void adicionarTecnologiaUnica(char tecnologiasUnicas[][40], char *tecnologia, int *numTecnologiasUnicas) {
     for (int i = 0; i < *numTecnologiasUnicas; i++) {
-        if (strcmp(r1->nmTecnologiaOrigem, tecnologiasUnicas[i]) == 0) {
-            tecnologiaOrigemUnica = 0;
-            break;
+        if (strcmp(tecnologia, tecnologiasUnicas[i]) == 0) {
+            return; 
         }
     }
-
-    if (tecnologiaOrigemUnica) {
-        strcpy(tecnologiasUnicas[*numTecnologiasUnicas], r1->nmTecnologiaOrigem);
-        (*numTecnologiasUnicas)++;
-    }
-
-    int parUnico = 1;
-    for (int i = 0; i < *numParesUnicos; i++) {
-        if (strcmp(r1->nmTecnologiaOrigem, paresUnicos[i][0]) == 0 &&
-            strcmp(r1->nmTecnologiaDestino, paresUnicos[i][1]) == 0) {
-            parUnico = 0;
-            break;
-        }
-    }
-
-    if (parUnico) {
-        strcpy(paresUnicos[*numParesUnicos][0], r1->nmTecnologiaOrigem);
-        strcpy(paresUnicos[*numParesUnicos][1], r1->nmTecnologiaDestino);
-        (*numParesUnicos)++;
-    }
+    strcpy(tecnologiasUnicas[*numTecnologiasUnicas], tecnologia);
+    (*numTecnologiasUnicas)++;
 }
+
+/*
+void adicionarParUnico(char paresUnicos[][2][40], char *origem, char *destino, int *numParesUnicos) {
+    for (int i = 0; i < *numParesUnicos; i++) {
+        if (strcmp(origem, paresUnicos[i][0]) == 0 && strcmp(destino, paresUnicos[i][1]) == 0) {
+            return; 
+        }
+    }
+    strcpy(paresUnicos[*numParesUnicos][0], origem);
+    strcpy(paresUnicos[*numParesUnicos][1], destino);
+    (*numParesUnicos)++;
+}*/
     
 char *armCampo(char *linha, int *posicao) {
-    char *campo = malloc(256); 
     int i = 0;
+    int tamanhoMaximo = 40;
+    char *campo = (char *)malloc(tamanhoMaximo * sizeof(char));
+
+    if (campo == NULL) {
+        fprintf(stderr, "Erro: Falha na alocação de memória para campo.\n");
+        exit(1);
+    }
+
     while (linha[*posicao] != ',' && linha[*posicao] != '\0') {
         campo[i++] = linha[(*posicao)++];
+
+        if (i >= tamanhoMaximo - 1) {
+            tamanhoMaximo *= 2; 
+            campo = (char *)realloc(campo, tamanhoMaximo * sizeof(char));
+
+            if (campo == NULL) {
+                exit(1);
+            }
+        }
     }
-    (*posicao)++; 
+    campo[i] = '\0'; 
+
+    (*posicao)++;
+
     return campo;
 }

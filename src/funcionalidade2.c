@@ -1,13 +1,14 @@
 #include "registro.h"
 
-void funcionalidade2(char *dataBin) {
+void funcionalidade2() {
+    char *dataBin = malloc(sizeof(char)*40);
+    scanf("%s", dataBin);
     FILE *dataBinFile = fopen(dataBin, "rb");
     checkFile(dataBinFile);
 
     registroCab *rC = malloc(sizeof(registroCab));
     readCabecalho(rC, dataBinFile);
 
-    //While que imprime os dados do arquivo
     for (int i = 0; i < 490; i++){
         registro *r = malloc(sizeof(registro));
         readRegistro(r, dataBinFile);
@@ -15,6 +16,6 @@ void funcionalidade2(char *dataBin) {
 
         free(r);
     }
-
+    free(dataBin);
     fclose(dataBinFile);
 }

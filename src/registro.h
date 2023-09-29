@@ -34,8 +34,8 @@ typedef struct registroCabecalho{
 void binarioNaTela(char *nomeArquivoBinario);
 void scan_quote_string(char *str);
 
-void funcionalidade1(char *dataCSV, char *dataBIN);
-void funcionalidade2(char *dataBin) ;
+void funcionalidade1();
+void funcionalidade2() ;
 void funcionalidade3();
 void funcionalidade4();
 
@@ -49,7 +49,9 @@ void readRegistro(registro *r, FILE *dataBinFile);
 void printRegistro(registro r1);
 
 char *armCampo(char *linha,int *posicao);
-void armTec(registro *r1, char paresUnicos[][2][40], char tecnologiasUnicas[][40], int *numTecnologiasUnicas, int *numParesUnicos) ;
+void dataTecnologia(registro *r1, char paresUnicos[][2][40], char tecnologiasUnicas[][40], int *numTecnologiasUnicas, int *numParesUnicos) ;
+void adicionarParUnico(char paresUnicos[][2][40], char *origem, char *destino, int *numParesUnicos);
+void adicionarTecnologiaUnica(char tecnologiasUnicas[][40], char *tecnologia, int *numTecnologiasUnicas);
 
 void checkFile(FILE *arquivo);
 #endif
