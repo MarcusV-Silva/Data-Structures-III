@@ -154,7 +154,7 @@ void funcionalidade3(){
             }
             if(registroEncontrado){
                 printRegistro(*r1);
-                flag =1;
+                flag = 1;
             }
             free(r1);
         }
@@ -162,7 +162,6 @@ void funcionalidade3(){
             printf("Registro inexistente.\n");
 
         fseek(binFile, 13, SEEK_SET);
-
     }
     
     free(dataBin);

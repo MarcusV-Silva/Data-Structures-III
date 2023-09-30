@@ -121,12 +121,7 @@ char *defineCampo(char *linha, int *posicao) {
     int i = 0;
     int tamanhoMaximo = 40;
     char *campo = (char *)malloc(tamanhoMaximo * sizeof(char));
-
-    if (campo == NULL) {
-        fprintf(stderr, "Erro: Falha na alocação de memória para campo.\n");
-        exit(1);
-    }
-
+    
     while (linha[*posicao] != ',' && linha[*posicao] != '\0') {
         campo[i++] = linha[(*posicao)++];
 
