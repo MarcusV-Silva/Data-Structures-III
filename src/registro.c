@@ -77,7 +77,10 @@ void printRegistro(registro r1){
 }
 
 //Função que adiciona e armazena uma nova tecnologia
-void addTecnologiaUnica(char tecnologiasUnicas[][40], char *tecnologia, int *numTecnologiasUnicas) {
+void addTecnologiaUnica(char tecnologiasUnicas[][MAXSTRING], char *tecnologia, int tamanho, int *numTecnologiasUnicas) {
+    if(tamanho == 0){
+        return;
+    }
     for (int i = 0; i < *numTecnologiasUnicas; i++) {
         if (strcmp(tecnologia, tecnologiasUnicas[i]) == 0) {
             return; 
@@ -87,11 +90,26 @@ void addTecnologiaUnica(char tecnologiasUnicas[][40], char *tecnologia, int *num
     (*numTecnologiasUnicas)++;
 }
 
+void addParUnico(char paresUnicos[][2][MAXSTRING], registro r1, int *numParesUnicos) {
+    if(r1.tamTecnologiaDestino == 0){
+        return;
+    }
+
+    for (int i = 0; i < *numParesUnicos; i++) {
+        if (strcmp(r1.nmTecnologiaOrigem, paresUnicos[i][0]) == 0 && strcmp(r1.nmTecnologiaDestino, paresUnicos[i][1]) == 0) {
+            return; 
+        }
+    }
+    strcpy(paresUnicos[*numParesUnicos][0], r1.nmTecnologiaOrigem);
+    strcpy(paresUnicos[*numParesUnicos][1], r1.nmTecnologiaDestino);
+    (*numParesUnicos)++;
+}
+
 //Função que armazena os campos dos registros
 char *defineCampo(char *linha, int *posicao) {
     int i = 0;
     int tamanhoMaximo = 40;
-    char *campo = (char *)malloc(tamanhoMaximo * sizeof(char));
+    char *campo = (char *)malloc(MAXSTRING * sizeof(char));
     
     while (linha[*posicao] != ',' && linha[*posicao] != '\0') {
         campo[i++] = linha[(*posicao)++];

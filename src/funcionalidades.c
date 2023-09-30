@@ -24,10 +24,10 @@ void funcionalidade1(){
     *rC = createCabecalho();
     writeCabecalho(binFile, rC);
     
-    char tecnologiasUnicas[700][40];
+    char tecnologiasUnicas[700][MAXSTRING];
     int numTecnologiasUnicas = 0;
-    //char paresUnicos[700][2][40];
-    //int numParesUnicos = 0;
+    char paresUnicos[700][2][MAXSTRING];
+    int numParesUnicos = 0;
 
     char linha[100];
     fgets(linha,sizeof(linha) , csvFile);//Pula a primeira linha do arquivo
@@ -50,22 +50,20 @@ void funcionalidade1(){
         writeRegistro(r1, binFile, posicao);
         
         //Função que armazena uma tecnologia recém adicionada 
-        addTecnologiaUnica(tecnologiasUnicas, r1->nmTecnologiaOrigem, &numTecnologiasUnicas);
-        //adicionarParUnico(paresUnicos, r1->nmTecnologiaOrigem, r1->nmTecnologiaDestino, &numParesUnicos);
+        addTecnologiaUnica(tecnologiasUnicas, r1->nmTecnologiaOrigem, r1->tamTecnologiaOrigem, &numTecnologiasUnicas);
+        addTecnologiaUnica(tecnologiasUnicas, r1->nmTecnologiaDestino, r1->tamTecnologiaDestino, &numTecnologiasUnicas);
+        addParUnico(paresUnicos, *r1, &numParesUnicos);
 
         rC->proxRRN = rC->proxRRN + 1;
-        rC->nroParesTecnologias = rC->nroParesTecnologias + 1;
 
         free(r1->nmTecnologiaOrigem);
         free(r1->nmTecnologiaDestino);
         free(r1);
     }
 
+    setCabecalho(rC, numParesUnicos, numTecnologiasUnicas);
 
-    //setCabecalho(rC, numParesUnicos, numTecnologiasUnicas);
     //Atualiza o status, o número de tecnologias e o cabeçalho do arquivo
-    rC->nroTecnologias = numTecnologiasUnicas;
-    rC->status = '1';
     writeCabecalho(binFile, rC);
     
     free(rC);
@@ -117,10 +115,10 @@ void funcionalidade3(){
     readCabecalho(&rC, binFile);
 
 
-    listBuscas dadosBuscas[40];
+    listBuscas dadosBuscas[MAXSTRING];
     int contador = 0;
-    char tmp1[40];
-    char tmp2[40];
+    char tmp1[MAXSTRING];
+    char tmp2[MAXSTRING];
 
     while(scanf("%s", tmp1) != EOF){
         scan_quote_string(tmp2);

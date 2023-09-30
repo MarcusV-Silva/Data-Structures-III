@@ -15,6 +15,7 @@ registroCab createCabecalho(){
 
 //Função que atualiza o número de pares assim como o número de tecnologias do arquivo
 void setCabecalho(registroCab *rC, int numParesUnicos, int numTecnologiasUnicas){
+    rC->status = '1';
     rC->nroParesTecnologias = numParesUnicos;
     rC->nroTecnologias = numTecnologiasUnicas;
 }
