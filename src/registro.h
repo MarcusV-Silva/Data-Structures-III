@@ -31,6 +31,11 @@ typedef struct registroCabecalho{
     int nroParesTecnologias;
 }registroCab;
 
+typedef struct dataBuscas{
+    char nomeCampo[40];
+    char valorCampo[40];
+}listBuscas;
+
 void binarioNaTela(char *nomeArquivoBinario);
 void scan_quote_string(char *str);
 
@@ -48,10 +53,8 @@ void writeRegistro(registro *r1, FILE *binFile, int posicao);
 void readRegistro(registro *r, FILE *dataBinFile);
 void printRegistro(registro r1);
 
-char *armCampo(char *linha,int *posicao);
-void dataTecnologia(registro *r1, char paresUnicos[][2][40], char tecnologiasUnicas[][40], int *numTecnologiasUnicas, int *numParesUnicos) ;
-void adicionarParUnico(char paresUnicos[][2][40], char *origem, char *destino, int *numParesUnicos);
-void adicionarTecnologiaUnica(char tecnologiasUnicas[][40], char *tecnologia, int *numTecnologiasUnicas);
+char *defineCampo(char *linha,int *posicao);
+void addTecnologiaUnica(char tecnologiasUnicas[][40], char *tecnologia, int *numTecnologiasUnicas);
 
 void checkFile(FILE *arquivo);
 #endif

@@ -106,7 +106,7 @@ void printRegistro(registro r1){
 }
 
 //Função que adiciona e armazena uma nova tecnologia
-void adicionarTecnologiaUnica(char tecnologiasUnicas[][40], char *tecnologia, int *numTecnologiasUnicas) {
+void addTecnologiaUnica(char tecnologiasUnicas[][40], char *tecnologia, int *numTecnologiasUnicas) {
     for (int i = 0; i < *numTecnologiasUnicas; i++) {
         if (strcmp(tecnologia, tecnologiasUnicas[i]) == 0) {
             return; 
@@ -117,7 +117,7 @@ void adicionarTecnologiaUnica(char tecnologiasUnicas[][40], char *tecnologia, in
 }
 
 //Função que armazena os campos dos registros
-char *armCampo(char *linha, int *posicao) {
+char *defineCampo(char *linha, int *posicao) {
     int i = 0;
     int tamanhoMaximo = 40;
     char *campo = (char *)malloc(tamanhoMaximo * sizeof(char));

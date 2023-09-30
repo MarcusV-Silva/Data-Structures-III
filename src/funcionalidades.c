@@ -32,12 +32,12 @@ void funcionalidade1(){
         int posicao = 0;
         registro *r1 = malloc(sizeof(registro));
 
-        //Os campos são armazenados por meio da função armCampo
-        r1->nmTecnologiaOrigem = armCampo(linha, &posicao);
-        r1->grupo = atoi(armCampo(linha, &posicao));
-        r1->popularidade = atoi(armCampo(linha, &posicao));
-        r1->nmTecnologiaDestino = armCampo(linha, &posicao);
-        r1->peso = atoi(armCampo(linha, &posicao));
+        //Os campos são armazenados por meio da função defineCampo
+        r1->nmTecnologiaOrigem = defineCampo(linha, &posicao);
+        r1->grupo = atoi(defineCampo(linha, &posicao));
+        r1->popularidade = atoi(defineCampo(linha, &posicao));
+        r1->nmTecnologiaDestino = defineCampo(linha, &posicao);
+        r1->peso = atoi(defineCampo(linha, &posicao));
         r1->removido = NAOREMOVIDO;
         r1->tamTecnologiaOrigem = strlen(r1->nmTecnologiaOrigem);
         r1->tamTecnologiaDestino = strlen(r1->nmTecnologiaDestino);
@@ -46,7 +46,7 @@ void funcionalidade1(){
         writeRegistro(r1, binFile, posicao);
         
         //Função que armazena uma tecnologia recém adicionada 
-        adicionarTecnologiaUnica(tecnologiasUnicas, r1->nmTecnologiaOrigem, &numTecnologiasUnicas);
+        addTecnologiaUnica(tecnologiasUnicas, r1->nmTecnologiaOrigem, &numTecnologiasUnicas);
         //adicionarParUnico(paresUnicos, r1->nmTecnologiaOrigem, r1->nmTecnologiaDestino, &numParesUnicos);
 
         rC->proxRRN = rC->proxRRN + 1;
@@ -79,6 +79,7 @@ void funcionalidade2() {
     //Inicializa o arquivo binário  e verifica se ele existe
     char *dataBin = malloc(sizeof(char)*40);
     scanf("%s", dataBin);
+
     FILE *dataBinFile = fopen(dataBin, "rb");
     checkFile(dataBinFile);
     
@@ -100,9 +101,10 @@ void funcionalidade2() {
 
 void funcionalidade3(){
     //Inicializa o arquivo binário  e verifica se ele existe
-    char *dataBin = malloc(sizeof(char)*40);
     int n;
+    char *dataBin = malloc(sizeof(char)*40);
     scanf("%s %d", dataBin, &n);
+
     FILE *binFile = fopen(dataBin, "rb");
     checkFile(binFile);
 
@@ -110,15 +112,26 @@ void funcionalidade3(){
     registroCab rC;
     readCabecalho(&rC, binFile);
 
-    //For para fazer as buscas solicitadas
-    for(int numBuscas = 0; numBuscas<n; numBuscas++){
-        char tmp1[40];
-        char tmp2[40];
 
-        scanf("%s", tmp1);
+    listBuscas dadosBuscas[40];
+    int contador = 0;
+    char tmp1[40];
+    char tmp2[40];
+
+    while(scanf("%s", tmp1) != EOF){
         scan_quote_string(tmp2);
-        
-        
+        strcpy(dadosBuscas[contador].nomeCampo,tmp1);
+        strcpy(dadosBuscas[contador].valorCampo,tmp2);
+        contador++;
+    }
+
+    if(contador>n){
+        printf("Falha no processamento do arquivo.");
+        exit(0);
+    }
+
+    //For para fazer as buscas solicitadas
+    for(int i = 0; i<n; i++){
         int flag = 0;
         //For que percorre o arquivo para encontrar os registros
         for(int j = 0; j < 490; j++) {
@@ -128,15 +141,15 @@ void funcionalidade3(){
             readRegistro(r1, binFile);//Lê um registro do arquivo binário
 
             //Cadeia de if e else para verificar a existência dos campos do registro
-            if (strcmp(tmp1, "nomeTecnologiaOrigem") == 0 && strcmp(r1->nmTecnologiaOrigem, tmp2) == 0) {
+            if (strcmp(dadosBuscas[i].nomeCampo, "nomeTecnologiaOrigem") == 0 && strcmp(r1->nmTecnologiaOrigem, dadosBuscas[i].valorCampo) == 0) {
                 registroEncontrado = 1;
-            } else if (strcmp(tmp1, "nomeTecnologiaDestino") == 0 && strcmp(r1->nmTecnologiaDestino, tmp2) == 0) {
+            } else if (strcmp(dadosBuscas[i].nomeCampo, "nomeTecnologiaDestino") == 0 && strcmp(r1->nmTecnologiaDestino, dadosBuscas[i].valorCampo) == 0) {
                 registroEncontrado = 1;
-            } else if (strcmp(tmp1, "grupo") == 0 && r1->grupo == atoi(tmp2)){
+            } else if (strcmp(dadosBuscas[i].nomeCampo, "grupo") == 0 && r1->grupo == atoi(dadosBuscas[i].valorCampo)){
                 registroEncontrado = 1;
-            } else if (strcmp(tmp1, "popularidade") == 0 && r1->popularidade == atoi(tmp2)){
+            } else if (strcmp(dadosBuscas[i].nomeCampo, "popularidade") == 0 && r1->popularidade == atoi(dadosBuscas[i].valorCampo)){
                 registroEncontrado = 1;
-            } else if (strcmp(tmp1, "peso") == 0 && r1->peso == atoi(tmp2)){
+            } else if (strcmp(dadosBuscas[i].nomeCampo, "peso") == 0 && r1->peso == atoi(dadosBuscas[i].valorCampo)){
                 registroEncontrado = 1;
             }
             if(registroEncontrado){
