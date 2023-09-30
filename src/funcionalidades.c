@@ -47,7 +47,7 @@ void funcionalidade1(){
         r1->tamTecnologiaDestino = strlen(r1->nmTecnologiaDestino);
 
         //Função que armazena os dados no arquivo binário
-        writeRegistro(r1, binFile, posicao);
+        writeRegistro(r1, binFile);
         
         //Função que armazena uma tecnologia recém adicionada 
         addTecnologiaUnica(tecnologiasUnicas, r1->nmTecnologiaOrigem, r1->tamTecnologiaOrigem, &numTecnologiasUnicas);

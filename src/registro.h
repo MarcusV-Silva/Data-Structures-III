@@ -25,7 +25,7 @@ typedef struct dataBuscas{
     char valorCampo[MAXSTRING];
 }listBuscas;
 
-void writeRegistro(registro *r1, FILE *binFile, int posicao);
+void writeRegistro(registro *r1, FILE *binFile);
 void readRegistro(registro *r, FILE *dataBinFile);
 void printRegistro(registro r1);
 

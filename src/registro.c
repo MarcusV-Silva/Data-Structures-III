@@ -5,7 +5,7 @@
 #include "registro.h"
 
 //Função que armazena os dados dos registros no arquivo binário
-void writeRegistro(registro *r1, FILE *binFile, int posicao){
+void writeRegistro(registro *r1, FILE *binFile){
     if(r1->grupo == 0){r1->grupo = -1;}
     if(r1->popularidade == 0){r1->popularidade = -1;}
     if(r1->peso == 0){r1->peso = -1;}
@@ -23,7 +23,6 @@ void writeRegistro(registro *r1, FILE *binFile, int posicao){
     //com o objetivo de deixar todos os registros com o mesmo tamanho
     for(int l = TAMREGISTROFIXO + r1->tamTecnologiaDestino + r1->tamTecnologiaOrigem; l < TAMREGISTRO; l++){
         fwrite(LIXO, sizeof(char), 1, binFile);
-        posicao++;
     }
 }
 
@@ -119,7 +118,7 @@ char *defineCampo(char *linha, int *posicao) {
             campo = (char *)realloc(campo, tamanhoMaximo * sizeof(char));
 
             if (campo == NULL) {
-                exit(1);
+                exit(0);
             }
         }
     }
