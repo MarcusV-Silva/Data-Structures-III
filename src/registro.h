@@ -33,6 +33,6 @@ int freeRegistro(registro *r);
 char *defineCampo(char *linha,int *posicao);
 void addTecnologiaUnica(char tecUnic[][MAXSTRING], char *tecnologia, int tamanho, int *numTec);
 void addParUnico(char parUnic[][2][MAXSTRING], registro r1, int *numPares);
-void createStruct(registro *r);
+void createRegistro(registro *r);
 
 #endif

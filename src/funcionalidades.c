@@ -35,7 +35,7 @@ void funcionalidade1(){
     while (fgets(linha, sizeof(linha), csvFile)) {
         int posicao = 0;
         registro *r1 = malloc(sizeof(registro));
-        createStruct(r1);
+        createRegistro(r1);
     
         r1->nmTecnologiaOrigem = defineCampo(linha, &posicao);
         char *grupoStr = defineCampo(linha, &posicao);
@@ -97,9 +97,9 @@ void funcionalidade2() {
     //Percorre o arquivo e imprime-o
     for (int i = 0; i < 490; i++){
         registro *r = malloc(sizeof(registro));
+        createRegistro(r);
         readRegistro(r, dataBinFile);//Função que lê um registro do arquivo
         printRegistro(*r);//Função que impŕime um registro do arquivo
-
         freeRegistro(r);
     }
 
@@ -147,15 +147,7 @@ void funcionalidade3(){
         for(int j = 0; j < MAX_TECNOLOGIAS; j++) {
             int registroEncontrado = 0;
             registro *r1 = malloc(sizeof(registro)+1);
-            
-            r1->removido = NAOREMOVIDO;
-            r1->grupo = 0;
-            r1->popularidade = 0;
-            r1->peso = 0;
-            r1->tamTecnologiaOrigem = 0;
-            r1->nmTecnologiaOrigem = NULL;
-            r1->tamTecnologiaDestino = 0;
-            r1->nmTecnologiaDestino = NULL;
+            createRegistro(r1);
 
             readRegistro(r1, binFile);//Lê um registro do arquivo binário
 
@@ -202,6 +194,7 @@ void funcionalidade4(){
 
     //Busca o registro solicitado no arquivo binário
     if(fseek(binFile, rrnDestino, SEEK_SET) == 0){
+        createRegistro(r1);
         readRegistro(r1, binFile);
         int byteLido = fgetc(binFile);
         if (byteLido == EOF){

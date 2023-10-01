@@ -144,7 +144,7 @@ int freeRegistro(registro *r){
     return -1;
 }
 
-void createStruct(registro *r){
+void createRegistro(registro *r){
     r->removido = NAOREMOVIDO;
     r->grupo = 0;
     r->popularidade = 0;
