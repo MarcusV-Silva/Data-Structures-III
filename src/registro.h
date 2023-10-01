@@ -21,8 +21,8 @@ typedef struct RegistersVariable{
 }registro;
 
 typedef struct dataBuscas{
-    char nomeCampo[MAXSTRING];
-    char valorCampo[MAXSTRING];
+    char nomeCampo[MAX_TECNOLOGIAS];
+    char valorCampo[MAX_TECNOLOGIAS];
 }listBuscas;
 
 void writeRegistro(registro *r1, FILE *binFile);

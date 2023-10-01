@@ -28,17 +28,21 @@ void writeRegistro(registro *r1, FILE *binFile){
 
 //Função que lê os registros do arquivo binário 
 void readRegistro(registro *r, FILE *dataBinFile){
-    r->nmTecnologiaDestino = malloc(r->tamTecnologiaDestino);
-    r->nmTecnologiaOrigem = malloc(r->tamTecnologiaOrigem);
 
     fread(&r->removido, 1, 1, dataBinFile);
     fread(&r->grupo, sizeof(int), 1, dataBinFile);
     fread(&r->popularidade, sizeof(int), 1, dataBinFile);
     fread(&r->peso, sizeof(int), 1, dataBinFile);
+
     fread(&r->tamTecnologiaOrigem, sizeof(int), 1, dataBinFile);
+    r->nmTecnologiaOrigem = malloc(r->tamTecnologiaOrigem+1);
     fread(r->nmTecnologiaOrigem, 1, r->tamTecnologiaOrigem, dataBinFile);
+    r->nmTecnologiaOrigem[r->tamTecnologiaOrigem] = '\0';
+
     fread(&r->tamTecnologiaDestino, sizeof(int), 1, dataBinFile);
+    r->nmTecnologiaDestino = malloc(r->tamTecnologiaDestino+1);
     fread(r->nmTecnologiaDestino, 1, r->tamTecnologiaDestino, dataBinFile);
+    r->nmTecnologiaDestino[r->tamTecnologiaDestino] = '\0';
 
     //Ignora os espaços dos campos que estão preenchidos com '$'
     int qntLida = TAMREGISTROFIXO + r->tamTecnologiaDestino + r->tamTecnologiaOrigem;

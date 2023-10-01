@@ -24,9 +24,9 @@ void funcionalidade1(){
     *rC = createCabecalho();
     writeCabecalho(binFile, rC);
     
-    char tecnologiasUnicas[700][MAXSTRING];
+    char tecnologiasUnicas[MAX_TECNOLOGIAS][MAXSTRING];
     int numTecnologiasUnicas = 0;
-    char paresUnicos[700][2][MAXSTRING];
+    char paresUnicos[MAX_TECNOLOGIAS][2][MAXSTRING];
     int numParesUnicos = 0;
 
     char linha[100];
@@ -36,12 +36,15 @@ void funcionalidade1(){
         int posicao = 0;
         registro *r1 = malloc(sizeof(registro));
 
-        //Os campos são armazenados por meio da função defineCampo
         r1->nmTecnologiaOrigem = defineCampo(linha, &posicao);
-        r1->grupo = atoi(defineCampo(linha, &posicao));
-        r1->popularidade = atoi(defineCampo(linha, &posicao));
+        char *grupo_str = defineCampo(linha, &posicao);
+        char *popularidade_str = defineCampo(linha, &posicao);
         r1->nmTecnologiaDestino = defineCampo(linha, &posicao);
-        r1->peso = atoi(defineCampo(linha, &posicao));
+        char *peso_str = defineCampo(linha, &posicao);
+        
+        r1->grupo = atoi(grupo_str);
+        r1->popularidade = atoi(popularidade_str);
+        r1->peso = atoi(peso_str);
         r1->removido = NAOREMOVIDO;
         r1->tamTecnologiaOrigem = strlen(r1->nmTecnologiaOrigem);
         r1->tamTecnologiaDestino = strlen(r1->nmTecnologiaDestino);
@@ -55,6 +58,10 @@ void funcionalidade1(){
         addParUnico(paresUnicos, *r1, &numParesUnicos);
 
         rC->proxRRN = rC->proxRRN + 1;
+
+        free(grupo_str);
+        free(popularidade_str);
+        free(peso_str);
 
         free(r1->nmTecnologiaOrigem);
         free(r1->nmTecnologiaDestino);
@@ -95,9 +102,14 @@ void funcionalidade2() {
         readRegistro(r, dataBinFile);//Função que lê um registro do arquivo
         printRegistro(*r);//Função que impŕime um registro do arquivo
 
+        free(r->nmTecnologiaOrigem);
+        free(r->nmTecnologiaDestino);
         free(r);
     }
+
+    free(rC);
     free(dataBin);
+
     fclose(dataBinFile);
 }
 
@@ -136,7 +148,7 @@ void funcionalidade3(){
     for(int i = 0; i<n; i++){
         int flag = 0;
         //For que percorre o arquivo para encontrar os registros
-        for(int j = 0; j < 490; j++) {
+        for(int j = 0; j < MAX_TECNOLOGIAS; j++) {
             int registroEncontrado = 0;
             registro *r1 = malloc(sizeof(registro));
             
@@ -158,6 +170,9 @@ void funcionalidade3(){
                 printRegistro(*r1);
                 flag = 1;
             }
+
+            free(r1->nmTecnologiaDestino);
+            free(r1->nmTecnologiaOrigem);
             free(r1);
         }
         if(!flag)
