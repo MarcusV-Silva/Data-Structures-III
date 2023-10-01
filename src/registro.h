@@ -28,9 +28,11 @@ typedef struct dataBuscas{
 void writeRegistro(registro *r1, FILE *binFile);
 void readRegistro(registro *r, FILE *dataBinFile);
 void printRegistro(registro r1);
+int freeRegistro(registro *r);
 
 char *defineCampo(char *linha,int *posicao);
-void addTecnologiaUnica(char tecnologiasUnicas[][MAXSTRING], char *tecnologia, int tamanho, int *numTecnologiasUnicas);
-void addParUnico(char paresUnicos[][2][MAXSTRING], registro r1, int *numParesUnicos);
+void addTecnologiaUnica(char tecUnic[][MAXSTRING], char *tecnologia, int tamanho, int *numTec);
+void addParUnico(char parUnic[][2][MAXSTRING], registro r1, int *numPares);
+void createStruct(registro *r);
 
 #endif

@@ -24,10 +24,10 @@ void funcionalidade1(){
     *rC = createCabecalho();
     writeCabecalho(binFile, rC);
     
-    char tecnologiasUnicas[MAX_TECNOLOGIAS][MAXSTRING];
-    int numTecnologiasUnicas = 0;
-    char paresUnicos[MAX_TECNOLOGIAS][2][MAXSTRING];
-    int numParesUnicos = 0;
+    char tecUnic[MAX_TECNOLOGIAS][MAXSTRING];
+    int numTecnologias = 0;
+    char parUnic[MAX_TECNOLOGIAS][2][MAXSTRING];
+    int numPares = 0;
 
     char linha[100];
     fgets(linha,sizeof(linha) , csvFile);//Pula a primeira linha do arquivo
@@ -35,17 +35,17 @@ void funcionalidade1(){
     while (fgets(linha, sizeof(linha), csvFile)) {
         int posicao = 0;
         registro *r1 = malloc(sizeof(registro));
-
+        createStruct(r1);
+    
         r1->nmTecnologiaOrigem = defineCampo(linha, &posicao);
-        char *grupo_str = defineCampo(linha, &posicao);
-        char *popularidade_str = defineCampo(linha, &posicao);
+        char *grupoStr = defineCampo(linha, &posicao);
+        char *popularidadeStr = defineCampo(linha, &posicao);
         r1->nmTecnologiaDestino = defineCampo(linha, &posicao);
-        char *peso_str = defineCampo(linha, &posicao);
+        char *pesoStr = defineCampo(linha, &posicao);
         
-        r1->grupo = atoi(grupo_str);
-        r1->popularidade = atoi(popularidade_str);
-        r1->peso = atoi(peso_str);
-        r1->removido = NAOREMOVIDO;
+        r1->grupo = atoi(grupoStr);
+        r1->popularidade = atoi(popularidadeStr);
+        r1->peso = atoi(pesoStr);
         r1->tamTecnologiaOrigem = strlen(r1->nmTecnologiaOrigem);
         r1->tamTecnologiaDestino = strlen(r1->nmTecnologiaDestino);
 
@@ -53,22 +53,20 @@ void funcionalidade1(){
         writeRegistro(r1, binFile);
         
         //Função que armazena uma tecnologia recém adicionada 
-        addTecnologiaUnica(tecnologiasUnicas, r1->nmTecnologiaOrigem, r1->tamTecnologiaOrigem, &numTecnologiasUnicas);
-        addTecnologiaUnica(tecnologiasUnicas, r1->nmTecnologiaDestino, r1->tamTecnologiaDestino, &numTecnologiasUnicas);
-        addParUnico(paresUnicos, *r1, &numParesUnicos);
+        addTecnologiaUnica(tecUnic, r1->nmTecnologiaOrigem, r1->tamTecnologiaOrigem, &numTecnologias);
+        addTecnologiaUnica(tecUnic, r1->nmTecnologiaDestino, r1->tamTecnologiaDestino, &numTecnologias);
+        addParUnico(parUnic, *r1, &numPares);
 
         rC->proxRRN = rC->proxRRN + 1;
 
-        free(grupo_str);
-        free(popularidade_str);
-        free(peso_str);
+        free(grupoStr);
+        free(popularidadeStr);
+        free(pesoStr);
 
-        free(r1->nmTecnologiaOrigem);
-        free(r1->nmTecnologiaDestino);
-        free(r1);
+        freeRegistro(r1);
     }
 
-    setCabecalho(rC, numParesUnicos, numTecnologiasUnicas);
+    setCabecalho(rC, numPares, numTecnologias);
 
     //Atualiza o status, o número de tecnologias e o cabeçalho do arquivo
     writeCabecalho(binFile, rC);
@@ -102,9 +100,7 @@ void funcionalidade2() {
         readRegistro(r, dataBinFile);//Função que lê um registro do arquivo
         printRegistro(*r);//Função que impŕime um registro do arquivo
 
-        free(r->nmTecnologiaOrigem);
-        free(r->nmTecnologiaDestino);
-        free(r);
+        freeRegistro(r);
     }
 
     free(rC);
@@ -150,8 +146,17 @@ void funcionalidade3(){
         //For que percorre o arquivo para encontrar os registros
         for(int j = 0; j < MAX_TECNOLOGIAS; j++) {
             int registroEncontrado = 0;
-            registro *r1 = malloc(sizeof(registro));
+            registro *r1 = malloc(sizeof(registro)+1);
             
+            r1->removido = NAOREMOVIDO;
+            r1->grupo = 0;
+            r1->popularidade = 0;
+            r1->peso = 0;
+            r1->tamTecnologiaOrigem = 0;
+            r1->nmTecnologiaOrigem = NULL;
+            r1->tamTecnologiaDestino = 0;
+            r1->nmTecnologiaDestino = NULL;
+
             readRegistro(r1, binFile);//Lê um registro do arquivo binário
 
             //Cadeia de if e else para verificar a existência dos campos do registro
@@ -170,10 +175,7 @@ void funcionalidade3(){
                 printRegistro(*r1);
                 flag = 1;
             }
-
-            free(r1->nmTecnologiaDestino);
-            free(r1->nmTecnologiaOrigem);
-            free(r1);
+            freeRegistro(r1);
         }
         if(!flag)
             printf("Registro inexistente.\n");
@@ -210,6 +212,7 @@ void funcionalidade4(){
         printf("Registro inexistente.");
     }
 
-    free(r1);
+    free(dataBin);
+    freeRegistro(r1);
     fclose(binFile);
 }

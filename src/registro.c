@@ -47,6 +47,7 @@ void readRegistro(registro *r, FILE *dataBinFile){
     //Ignora os espaços dos campos que estão preenchidos com '$'
     int qntLida = TAMREGISTROFIXO + r->tamTecnologiaDestino + r->tamTecnologiaOrigem;
     int i;
+
     while(qntLida < TAMREGISTRO){
         fread(&i, 1, 1, dataBinFile);
         qntLida++;
@@ -80,32 +81,32 @@ void printRegistro(registro r1){
 }
 
 //Função que adiciona e armazena uma nova tecnologia
-void addTecnologiaUnica(char tecnologiasUnicas[][MAXSTRING], char *tecnologia, int tamanho, int *numTecnologiasUnicas) {
+void addTecnologiaUnica(char tecUnic[][MAXSTRING], char *tecnologia, int tamanho, int *numTec) {
     if(tamanho == 0){
         return;
     }
-    for (int i = 0; i < *numTecnologiasUnicas; i++) {
-        if (strcmp(tecnologia, tecnologiasUnicas[i]) == 0) {
+    for (int i = 0; i < *numTec; i++) {
+        if (strcmp(tecnologia, tecUnic[i]) == 0) {
             return; 
         }
     }
-    strcpy(tecnologiasUnicas[*numTecnologiasUnicas], tecnologia);
-    (*numTecnologiasUnicas)++;
+    strcpy(tecUnic[*numTec], tecnologia);
+    (*numTec)++;
 }
 
-void addParUnico(char paresUnicos[][2][MAXSTRING], registro r1, int *numParesUnicos) {
+void addParUnico(char parUnic[][2][MAXSTRING], registro r1, int *numPares) {
     if(r1.tamTecnologiaDestino == 0){
         return;
     }
 
-    for (int i = 0; i < *numParesUnicos; i++) {
-        if (strcmp(r1.nmTecnologiaOrigem, paresUnicos[i][0]) == 0 && strcmp(r1.nmTecnologiaDestino, paresUnicos[i][1]) == 0) {
+    for (int i = 0; i < *numPares; i++) {
+        if (strcmp(r1.nmTecnologiaOrigem, parUnic[i][0]) == 0 && strcmp(r1.nmTecnologiaDestino, parUnic[i][1]) == 0) {
             return; 
         }
     }
-    strcpy(paresUnicos[*numParesUnicos][0], r1.nmTecnologiaOrigem);
-    strcpy(paresUnicos[*numParesUnicos][1], r1.nmTecnologiaDestino);
-    (*numParesUnicos)++;
+    strcpy(parUnic[*numPares][0], r1.nmTecnologiaOrigem);
+    strcpy(parUnic[*numPares][1], r1.nmTecnologiaDestino);
+    (*numPares)++;
 }
 
 //Função que armazena os campos dos registros
@@ -131,4 +132,25 @@ char *defineCampo(char *linha, int *posicao) {
     (*posicao)++;
 
     return campo;
+}
+
+int freeRegistro(registro *r){
+    if (r != NULL) {
+        free(r->nmTecnologiaDestino);
+        free(r->nmTecnologiaOrigem);
+        free(r);
+        return 0;
+    }
+    return -1;
+}
+
+void createStruct(registro *r){
+    r->removido = NAOREMOVIDO;
+    r->grupo = 0;
+    r->popularidade = 0;
+    r->peso = 0;
+    r->tamTecnologiaOrigem = 0;
+    r->nmTecnologiaOrigem = NULL;
+    r->tamTecnologiaDestino = 0;
+    r->nmTecnologiaDestino = NULL;
 }
