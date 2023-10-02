@@ -112,25 +112,19 @@ void addParUnico(char parUnic[][2][MAXSTRING], registro r1, int *numPares) {
 //Função que armazena os campos dos registros
 char *defineCampo(char *linha, int *posicao) {
     int i = 0;
-    int tamanhoMaximo = 40;
     char *campo = (char *)malloc(MAXSTRING * sizeof(char));
     
     while (linha[*posicao] != ',' && linha[*posicao] != '\0') {
         campo[i++] = linha[(*posicao)++];
-
-        if (i >= tamanhoMaximo - 1) {
-            tamanhoMaximo *= 2; 
-            campo = (char *)realloc(campo, tamanhoMaximo * sizeof(char));
-
-            if (campo == NULL) {
-                exit(0);
-            }
+        if (i > MAXSTRING) {
+            printf("Falha no processamento do arquivo.");
+            exit(0);
         }
     }
+    
     campo[i] = '\0'; 
 
     (*posicao)++;
-
     return campo;
 }
 

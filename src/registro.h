@@ -6,7 +6,7 @@
 #define TAMREGISTRO 76
 #define TAMREGISTROFIXO 21
 #define LIXO "$"
-#define MAXSTRING 40
+#define MAXSTRING 54
 #define MAX_TECNOLOGIAS 1000
 
 typedef struct RegistersVariable{

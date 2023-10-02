@@ -30,9 +30,9 @@ void writeCabecalho(FILE *binFile, registroCab *rC){
 }
 
 //Função que lê os campos do cabeçalho
-void readCabecalho(registroCab *r, FILE *dataBinFile){
-    fread(&r->status, sizeof(char), 1, dataBinFile);
-    fread(&r->proxRRN, sizeof(int), 1, dataBinFile);
-    fread(&r->nroTecnologias, sizeof(int), 1, dataBinFile);
-    fread(&r->nroParesTecnologias, sizeof(int), 1, dataBinFile);
+void readCabecalho(registroCab *rC, FILE *dataBinFile){
+    fread(&rC->status, sizeof(char), 1, dataBinFile);
+    fread(&rC->proxRRN, sizeof(int), 1, dataBinFile);
+    fread(&rC->nroTecnologias, sizeof(int), 1, dataBinFile);
+    fread(&rC->nroParesTecnologias, sizeof(int), 1, dataBinFile);
 }

@@ -9,7 +9,7 @@ typedef struct registroCabecalho{
 }registroCab;
 
 registroCab createCabecalho();
-void readCabecalho(registroCab *r, FILE *dataBinFile);
+void readCabecalho(registroCab *rC, FILE *dataBinFile);
 void setCabecalho(registroCab *rC, int numParesUnicos, int numTecnologiasUnicas);
 void writeCabecalho(FILE *binFile, registroCab *rC);
 
