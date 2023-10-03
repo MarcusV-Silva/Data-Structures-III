@@ -7,26 +7,23 @@
 void funcionalidade1(){
 
     //Inicializa e abre os arquivos csv e binário
-    //char *nome = malloc(sizeof(char)*20);
     char *dataBIN = malloc(sizeof(char)*40);
     char *dataCSV = malloc(sizeof(char)*40);
     scanf("%s %s", dataCSV, dataBIN);
 
-    registroCab *rC = (registroCab *) malloc(sizeof(registroCab));
-
     FILE *csvFile = fopen(dataCSV, "r");
-    checkFile(csvFile);//Função que verifica se o arquivo existe
+    checkFile(csvFile);
 
     FILE *binFile = fopen(dataBIN, "wb");
     checkFile(binFile);
 
-    //Funções as quais criam e armazenam o cabeçalho do arquivo
-    *rC = createCabecalho();
-    writeCabecalho(binFile, rC);
+    registroCab rC; 
+    createCabecalho(&rC);
+    writeCabecalho(binFile, &rC);
     
-    char tecUnic[MAX_TECNOLOGIAS][MAXSTRING];
+    char tecUnic[MAX_TECNOLOGIAS][MAX_STRING];
     int numTecnologias = 0;
-    char parUnic[MAX_TECNOLOGIAS][2][MAXSTRING];
+    char parUnic[MAX_TECNOLOGIAS][2][MAX_STRING];
     int numPares = 0;
 
     char linha[100];
@@ -57,7 +54,7 @@ void funcionalidade1(){
         addTecnologiaUnica(tecUnic, r1->nmTecnologiaDestino, r1->tamTecnologiaDestino, &numTecnologias);
         addParUnico(parUnic, *r1, &numPares);
 
-        rC->proxRRN = rC->proxRRN + 1;
+        rC.proxRRN = rC.proxRRN + 1;
 
         free(grupoStr);
         free(popularidadeStr);
@@ -66,12 +63,10 @@ void funcionalidade1(){
         freeRegistro(r1);
     }
 
-    setCabecalho(rC, numPares, numTecnologias);
+    setCabecalho(&rC, numPares, numTecnologias);
 
     //Atualiza o status, o número de tecnologias e o cabeçalho do arquivo
-    writeCabecalho(binFile, rC);
-    
-    free(rC);
+    writeCabecalho(binFile, &rC);
 
     fclose(csvFile);
     fclose(binFile);
@@ -87,26 +82,24 @@ void funcionalidade2() {
     char *dataBin = malloc(sizeof(char)*40);
     scanf("%s", dataBin);
 
-    FILE *dataBinFile = fopen(dataBin, "rb");
-    checkFile(dataBinFile);
+    FILE *binFile = fopen(dataBin, "rb");
+    checkFile(binFile);
     
     //Aloca memória e lê o cabeçalho do arquivo
-    registroCab *rC = malloc(sizeof(registroCab));
-    readCabecalho(rC, dataBinFile);
+    registroCab rC; 
+    readCabecalho(&rC, binFile);
+    verifyStatus(rC);
 
     //Percorre o arquivo e imprime-o
     for (int i = 0; i < 490; i++){
         registro *r = malloc(sizeof(registro));
         createRegistro(r);
-        readRegistro(r, dataBinFile);//Função que lê um registro do arquivo
+        readRegistro(r, binFile);//Função que lê um registro do arquivo
         printRegistro(*r);//Função que impŕime um registro do arquivo
         freeRegistro(r);
     }
 
-    free(rC);
-    free(dataBin);
-
-    fclose(dataBinFile);
+    closeFile(binFile, dataBin);
 }
 
 void funcionalidade3(){
@@ -121,12 +114,12 @@ void funcionalidade3(){
     //Lê o cabeçalho do arquivo
     registroCab rC;
     readCabecalho(&rC, binFile);
+    verifyStatus(rC);
 
-
-    listBuscas dadosBuscas[MAXSTRING];
     int contador = 0;
-    char tmp1[MAXSTRING];
-    char tmp2[MAXSTRING];
+    listBuscas dadosBuscas[MAX_STRING];
+    char tmp1[MAX_STRING];
+    char tmp2[MAX_STRING];
 
     while(scanf("%s", tmp1) != EOF){
         scan_quote_string(tmp2);
@@ -137,7 +130,7 @@ void funcionalidade3(){
 
     if(contador>n){
         printf("Falha no processamento do arquivo.");
-        exit(0);
+        exit(-1);
     }
 
     //For para fazer as buscas solicitadas
@@ -148,9 +141,11 @@ void funcionalidade3(){
             int registroEncontrado = 0;
             registro *r1 = malloc(sizeof(registro)+1);
             createRegistro(r1);
-
-            readRegistro(r1, binFile);//Lê um registro do arquivo binário
-
+            if(readRegistro(r1, binFile) == 0){
+                freeRegistro(r1);
+                break;
+            }
+            //Lê um registro do arquivo binário
             //Cadeia de if e else para verificar a existência dos campos do registro
             if (strcmp(dadosBuscas[i].nomeCampo, "nomeTecnologiaOrigem") == 0 && strcmp(r1->nmTecnologiaOrigem, dadosBuscas[i].valorCampo) == 0) {
                 registroEncontrado = 1;
@@ -174,9 +169,8 @@ void funcionalidade3(){
 
         fseek(binFile, 13, SEEK_SET);
     }
-    
-    free(dataBin);
-    fclose(binFile);
+
+    closeFile(binFile, dataBin);
 }
 
 void funcionalidade4(){
@@ -188,8 +182,13 @@ void funcionalidade4(){
     FILE *binFile = fopen(dataBin, "rb");
     checkFile(binFile);
     
+    //Lê o cabeçalho do arquivo
+    registroCab rC;
+    readCabecalho(&rC, binFile);
+    verifyStatus(rC);
+
     //Define como será feito o cáculo para ir para o próximo RRN
-    int rrnDestino = (RRN*TAMREGISTRO) + 13;
+    int rrnDestino = (RRN*TAMREGISTRO)+13;
     registro *r1 = malloc(sizeof(registro));
 
     //Busca o registro solicitado no arquivo binário
@@ -204,8 +203,8 @@ void funcionalidade4(){
     }else{
         printf("Registro inexistente.");
     }
+ 
 
-    free(dataBin);
     freeRegistro(r1);
-    fclose(binFile);
+    closeFile(binFile, dataBin);
 }

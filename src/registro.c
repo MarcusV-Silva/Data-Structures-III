@@ -27,9 +27,12 @@ void writeRegistro(registro *r1, FILE *binFile){
 }
 
 //Função que lê os registros do arquivo binário 
-void readRegistro(registro *r, FILE *dataBinFile){
+int readRegistro(registro *r, FILE *dataBinFile){
 
-    fread(&r->removido, 1, 1, dataBinFile);
+    if(fread(&r->removido, 1, 1, dataBinFile) == 0){
+        return 0; // Indica que esta no fim do arquivo
+    }
+    
     fread(&r->grupo, sizeof(int), 1, dataBinFile);
     fread(&r->popularidade, sizeof(int), 1, dataBinFile);
     fread(&r->peso, sizeof(int), 1, dataBinFile);
@@ -52,6 +55,8 @@ void readRegistro(registro *r, FILE *dataBinFile){
         fread(&i, 1, 1, dataBinFile);
         qntLida++;
     }
+
+    return 1;
 }
 
 //Função que imprime os registros campo a campo
@@ -80,43 +85,14 @@ void printRegistro(registro r1){
         printf("NULO\n");
 }
 
-//Função que adiciona e armazena uma nova tecnologia
-void addTecnologiaUnica(char tecUnic[][MAXSTRING], char *tecnologia, int tamanho, int *numTec) {
-    if(tamanho == 0){
-        return;
-    }
-    for (int i = 0; i < *numTec; i++) {
-        if (strcmp(tecnologia, tecUnic[i]) == 0) {
-            return; 
-        }
-    }
-    strcpy(tecUnic[*numTec], tecnologia);
-    (*numTec)++;
-}
-
-void addParUnico(char parUnic[][2][MAXSTRING], registro r1, int *numPares) {
-    if(r1.tamTecnologiaDestino == 0){
-        return;
-    }
-
-    for (int i = 0; i < *numPares; i++) {
-        if (strcmp(r1.nmTecnologiaOrigem, parUnic[i][0]) == 0 && strcmp(r1.nmTecnologiaDestino, parUnic[i][1]) == 0) {
-            return; 
-        }
-    }
-    strcpy(parUnic[*numPares][0], r1.nmTecnologiaOrigem);
-    strcpy(parUnic[*numPares][1], r1.nmTecnologiaDestino);
-    (*numPares)++;
-}
-
 //Função que armazena os campos dos registros
 char *defineCampo(char *linha, int *posicao) {
     int i = 0;
-    char *campo = (char *)malloc(MAXSTRING * sizeof(char));
+    char *campo = (char *)malloc(MAX_STRING * sizeof(char));
     
     while (linha[*posicao] != ',' && linha[*posicao] != '\0') {
         campo[i++] = linha[(*posicao)++];
-        if (i > MAXSTRING) {
+        if (i > MAX_STRING) {
             printf("Falha no processamento do arquivo.");
             exit(0);
         }
@@ -128,6 +104,7 @@ char *defineCampo(char *linha, int *posicao) {
     return campo;
 }
 
+// Libera a memória alocada em um registro
 int freeRegistro(registro *r){
     if (r != NULL) {
         free(r->nmTecnologiaDestino);
@@ -138,8 +115,9 @@ int freeRegistro(registro *r){
     return -1;
 }
 
+// Cria um registro com os valores inciais
 void createRegistro(registro *r){
-    r->removido = NAOREMOVIDO;
+    r->removido = '0';
     r->grupo = 0;
     r->popularidade = 0;
     r->peso = 0;

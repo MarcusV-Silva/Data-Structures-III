@@ -4,13 +4,13 @@
 #include "registro.h"
 
 //Função que inicializa as variáveis do cabeçalho
-registroCab createCabecalho(){
-    registroCab rC;
-    rC.status = '0';
-    rC.proxRRN = 0;
-    rC.nroTecnologias = 0;
-    rC.nroParesTecnologias = 0;
-    return rC;
+int createCabecalho(registroCab *rC){
+    rC->status = '0';
+    rC->proxRRN = 0;
+    rC->nroTecnologias = 0;
+    rC->nroParesTecnologias = 0;
+
+    return 0;
 }
 
 //Função que atualiza o número de pares assim como o número de tecnologias do arquivo
@@ -29,10 +29,48 @@ void writeCabecalho(FILE *binFile, registroCab *rC){
     fwrite(&rC->nroParesTecnologias, sizeof(int), 1, binFile);
 }
 
-//Função que lê os campos do cabeçalho
+// Função que lê os campos do cabeçalho
 void readCabecalho(registroCab *rC, FILE *dataBinFile){
     fread(&rC->status, sizeof(char), 1, dataBinFile);
     fread(&rC->proxRRN, sizeof(int), 1, dataBinFile);
     fread(&rC->nroTecnologias, sizeof(int), 1, dataBinFile);
     fread(&rC->nroParesTecnologias, sizeof(int), 1, dataBinFile);
+}
+
+// Verifica o campo status do cabeçalho
+void verifyStatus(registroCab rC){
+    if(strcmp(&rC.status, "0") == 0){
+        printf("Falha no processamento do arquivo.");
+        exit(-1);
+    }
+}
+
+//Função que adiciona e armazena uma nova tecnologia
+void addTecnologiaUnica(char tecUnic[][MAX_STRING], char *tecnologia, int tamanho, int *numTec) {
+    if(tamanho == 0){
+        return;
+    }
+    for (int i = 0; i < *numTec; i++) {
+        if (strcmp(tecnologia, tecUnic[i]) == 0) {
+            return; 
+        }
+    }
+    strcpy(tecUnic[*numTec], tecnologia);
+    (*numTec)++;
+}
+
+//Função que adiciona e armazena um novo par de tecnologias
+void addParUnico(char parUnic[][2][MAX_STRING], registro r1, int *numPares) {
+    if(r1.tamTecnologiaDestino == 0){
+        return;
+    }
+
+    for (int i = 0; i < *numPares; i++) {
+        if (strcmp(r1.nmTecnologiaOrigem, parUnic[i][0]) == 0 && strcmp(r1.nmTecnologiaDestino, parUnic[i][1]) == 0) {
+            return; 
+        }
+    }
+    strcpy(parUnic[*numPares][0], r1.nmTecnologiaOrigem);
+    strcpy(parUnic[*numPares][1], r1.nmTecnologiaDestino);
+    (*numPares)++;
 }

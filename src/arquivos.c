@@ -11,3 +11,9 @@ void checkFile(FILE *arquivo){
         exit(0);
     }
 }
+
+int closeFile(FILE *arquivoPonteiro, char *nomeArquivo){
+    free(nomeArquivo);
+    fclose(arquivoPonteiro);
+    return 0;
+}

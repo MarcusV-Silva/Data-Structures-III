@@ -27,6 +27,7 @@ int main(){
             funcionalidade4();
             break;
         default:
+            printf("Falha no processamento do arquivo.\n");
             break;
     }
     return 0;
