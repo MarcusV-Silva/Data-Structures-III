@@ -1,5 +1,4 @@
 #include "funcionalidades.h"
-#include "funcoesFornecidas.h"
 #include "arquivos.h"
 #include "cabecalho.h"
 #include "registro.h"
@@ -97,16 +96,14 @@ void funcionalidade2() {
         createRegistro(r);
 
         //Função que lê um registro do arquivo
-        if(readRegistro(r, binFile) == 0 && flag == 0){
+        if(readRegistro(r, binFile) == 0){
+            if(flag == 0)
+                printf("Registro inexistente.\n");
+                
             freeRegistro(r);
-            printf("Registro inexistente.\n");
             break;
         }
 
-        if(readRegistro(r, binFile) == 0 ){
-            freeRegistro(r);
-            break;
-        }
         printRegistro(*r);//Função que impŕime um registro do arquivo
         freeRegistro(r);
         flag++;   
@@ -207,9 +204,7 @@ void funcionalidade4(){
     //Busca o registro solicitado no arquivo binário
     if(fseek(binFile, rrnDestino, SEEK_SET) == 0){
         createRegistro(r1);
-        readRegistro(r1, binFile);
-        int byteLido = fgetc(binFile);
-        if (byteLido == EOF){
+        if (readRegistro(r1, binFile) == 0){
             printf("Registro inexistente.");
         }else
             printRegistro(*r1);

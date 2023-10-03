@@ -1,5 +1,4 @@
 #include "funcionalidades.h"
-#include "funcoesFornecidas.h"
 #include "arquivos.h"
 #include "cabecalho.h"
 #include "registro.h"
