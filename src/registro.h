@@ -39,9 +39,7 @@ void printRegistro(registro r1);
 int readRegistro(registro *r, FILE *dataBinFile);
 int freeRegistro(registro *r);
 
-//
+// Definição de campos
 char *defineCampo(char *linha,int *posicao);
-
-
 
 #endif
