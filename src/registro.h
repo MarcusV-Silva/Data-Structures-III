@@ -33,6 +33,7 @@ typedef struct dadosBuscas{
 
 // Manipulação de Registros
 void createRegistro(registro *r);
+void setRegistro(registro *r1, char *linha, int *posicao);
 void writeRegistro(registro *r1, FILE *binFile);
 void printRegistro(registro r1);
 int readRegistro(registro *r, FILE *dataBinFile);

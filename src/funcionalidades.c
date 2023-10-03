@@ -16,9 +16,10 @@ void funcionalidade1(){
     FILE *binFile = fopen(dataBIN, "wb");
     checkFile(binFile);
 
-    registroCab rC; 
-    createCabecalho(&rC);
-    writeCabecalho(binFile, &rC);
+    //Lê o cabeçalho do arquivo e verifica o status
+    registroCab rC;
+    readCabecalho(&rC, binFile);
+    verifyStatus(rC);
     
     char tecUnic[MAX_TECNOLOGIAS][MAX_STRING];
     int numTecnologias = 0;
@@ -31,21 +32,9 @@ void funcionalidade1(){
     while (fgets(linha, sizeof(linha), csvFile)) {
         int posicao = 0;
         registro *r1 = malloc(sizeof(registro));
-        createRegistro(r1);
-    
-        r1->nmTecnologiaOrigem = defineCampo(linha, &posicao);
-        char *grupoStr = defineCampo(linha, &posicao);
-        char *popularidadeStr = defineCampo(linha, &posicao);
-        r1->nmTecnologiaDestino = defineCampo(linha, &posicao);
-        char *pesoStr = defineCampo(linha, &posicao);
-        
-        r1->grupo = atoi(grupoStr);
-        r1->popularidade = atoi(popularidadeStr);
-        r1->peso = atoi(pesoStr);
-        r1->tamTecnologiaOrigem = strlen(r1->nmTecnologiaOrigem);
-        r1->tamTecnologiaDestino = strlen(r1->nmTecnologiaDestino);
 
-        //Função que armazena os dados no arquivo binário
+        createRegistro(r1);
+        setRegistro(r1, linha, &posicao);
         writeRegistro(r1, binFile);
         
         //Função que armazena uma tecnologia recém adicionada 
@@ -55,16 +44,10 @@ void funcionalidade1(){
 
         rC.proxRRN = rC.proxRRN + 1;
 
-        free(grupoStr);
-        free(popularidadeStr);
-        free(pesoStr);
-
         freeRegistro(r1);
     }
 
     setCabecalho(&rC, numPares, numTecnologias);
-
-    //Atualiza o status, o número de tecnologias e o cabeçalho do arquivo
     writeCabecalho(binFile, &rC);
 
     fclose(csvFile);
@@ -84,14 +67,15 @@ void funcionalidade2() {
     FILE *binFile = fopen(dataBin, "rb");
     checkFile(binFile);
     
-    //Aloca memória e lê o cabeçalho do arquivo
-    registroCab rC; 
+
+    //Lê o cabeçalho do arquivo e verifica o status
+    registroCab rC;
     readCabecalho(&rC, binFile);
     verifyStatus(rC);
 
     int flag = 0;
     //Percorre o arquivo e imprime-o
-    for (int i = 0; i < MAX_TECNOLOGIAS; i++){
+    while(flag != -1){
         registro *r = malloc(sizeof(registro));
         createRegistro(r);
 
@@ -99,14 +83,15 @@ void funcionalidade2() {
         if(readRegistro(r, binFile) == 0){
             if(flag == 0)
                 printf("Registro inexistente.\n");
-                
+            
+            flag = -1;
             freeRegistro(r);
             break;
         }
 
         printRegistro(*r);//Função que impŕime um registro do arquivo
         freeRegistro(r);
-        flag++;   
+        flag = 1;   
     }
 
     closeFile(binFile, dataBin);
@@ -121,7 +106,7 @@ void funcionalidade3(){
     FILE *binFile = fopen(dataBin, "rb");
     checkFile(binFile);
 
-    //Lê o cabeçalho do arquivo
+    //Lê o cabeçalho do arquivo e verifica o status
     registroCab rC;
     readCabecalho(&rC, binFile);
     verifyStatus(rC);
@@ -146,13 +131,16 @@ void funcionalidade3(){
     //For para fazer as buscas solicitadas
     for(int i = 0; i<n; i++){
         int flag = 0;
+        int flag2 = 0;
         //For que percorre o arquivo para encontrar os registros
-        for(int j = 0; j < MAX_TECNOLOGIAS; j++) {
+        while(flag2 != 1){
             int registroEncontrado = 0;
             registro *r1 = malloc(sizeof(registro)+1);
             createRegistro(r1);
+
             if(readRegistro(r1, binFile) == 0){
                 freeRegistro(r1);
+                flag2 = 1;
                 break;
             }
             //Lê um registro do arquivo binário
@@ -174,7 +162,7 @@ void funcionalidade3(){
             }
             freeRegistro(r1);
         }
-        if(!flag)
+        if(!(flag))
             printf("Registro inexistente.\n");
 
         fseek(binFile, 13, SEEK_SET);
@@ -192,7 +180,7 @@ void funcionalidade4(){
     FILE *binFile = fopen(dataBin, "rb");
     checkFile(binFile);
     
-    //Lê o cabeçalho do arquivo
+    //Lê o cabeçalho do arquivo e verifica o status
     registroCab rC;
     readCabecalho(&rC, binFile);
     verifyStatus(rC);

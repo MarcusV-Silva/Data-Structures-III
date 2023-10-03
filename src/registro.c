@@ -125,3 +125,21 @@ void createRegistro(registro *r){
     r->tamTecnologiaDestino = 0;
     r->nmTecnologiaDestino = NULL;
 }
+
+void setRegistro(registro *r1,char *linha, int *posicao){
+    r1->nmTecnologiaOrigem = defineCampo(linha, posicao);
+    char *grupoStr = defineCampo(linha, posicao);
+    char *popularidadeStr = defineCampo(linha, posicao);
+    r1->nmTecnologiaDestino = defineCampo(linha, posicao);
+    char *pesoStr = defineCampo(linha, posicao);
+        
+    r1->grupo = atoi(grupoStr);
+    r1->popularidade = atoi(popularidadeStr);
+    r1->peso = atoi(pesoStr);
+    r1->tamTecnologiaOrigem = strlen(r1->nmTecnologiaOrigem);
+    r1->tamTecnologiaDestino = strlen(r1->nmTecnologiaDestino);
+
+    free(grupoStr);
+    free(popularidadeStr);
+    free(pesoStr);
+}
