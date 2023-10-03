@@ -90,13 +90,26 @@ void funcionalidade2() {
     readCabecalho(&rC, binFile);
     verifyStatus(rC);
 
+    int flag = 0;
     //Percorre o arquivo e imprime-o
-    for (int i = 0; i < 490; i++){
+    for (int i = 0; i < MAX_TECNOLOGIAS; i++){
         registro *r = malloc(sizeof(registro));
         createRegistro(r);
-        readRegistro(r, binFile);//Função que lê um registro do arquivo
+
+        //Função que lê um registro do arquivo
+        if(readRegistro(r, binFile) == 0 && flag == 0){
+            freeRegistro(r);
+            printf("Registro inexistente.\n");
+            break;
+        }
+
+        if(readRegistro(r, binFile) == 0 ){
+            freeRegistro(r);
+            break;
+        }
         printRegistro(*r);//Função que impŕime um registro do arquivo
         freeRegistro(r);
+        flag++;   
     }
 
     closeFile(binFile, dataBin);
