@@ -3,7 +3,7 @@
 #include "cabecalho.h"
 #include "registro.h"
 
-//Função que armazena os dados dos registros no arquivo binário
+// Função que armazena os dados dos registros no arquivo binário
 void writeRegistro(registro *r1, FILE *binFile){
     if(r1->grupo == 0){r1->grupo = -1;}
     if(r1->popularidade == 0){r1->popularidade = -1;}
@@ -25,7 +25,7 @@ void writeRegistro(registro *r1, FILE *binFile){
     }
 }
 
-//Função que lê os registros do arquivo binário 
+// Função que lê os registros do arquivo binário 
 int readRegistro(registro *r, FILE *dataBinFile){
 
     if(fread(&r->removido, 1, 1, dataBinFile) == 0){
@@ -58,8 +58,8 @@ int readRegistro(registro *r, FILE *dataBinFile){
     return 1;
 }
 
-//Função que imprime os registros campo a campo
-//São feitas as devidas alterações dos campos nulos pela string 'NULO'
+// Função que imprime os registros campo a campo
+// São feitas as devidas alterações dos campos nulos pela string 'NULO'
 void printRegistro(registro r1){
     printf("%s, ", r1.nmTecnologiaOrigem);
 
@@ -84,7 +84,7 @@ void printRegistro(registro r1){
         printf("NULO\n");
 }
 
-//Função que armazena os campos dos registros
+// Função que armazena os campos dos registros
 char *defineCampo(char *linha, int *posicao) {
     int i = 0;
     char *campo = (char *)malloc(MAX_STRING * sizeof(char));
@@ -126,6 +126,7 @@ void createRegistro(registro *r){
     r->nmTecnologiaDestino = NULL;
 }
 
+// Função que armazena os registros inseridos
 void setRegistro(registro *r1,char *linha, int *posicao){
     r1->nmTecnologiaOrigem = defineCampo(linha, posicao);
     char *grupoStr = defineCampo(linha, posicao);

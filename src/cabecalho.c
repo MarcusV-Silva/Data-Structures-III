@@ -2,7 +2,7 @@
 #include "cabecalho.h"
 #include "registro.h"
 
-//Função que inicializa as variáveis do cabeçalho
+// Função que inicializa as variáveis do cabeçalho
 int createCabecalho(registroCab *rC){
     rC->status = '0';
     rC->proxRRN = 0;
@@ -12,14 +12,14 @@ int createCabecalho(registroCab *rC){
     return 0;
 }
 
-//Função que atualiza o número de pares assim como o número de tecnologias do arquivo
+// Função que atualiza o número de pares assim como o número de tecnologias do arquivo
 void setCabecalho(registroCab *rC, int numParesUnicos, int numTecnologiasUnicas){
     rC->status = '1';
     rC->nroParesTecnologias = numParesUnicos;
     rC->nroTecnologias = numTecnologiasUnicas;
 }
 
-//Função que acessa e armazena os dados do cabeçalho no arquivo binário
+// Função que acessa e armazena os dados do cabeçalho no arquivo binário
 void writeCabecalho(FILE *binFile, registroCab *rC){
     fseek(binFile, 0, SEEK_SET);
     fwrite(&rC->status, sizeof(char), 1, binFile);
@@ -44,7 +44,7 @@ void verifyStatus(registroCab rC){
     }
 }
 
-//Função que adiciona e armazena uma nova tecnologia
+// Função que adiciona e armazena uma nova tecnologia
 void addTecnologiaUnica(char tecUnic[][MAX_STRING], char *tecnologia, int tamanho, int *numTec) {
     if(tamanho == 0){
         return;
@@ -58,7 +58,7 @@ void addTecnologiaUnica(char tecUnic[][MAX_STRING], char *tecnologia, int tamanh
     (*numTec)++;
 }
 
-//Função que adiciona e armazena um novo par de tecnologias
+// Função que adiciona e armazena um novo par de tecnologias
 void addParUnico(char parUnic[][2][MAX_STRING], registro r1, int *numPares) {
     if(r1.tamTecnologiaDestino == 0){
         return;

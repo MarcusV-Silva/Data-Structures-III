@@ -6,6 +6,7 @@
 #include <string.h>
 #include <ctype.h>
 
+// Funcionalidades do trabalho
 void funcionalidade1();
 void funcionalidade2();
 void funcionalidade3();

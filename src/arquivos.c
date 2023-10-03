@@ -11,6 +11,7 @@ void checkFile(FILE *arquivo){
     }
 }
 
+// Função que libera o ponteiro do arquivo, como também fecha o arquivo
 int closeFile(FILE *arquivoPonteiro, char *nomeArquivo){
     free(nomeArquivo);
     fclose(arquivoPonteiro);
