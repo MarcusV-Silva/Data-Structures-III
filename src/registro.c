@@ -1,5 +1,5 @@
 #include "funcionalidades.h"
-#include "arquivos.h"
+#include "complemento.h"
 #include "cabecalho.h"
 #include "registro.h"
 
@@ -116,14 +116,16 @@ int freeRegistro(registro *r){
 
 // Cria um registro com os valores inciais
 void createRegistro(registro *r){
-    r->removido = '0';
-    r->grupo = 0;
-    r->popularidade = 0;
-    r->peso = 0;
-    r->tamTecnologiaOrigem = 0;
-    r->nmTecnologiaOrigem = NULL;
-    r->tamTecnologiaDestino = 0;
-    r->nmTecnologiaDestino = NULL;
+    if(r != NULL){
+        r->removido = '0';
+        r->grupo = 0;
+        r->popularidade = 0;
+        r->peso = 0;
+        r->tamTecnologiaOrigem = 0;
+        r->nmTecnologiaOrigem = NULL;
+        r->tamTecnologiaDestino = 0;
+        r->nmTecnologiaDestino = NULL;
+    }
 }
 
 // Função que armazena os registros inseridos

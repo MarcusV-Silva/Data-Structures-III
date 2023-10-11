@@ -1,5 +1,5 @@
-#ifndef ARQUIVOS_H
-#define ARQUIVOS_H
+#ifndef COMPLEMENTO_H
+#define COMPLEMENTO_H
 
 // Função que verifica se o arquivo existe
 void checkFile(FILE *arquivo);

@@ -1,6 +1,6 @@
 #include "funcionalidades.h"
-#include "arquivos.h"
 #include "cabecalho.h"
+#include "complemento.h"
 #include "registro.h"
 
 //Função que verifica se o arquivo existe

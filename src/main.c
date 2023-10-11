@@ -1,11 +1,14 @@
 #include "funcionalidades.h"
-#include "arquivos.h"
+#include "complemento.h"
 #include "cabecalho.h"
 #include "registro.h"
 
 /*
+*               TRABALHO INTRODUTORIO 
+*           Estrutura de Dados III (SCC0607)
+*
 *       Rodrigo Rodrigues de Castro - 13695362
-*       Marcus Vinicius da Silva - 13833150
+*         Marcus Vinicius da Silva - 13833150
 */ 
 
 int main(){

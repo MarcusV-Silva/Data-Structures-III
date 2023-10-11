@@ -1,5 +1,5 @@
 #include "funcionalidades.h"
-#include "arquivos.h"
+#include "complemento.h"
 #include "cabecalho.h"
 #include "registro.h"
 
@@ -18,8 +18,8 @@ void funcionalidade1(){
 
     // Lê o cabeçalho do arquivo e verifica o status
     registroCab rC;
-    readCabecalho(&rC, binFile);
-    verifyStatus(rC);
+    createCabecalho(&rC);
+    writeCabecalho(binFile, &rC);
     
     char tecUnic[MAX_TECNOLOGIAS][MAX_STRING];
     int numTecnologias = 0;
@@ -111,11 +111,13 @@ void funcionalidade3(){
     readCabecalho(&rC, binFile);
     verifyStatus(rC);
 
+    // Dados de entrada
     int contador = 0;
-    listBuscas dadosBuscas[MAX_STRING];
+    listBuscas dadosBuscas[MAX_TECNOLOGIAS];
     char tmp1[MAX_STRING];
     char tmp2[MAX_STRING];
 
+    // Armazena todas os dados referentes as buscas dos campos de entrada
     while(scanf("%s", tmp1) != EOF){
         scan_quote_string(tmp2);
         strcpy(dadosBuscas[contador].nomeCampo,tmp1);
@@ -123,6 +125,7 @@ void funcionalidade3(){
         contador++;
     }
 
+    // Caso o numero de buscas seja maior do que o valor "n" fornecido
     if(contador>n){
         printf("Falha no processamento do arquivo.");
         exit(-1);
@@ -131,16 +134,15 @@ void funcionalidade3(){
     // For para fazer as buscas solicitadas
     for(int i = 0; i<n; i++){
         int flag = 0;
-        int flag2 = 0;
         // For que percorre o arquivo para encontrar os registros
-        while(flag2 != 1){
+        for(int j = 0; j<MAX_TECNOLOGIAS; j++){
             int registroEncontrado = 0;
             registro *r1 = malloc(sizeof(registro)+1);
             createRegistro(r1);
 
+            //Encerra o loop no fim do arquivo
             if(readRegistro(r1, binFile) == 0){
                 freeRegistro(r1);
-                flag2 = 1;
                 break;
             }
             // Lê um registro do arquivo binário
