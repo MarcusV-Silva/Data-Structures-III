@@ -17,11 +17,10 @@ int createCabecalho(registroCab *rC);
 // Função que lê os arquivos do cabeçalho
 void readCabecalho(registroCab *rC, FILE *dataBinFile);
 
-// Função que atualiza o número de pares de tecnologias,
-// como também o número de tecnologias
+// Função que atualiza as informações da sctruct cabecalho 
 void setCabecalho(registroCab *rC, int numParesUnicos, int numTecnologiasUnicas);
 
-// Função que acessa os dados do cabeçalho do arquivo binário
+// Função que escreve os dados no cabeçalho do arquivo binário
 void writeCabecalho(FILE *binFile, registroCab *rC);
 
 // Função que verifica o campo status do cabeçalho

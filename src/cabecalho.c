@@ -19,7 +19,7 @@ void setCabecalho(registroCab *rC, int numParesUnicos, int numTecnologiasUnicas)
     rC->nroTecnologias = numTecnologiasUnicas;
 }
 
-// Função que acessa e armazena os dados do cabeçalho no arquivo binário
+// Função que escreve os dados no cabeçalho do arquivo binário
 void writeCabecalho(FILE *binFile, registroCab *rC){
     fseek(binFile, 0, SEEK_SET);
     fwrite(&rC->status, sizeof(char), 1, binFile);

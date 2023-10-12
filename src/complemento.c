@@ -18,7 +18,8 @@ int closeFile(FILE *arquivoPonteiro, char *nomeArquivo){
     return 0;
 }
 
-// Funções fornecidas no cabeçalho do arquivo
+//---------------------(Funções fornecidas para o desenvolvimento do trabalho)---------------------
+
 void readline(char* string){
     char c = 0;
 

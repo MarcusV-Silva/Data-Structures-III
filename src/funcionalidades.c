@@ -21,23 +21,30 @@ void funcionalidade1(){
     createCabecalho(&rC);
     writeCabecalho(binFile, &rC);
     
+    // Declaração da variaveis responsaveis pelo armazenamento em memoria primaria
     char tecUnic[MAX_TECNOLOGIAS][MAX_STRING];
     int numTecnologias = 0;
     char parUnic[MAX_TECNOLOGIAS][2][MAX_STRING];
     int numPares = 0;
 
+    // Pula a primeira linha do arquivo
     char linha[100];
-    fgets(linha,sizeof(linha) , csvFile);// Pula a primeira linha do arquivo
+    fgets(linha,sizeof(linha) , csvFile);
 
+    // Loop para ler o arquivo .csv e escrever no arquivo .bin
     while (fgets(linha, sizeof(linha), csvFile)) {
+        // Variavel que verifica a posição em cada registro
         int posicao = 0;
-        registro *r1 = malloc(sizeof(registro));
 
+        // Criação dos registros
+        registro *r1 = malloc(sizeof(registro));
         createRegistro(r1);
+
+        // Definição dos registro e escrita no arquivo binario
         setRegistro(r1, linha, &posicao);
         writeRegistro(r1, binFile);
         
-        // Função que armazena uma tecnologia recém adicionada 
+        // Funções que armazenam dados de tecnologia recém adicionados 
         addTecnologiaUnica(tecUnic, r1->nmTecnologiaOrigem, r1->tamTecnologiaOrigem, &numTecnologias);
         addTecnologiaUnica(tecUnic, r1->nmTecnologiaDestino, r1->tamTecnologiaDestino, &numTecnologias);
         addParUnico(parUnic, *r1, &numPares);
@@ -47,16 +54,17 @@ void funcionalidade1(){
         freeRegistro(r1);
     }
 
-    // Atualizando o cabeçalho  com o novo número de pares de tecnologias, verificando o arquivo com a 
-    // função binário na tela e fechando os arquivos
+    // Atualizando o cabeçalho com novos valores
     setCabecalho(&rC, numPares, numTecnologias);
     writeCabecalho(binFile, &rC);
 
+    // Fecha os arquivos
     fclose(csvFile);
     fclose(binFile);
 
     binarioNaTela(dataBIN);
 
+    // Libera memoria referentes aos nomes dos arquivos
     free(dataBIN);
     free(dataCSV);
 }
@@ -78,24 +86,27 @@ void funcionalidade2() {
     int flag = 0;
     // Percorre o arquivo e imprime-o
     while(flag != -1){
+        // Criação do registro
         registro *r = malloc(sizeof(registro));
         createRegistro(r);
 
-        // Função que lê um registro do arquivo
+        // Função que lê um registro do arquivo e para quando chagar ao fim
         if(readRegistro(r, binFile) == 0){
-            if(flag == 0)
+            if(flag == 0){
+                // Caso em que não há registros no arquivo
                 printf("Registro inexistente.\n");
-            
+            }
             flag = -1;
             freeRegistro(r);
             break;
         }
-
-        printRegistro(*r);// Função que impŕime um registro do arquivo
+        // Função que imprime um registro do arquivo
+        printRegistro(*r);
         freeRegistro(r);
         flag = 1;   
     }
 
+    // Fecha o arquivo
     closeFile(binFile, dataBin);
 }
 
@@ -139,15 +150,17 @@ void funcionalidade3(){
         // For que percorre o arquivo para encontrar os registros
         for(int j = 0; j<MAX_TECNOLOGIAS; j++){
             int registroEncontrado = 0;
+
+            // Criação dos registros
             registro *r1 = malloc(sizeof(registro)+1);
             createRegistro(r1);
 
-            //Encerra o loop no fim do arquivo
+            // Lê um registro do arquivo binário e encerra o loop no fim do arquivo
             if(readRegistro(r1, binFile) == 0){
                 freeRegistro(r1);
                 break;
             }
-            // Lê um registro do arquivo binário
+
             // Cadeia de if e else para verificar a existência dos campos do registro
             if (strcmp(dadosBuscas[i].nomeCampo, "nomeTecnologiaOrigem") == 0 && strcmp(r1->nmTecnologiaOrigem, dadosBuscas[i].valorCampo) == 0) {
                 registroEncontrado = 1;
@@ -160,18 +173,24 @@ void funcionalidade3(){
             } else if (strcmp(dadosBuscas[i].nomeCampo, "peso") == 0 && r1->peso == atoi(dadosBuscas[i].valorCampo)){
                 registroEncontrado = 1;
             }
+
             if(registroEncontrado){
+                // Caso o registro seja encontrado ele é impresso
                 printRegistro(*r1);
                 flag = 1;
             }
             freeRegistro(r1);
+
         }
+        //Verifica se o registro foi encontrado ao percorrer o arquivo inteiro
         if(!(flag))
             printf("Registro inexistente.\n");
 
+        //Retorna ao começo do arquivo
         fseek(binFile, 13, SEEK_SET);
     }
 
+    //Fecha o Arquivo
     closeFile(binFile, dataBin);
 }
 
@@ -197,14 +216,16 @@ void funcionalidade4(){
     if(fseek(binFile, rrnDestino, SEEK_SET) == 0){
         createRegistro(r1);
         if (readRegistro(r1, binFile) == 0){
+            // Caso em que o RRN não existe
             printf("Registro inexistente.");
         }else
             printRegistro(*r1);
     }else{
+        //Registro não encontrado
         printf("Registro inexistente.");
     }
  
-
+    // Libera memoria do registro e fecha o arquivo
     freeRegistro(r1);
     closeFile(binFile, dataBin);
 }
