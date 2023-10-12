@@ -128,7 +128,7 @@ void funcionalidade3(){
     // Caso o numero de buscas seja maior do que o valor "n" fornecido
     if(contador>n){
         printf("Falha no processamento do arquivo.");
-        exit(-1);
+        exit(0);
     }
 
     // For para fazer as buscas solicitadas

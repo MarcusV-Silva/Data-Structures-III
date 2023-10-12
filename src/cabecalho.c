@@ -40,7 +40,7 @@ void readCabecalho(registroCab *rC, FILE *dataBinFile){
 void verifyStatus(registroCab rC){
     if(strcmp(&rC.status, "0") == 0){
         printf("Falha no processamento do arquivo.");
-        exit(-1);
+        exit(0);
     }
 }
 
