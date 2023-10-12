@@ -47,6 +47,8 @@ void funcionalidade1(){
         freeRegistro(r1);
     }
 
+    // Atualizando o cabeçalho  com o novo número de pares de tecnologias, verificando o arquivo com a 
+    // função binário na tela e fechando os arquivos
     setCabecalho(&rC, numPares, numTecnologias);
     writeCabecalho(binFile, &rC);
 

@@ -1,6 +1,7 @@
 #ifndef FUNCIONALIDADES_H
 #define FUNCIONALIDADES_H
 
+// Bibliotecas da linguagem C usadas no trabalho
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
