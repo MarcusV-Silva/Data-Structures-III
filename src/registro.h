@@ -2,7 +2,6 @@
 #define REGISTRO_H
 
 // Definição de macros
-
 #define TAMREGISTRO 76
 #define TAMREGISTROFIXO 21
 #define LIXO "$"

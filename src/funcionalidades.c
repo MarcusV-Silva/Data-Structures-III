@@ -33,10 +33,7 @@ void funcionalidade1(){
 
     // Loop para ler o arquivo .csv e escrever no arquivo .bin
     while (fgets(linha, sizeof(linha), csvFile)) {
-        // Variavel que verifica a posição em cada registro
         int posicao = 0;
-
-        // Criação dos registros
         registro *r1 = malloc(sizeof(registro));
         createRegistro(r1);
 
@@ -93,13 +90,13 @@ void funcionalidade2() {
         // Função que lê um registro do arquivo e para quando chagar ao fim
         if(readRegistro(r, binFile) == 0){
             if(flag == 0){
-                // Caso em que não há registros no arquivo
                 printf("Registro inexistente.\n");
             }
             flag = -1;
             freeRegistro(r);
             break;
         }
+
         // Função que imprime um registro do arquivo
         printRegistro(*r);
         freeRegistro(r);
@@ -175,14 +172,12 @@ void funcionalidade3(){
             }
 
             if(registroEncontrado){
-                // Caso o registro seja encontrado ele é impresso
                 printRegistro(*r1);
                 flag = 1;
             }
             freeRegistro(r1);
 
         }
-        //Verifica se o registro foi encontrado ao percorrer o arquivo inteiro
         if(!(flag))
             printf("Registro inexistente.\n");
 
@@ -216,12 +211,10 @@ void funcionalidade4(){
     if(fseek(binFile, rrnDestino, SEEK_SET) == 0){
         createRegistro(r1);
         if (readRegistro(r1, binFile) == 0){
-            // Caso em que o RRN não existe
             printf("Registro inexistente.");
         }else
             printRegistro(*r1);
     }else{
-        //Registro não encontrado
         printf("Registro inexistente.");
     }
  
