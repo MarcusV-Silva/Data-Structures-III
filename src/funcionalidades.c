@@ -16,7 +16,7 @@ void funcionalidade1(){
     FILE *binFile = fopen(dataBIN, "wb");
     checkFile(binFile);
 
-    // Lê o cabeçalho do arquivo e verifica o status
+    // Cria o cabeçalho do arquivo
     registroCab rC;
     createCabecalho(&rC);
     writeCabecalho(binFile, &rC);
