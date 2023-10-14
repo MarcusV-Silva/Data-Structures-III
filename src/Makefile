@@ -1,13 +1,5 @@
-all: compile run 
-
-compile:
+all: 
 	gcc -Wall -o programaTrab *.c -g
 	
 run: 
 	./programaTrab
-
-valgrind:
-	valgrind ./programaTrab
-
-clean:
-	rm programaTrab 
