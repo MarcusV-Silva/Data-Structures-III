@@ -58,32 +58,6 @@ int readRegistro(registro *r, FILE *dataBinFile){
     return 1;
 }
 
-// Função que imprime os registros campo a campo
-// São feitas as devidas alterações dos campos nulos pela string 'NULO'
-void printRegistro(registro r1){
-    printf("%s, ", r1.nmTecnologiaOrigem);
-
-    if (r1.grupo != -1) 
-        printf("%d, ", r1.grupo);
-    else 
-        printf("NULO, ");
-    
-    if (r1.popularidade != -1) 
-        printf("%d, ", r1.popularidade);
-    else 
-        printf("NULO, ");
-    
-    if (r1.tamTecnologiaDestino != 0)
-        printf("%s, ", r1.nmTecnologiaDestino);
-    else
-        printf("NULO, ");
-
-    if (r1.peso != -1) 
-        printf("%d\n", r1.peso);
-    else 
-        printf("NULO\n");
-}
-
 // Função que armazena os campos dos registros
 char *defineCampo(char *linha, int *posicao) {
     int i = 0;
@@ -145,4 +119,30 @@ void setRegistro(registro *r1,char *linha, int *posicao){
     free(grupoStr);
     free(popularidadeStr);
     free(pesoStr);
+}
+
+// Função que imprime os registros campo a campo
+// São feitas as devidas alterações dos campos nulos pela string 'NULO'
+void printRegistro(registro r1){
+    printf("%s, ", r1.nmTecnologiaOrigem);
+
+    if (r1.grupo != -1) 
+        printf("%d, ", r1.grupo);
+    else 
+        printf("NULO, ");
+    
+    if (r1.popularidade != -1) 
+        printf("%d, ", r1.popularidade);
+    else 
+        printf("NULO, ");
+    
+    if (r1.tamTecnologiaDestino != 0)
+        printf("%s, ", r1.nmTecnologiaDestino);
+    else
+        printf("NULO, ");
+
+    if (r1.peso != -1) 
+        printf("%d\n", r1.peso);
+    else 
+        printf("NULO\n");
 }
