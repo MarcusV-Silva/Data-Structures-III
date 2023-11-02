@@ -9,6 +9,6 @@ int closeFile(FILE *arquivoPonteiro, char *nomeArquivo);
 
 // Funções fornecidas para o desenvolvimento do trabalho
 void binarioNaTela(char *nomeArquivoBinario);
-void scan_quote_string(char *str);
+int scan_quote_string(char *str);
 
 #endif

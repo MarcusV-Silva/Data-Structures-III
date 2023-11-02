@@ -128,9 +128,15 @@ void funcionalidade3(){
     char tmp2[MAX_STRING];
 
     // Armazena todas os dados referentes as buscas dos campos de entrada
-    while(scanf("%s", tmp1) != EOF){
-        scan_quote_string(tmp2);
+    while(scanf("%s ", tmp1) != EOF){
         strcpy(dadosBuscas[contador].nomeCampo,tmp1);
+        if(strcmp(tmp1, "nomeTecnologiaOrigem") == 0) {
+            scan_quote_string(tmp2);
+        }else if (strcmp(tmp1, "nomeTecnologiaDestino") == 0) {
+            scan_quote_string(tmp2);
+        }else{
+            scanf("%s", tmp2);
+        }
         strcpy(dadosBuscas[contador].valorCampo,tmp2);
         contador++;
     }
@@ -140,10 +146,10 @@ void funcionalidade3(){
         printf("Falha no processamento do arquivo.");
         exit(0);
     }
-
+    int flag;
     // For para fazer as buscas solicitadas
     for(int i = 0; i<n; i++){
-        int flag = 0;
+        flag = 0;
         // For que percorre o arquivo para encontrar os registros
         for(int j = 0; j<MAX_TECNOLOGIAS; j++){
             int registroEncontrado = 0;

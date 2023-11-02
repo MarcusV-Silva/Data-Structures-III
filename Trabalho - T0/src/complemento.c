@@ -67,7 +67,7 @@ void binarioNaTela(char *nomeArquivoBinario) { /* Você não precisa entender o 
 	fclose(fs);
 }
 
-void scan_quote_string(char *str) {
+int scan_quote_string(char *str) {
 
 	/*
 	*	Use essa função para ler um campo string delimitado entre aspas (").
@@ -100,4 +100,6 @@ void scan_quote_string(char *str) {
 	} else { // EOF
 		strcpy(str, "");
 	}
+
+	return 1;
 }
