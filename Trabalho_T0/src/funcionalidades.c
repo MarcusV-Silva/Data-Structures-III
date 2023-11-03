@@ -130,9 +130,7 @@ void funcionalidade3(){
     // Armazena todas os dados referentes as buscas dos campos de entrada
     while(scanf("%s ", tmp1) != EOF){
         strcpy(dadosBuscas[contador].nomeCampo,tmp1);
-        if(strcmp(tmp1, "nomeTecnologiaOrigem") == 0) {
-            scan_quote_string(tmp2);
-        }else if (strcmp(tmp1, "nomeTecnologiaDestino") == 0) {
+        if(strcmp(tmp1, "nomeTecnologiaOrigem") == 0 || strcmp(tmp1, "nomeTecnologiaDestino") == 0) {
             scan_quote_string(tmp2);
         }else{
             scanf("%s", tmp2);

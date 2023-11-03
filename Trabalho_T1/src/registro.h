@@ -2,30 +2,44 @@
 #define REGISTRO_H
 
 // Definição de macros
-#define ORDEM 4
-#define MAX_CHAVE ORDEM-1
-#define TAM_PAG_DISCO 205
-#define TAM_CHAVE 55
-
+#define TAMREGISTRO 76
+#define TAMREGISTROFIXO 21
 #define LIXO "$"
 
-// Struct onde serão armazenados os atributos de um Nó do arquivo de índice.
-typedef struct No{
-    int nroChavesNo;
-    int alturaNo;
-    int RRNdoNo;
+// Define um valor maximo para o tamanho das strings no registro
+#define MAX_STRING 55
 
-    Chave vetChaves[MAX_CHAVE];  
-    SubArvore vetSubArvores[ORDEM];   
-}No;
+// Define um valor maximo para o numero de Tecnologias no arquivo .CSV 
+// Não foi usado como condição de parada, mas sim como limite de dados
+#define MAX_TECNOLOGIAS 1000
 
-typedef struct tipoChave{
-    int referencia;        // Pr (campo de referência para o registro no arquivo de dados)
-    char chave[TAM_CHAVE]; // C  (chave de busca)
-}Chave;
+// Struct registro onde serão armazenados os atributos de cada registro
+typedef struct registroDados{
+    char removido;
+    int grupo;
+    int popularidade;
+    int peso;
+    int tamTecnologiaOrigem;
+    char *nmTecnologiaOrigem;
+    int tamTecnologiaDestino;
+    char *nmTecnologiaDestino;
+}registro;
 
-typedef struct tipoSubArvore{
-    int *subArvore;       // P   (ponteiro que é campo de referência para uma subárvore)
-}SubArvore;
+// Lista para o armazenamento das entradas da funcionalidade 3
+typedef struct dadosBuscas{
+    char nomeCampo[MAX_STRING];
+    char valorCampo[MAX_STRING];
+}listBuscas;
+
+// Manipulação de Registros
+void createRegistro(registro *r);
+void writeRegistro(registro *r1, FILE *binFile);
+void printRegistro(registro r1);
+void setRegistro(registro *r1,char *linha, int *posicao);
+int readRegistro(registro *r, FILE *dataBinFile);
+int freeRegistro(registro *r);
+
+// Difinição dos campos de cada registro
+char *defineCampo(char *linha,int *posicao);
 
 #endif

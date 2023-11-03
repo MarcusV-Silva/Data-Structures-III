@@ -10,6 +10,6 @@ typedef struct cabecalhoIndice{
     int RRNproxNo;
 }cabIndice;
 
-
+cabIndice *novoCabecalhoIndice();
 
 #endif
