@@ -39,27 +39,48 @@ void readPagina(No *no, FILE *indexFile){
 }
 
 int posicaoChave(No no, Chave chaveTmp){
-    int pos = 0;
-    for(int i = 0; i<ORDEM; i++){
-        if(strcmp(no.vetChaves->chave[i], chaveTmp.chave) == 0)
+    int posicao = 0;
+    for(int i = 0; i < ORDEM; i++){
+        if(strcmp(no.vetChaves[i].chave, chaveTmp.chave) == 0)
             return -1;
-        if(strcmp(no.vetChaves->chave[i], chaveTmp.chave) == -1)
-            pos++;
-        if(strcmp(no.vetChaves->chave[i], chaveTmp.chave) == 1)    
-            return pos;
+        if(strcmp(no.vetChaves[i].chave, chaveTmp.chave) == -1)
+            posicao++;
+        if(strcmp(no.vetChaves[i].chave, chaveTmp.chave) == 1)    
+            return posicao;
     }
-    return pos;
+    return posicao;
 }
 
-int buscaArvore(FILE *arquivo, int RRN, Chave chave){
+int posicaoFilho(No no , Chave chaveTmp){
+    int posicao = 0;
+    for(int i = 0; i < QNT_MAX_CHAVE; i++){
+        if(strcmp(no.vetChaves[i].chave, chaveTmp.chave) == 0)
+            return -1;
+        if(strcmp(no.vetChaves[i].chave, chaveTmp.chave) == -1)
+            posicao++;
+        if(strcmp(no.vetChaves[i].chave, chaveTmp.chave) == 1)    
+            return posicao;
+    }
+    return posicao;
+}
+
+int buscaArvore(FILE *arquivo, int RRN, Chave busca){
     if(RRN == -1)
         return NOT_FOUND;
     else{
         No *no = criarNo();
         int pagina = (RRN+1) * TAM_PAG_INDEX;
         readPagina(arquivo, no);
+        int posicao = posicaoChave(*no, busca);
 
-        int pos = posicaoChave(*no, chave);
+        if(posicao == -1)
+            return FOUND;
+        if(no->vetChaves[posicao].chave == busca.chave){
+            return FOUND;
+        }else{
+            int posicaoFilho = posicaoFilho(*no, busca);
+            return buscaArvore(no->subArvores[posicaoFilho], busca);
+        }
     }
 }
 
@@ -78,6 +99,7 @@ int inserirArvore(FILE *arquivo, int rrnAtual, Chave chave, Chave chavePromo, in
         fseek(arquivo, pagina, SEEK_SET);
         readPagina(arquivo, no);
 
+        //verificar se essa posicao ta certa
         int pos = posicaoChave(*no, chave);
 
         if(pos == -1){
