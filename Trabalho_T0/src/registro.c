@@ -49,7 +49,10 @@ int readRegistro(registro *r, FILE *dataBinFile){
     //Ignora os espaços dos campos que estão preenchidos com '$'
     int qntLida = TAMREGISTROFIXO + r->tamTecnologiaDestino + r->tamTecnologiaOrigem;
     int i;
-
+    if(r->removido == '1'){
+        printf("Registro inexistente.\n");
+        return 0;
+    }
     while(qntLida < TAMREGISTRO){
         fread(&i, 1, 1, dataBinFile);
         qntLida++;
