@@ -1,4 +1,9 @@
+#include "indice.h"
+#include "registro.h"
+#include "cabecalho.h"
+#include "arvore.h"
 #include "funcionalidades.h"
+#include "complemento.h"
 
 /*
 *                    TRABALHO 1 

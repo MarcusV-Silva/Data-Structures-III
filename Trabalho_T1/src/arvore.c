@@ -1,6 +1,7 @@
 #include "indice.h"
 #include "registro.h"
 #include "cabecalho.h"
+#include "complemento.h"
 #include "arvore.h"
 #include "funcionalidades.h"
 
@@ -16,14 +17,14 @@ No *criarNo(){
     }
 
     for(int i = 0; i< QNT_MAX_CHAVE; i++){
-        no->vetChaves[i].chave == NULL;
+        strcpy(no->vetChaves[i].chave,"");
         no->vetChaves[i].referencia == -1;
     }
 
     return no;
 }
 
-void readPagina(No *no, FILE *indexFile){
+void readPagina(FILE *indexFile,No *no){
 
     fread(&no->nroChavesNo, sizeof(int), 1, indexFile);
     fread(&no->alturaNo, sizeof(int), 1, indexFile);
@@ -40,7 +41,7 @@ void readPagina(No *no, FILE *indexFile){
 
 int posicaoChave(No no, Chave chaveTmp){
     int posicao = 0;
-    for(int i = 0; i < ORDEM; i++){
+    for(int i = 0; i <QNT_MAX_CHAVE; i++){
         if(strcmp(no.vetChaves[i].chave, chaveTmp.chave) == 0)
             return -1;
         if(strcmp(no.vetChaves[i].chave, chaveTmp.chave) == -1)
@@ -53,7 +54,7 @@ int posicaoChave(No no, Chave chaveTmp){
 
 int posicaoFilho(No no , Chave chaveTmp){
     int posicao = 0;
-    for(int i = 0; i < QNT_MAX_CHAVE; i++){
+    for(int i = 0; i <  ORDEM; i++){
         if(strcmp(no.vetChaves[i].chave, chaveTmp.chave) == 0)
             return -1;
         if(strcmp(no.vetChaves[i].chave, chaveTmp.chave) == -1)
@@ -72,25 +73,24 @@ int buscaArvore(FILE *arquivo, int RRN, Chave busca){
         int pagina = (RRN+1) * TAM_PAG_INDEX;
         readPagina(arquivo, no);
         int posicao = posicaoChave(*no, busca);
-
         if(posicao == -1)
             return FOUND;
-        if(no->vetChaves[posicao].chave == busca.chave){
+        if(strcmp(no->vetChaves[posicao].chave,busca.chave) == 0){
             return FOUND;
         }else{
-            int posicaoFilho = posicaoFilho(*no, busca);
-            return buscaArvore(no->subArvores[posicaoFilho], busca);
+            int posicaoF = posicaoFilho(*no, busca);
+            return buscaArvore(arquivo, no->subArvores[posicaoF], busca);
         }
     }
 }
 
 
 // Construção bottom-up
-int inserirArvore(FILE *arquivo, int rrnAtual, Chave chave, Chave chavePromo, int filhoPromo){
+int inserirArvore(FILE *arquivo, int rrnAtual, Chave chave, int filhoPromo, Chave chavePromo){
 
     if(rrnAtual == -1){
         chavePromo = chave;
-        filhoPromo = NULL;
+        filhoPromo = -1;
         return PROMOTION;
     }else{
         No *no = criarNo();
@@ -108,24 +108,23 @@ int inserirArvore(FILE *arquivo, int rrnAtual, Chave chave, Chave chavePromo, in
 
         Chave promoBKey;
         int rrnBPromo;
-        int valorRetorno = inserirArvore(arquivo, no->subArvores[pos], chave, promoBKey, rrnBPromo);
+        int valorRetorno = inserirArvore(arquivo, no->subArvores[pos], chave, rrnBPromo, promoBKey);
 
         if(valorRetorno == NO_PROMOTION || valorRetorno == ERRO){
             return valorRetorno;
         }else if(no->nroChavesNo < QNT_MAX_CHAVE){
-
-                no->vetChaves[pos].chave = promoBKey.chave;
-                no->subArvores[pos+1] = rrnBPromo;
-
+                strcpy(no->vetChaves[pos].chave, promoBKey.chave);
+                no->ssdfsdfsdfsdubArvores[pos+1] = rrnBPromo;
                 no->nroChavesNo++;
+
                 inserirNo(arquivo, no);
                 return NO_PROMOTION;
             }else{
+                No *newPage = criarNo();
+                splitArvore(arquivo, promoBKey, rrnBPromo, pagina, chavePromo, filhoPromo, newPage);
 
-                splitArvore(arquivo, promoBKey, rrnBPromo, pagina, chavePromo, filhoPromo);
-
-
-
+                writePagina(arquivo, no, rrnAtual);
+                writePagina(arquivo, newPage, filhoPromo);
 
                 return PROMOTION;
             }
@@ -134,9 +133,10 @@ int inserirArvore(FILE *arquivo, int rrnAtual, Chave chave, Chave chavePromo, in
     
  }
 
- void splitArvores(FILE *arquivo, Chave iChave, int iRRN, Chave chavePromo, int filhoPromo,  No *newPage){
+
+void splitArvoreṕ/+ILE *arquivo, Chave iChave, int iRRN, Chave chavePromo, int filhoPromo,  No *newPage){
 
 
- }
+}
 
 

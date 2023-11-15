@@ -1,7 +1,9 @@
+#include "indice.h"
+#include "registro.h"
+#include "cabecalho.h"
+#include "arvore.h"
 #include "funcionalidades.h"
 #include "complemento.h"
-#include "cabecalho.h"
-#include "registro.h"
 
 // Função que armazena os dados dos registros no arquivo binário
 void writeRegistro(registro *r1, FILE *binFile){
@@ -50,6 +52,10 @@ int readRegistro(registro *r, FILE *dataBinFile){
     int qntLida = TAMREGISTROFIXO + r->tamTecnologiaDestino + r->tamTecnologiaOrigem;
     int i;
 
+    if(r->removido == '1'){
+        exit(0);
+    }
+    
     while(qntLida < TAMREGISTRO){
         fread(&i, 1, 1, dataBinFile);
         qntLida++;

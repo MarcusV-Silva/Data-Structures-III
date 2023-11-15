@@ -11,6 +11,11 @@
 
 #define LIXO "$"
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+
 typedef struct tipoChave{
     int referencia;        // Pr (campo de referência para o registro no arquivo de dados)
     char chave[TAM_CHAVE]; // C  (chave de busca)
@@ -26,5 +31,5 @@ typedef struct No{
     int subArvores[ORDEM];   // P (ponteiro que é campo de referência para uma subárvore)
 }No;
 
-
+char *createChave(FILE *arquivo, int RRN);
 #endif
