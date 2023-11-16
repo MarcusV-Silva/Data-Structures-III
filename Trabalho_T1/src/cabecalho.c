@@ -16,6 +16,7 @@ cabIndice *createCabecalhoIndice(){
 }
 
 void writeCabecalhoIndice(FILE *arquivo, cabIndice *rI){
+    fseek(arquivo, 0, SEEK_SET);
     fwrite(&rI->status, sizeof(char), 1, arquivo);
     fwrite(&rI->noRaiz, sizeof(int), 1, arquivo);
     fwrite(&rI->RRNproxNo, sizeof(int), 1, arquivo);

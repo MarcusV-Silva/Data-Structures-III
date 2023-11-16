@@ -10,25 +10,56 @@ void funcionalidade5(){
     char *dataINDEX = malloc(sizeof(char)*40);
     scanf("%s %s", dataBIN, dataINDEX);
 
-    // VERIFICAR SE A ABERTURA ESTA CORRETA
-    FILE *binFile = fopen(dataBIN, "rb");
-    checkFile(binFile);
+    FILE *dataFile = fopen(dataBIN, "rb");
+    checkFile(dataFile);
 
-    FILE *indexFile = fopen(dataINDEX, "wb");
-    checkFile(binFile);
-
-    int RRN = 19;
-    int rrnDestino = (RRN * TAMREGISTRO)+13;
-
-    //testando chave
-    char con[55];
-    strcpy(con, createChave(binFile, rrnDestino));
-    
-    printf("%s", con);
+    FILE *indexFile = fopen(dataINDEX, "rb");
+    checkFile(indexFile);
 
     cabIndice *indexCab = createCabecalhoIndice();
     writeCabecalhoIndice(indexFile, indexCab);
 
+    int flag = 0;
+    while(flag != -1){
+        registroCab rC;
+        readCabecalho(&rC, dataFile);
+        verifyStatus(rC);
+
+        Chave chaveI;
+        chaveI.chave = createChave(dataFile);
+        printf("%s", chaveI.chave);
+        chaveI.referencia = 1;
+
+        int rrnRaiz = -1;
+        int promoRFilho;
+        Chave promoChave;
+        int promo = inserirArvore(indexFile, rrnRaiz, chaveI, &promoRFilho, &promoChave );
+
+        if (promo == 1) {
+           
+            // Atualiza o cabeçalho do arquivo de índice
+            indexCab->noRaiz = promoRFilho;;
+            writeCabecalhoIndice(indexFile, indexCab);
+
+            // Cria nova raiz se necessário
+            if (indexCab->noRaiz == -1) {
+                No *novaRaiz = criarNo();
+                novaRaiz->vetChaves[0] = promoChave;
+                novaRaiz->subArvores[0] = rrnRaiz;
+                novaRaiz->subArvores[1] = promoRFilho;
+                novaRaiz->nroChavesNo = 1;
+
+                int novaRaizRRN = proximoRRNLivre(indexFile);
+                writePagina(indexFile, novaRaiz, novaRaizRRN);
+
+                indexCab->noRaiz = novaRaizRRN;
+                writeCabecalhoIndice(indexFile, indexCab);
+            }
+        }
+    }
+    
+    fclose(indexFile);
+    fclose(dataFile);
 }
 
 void funcionalidade6(){

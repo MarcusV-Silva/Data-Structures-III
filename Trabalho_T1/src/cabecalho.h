@@ -16,7 +16,7 @@ void writeCabecalhoIndice(FILE *arquivo, cabIndice *rI);
 
 
 
-// TRABALHO INTRODUTORIO 
+//--------------------TRABALHO 0------------------------
 
 // Struct referente aos dados do cabeçalho do arquivo
 typedef struct registroCabecalho{

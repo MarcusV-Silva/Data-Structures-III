@@ -5,14 +5,8 @@
 #include "funcionalidades.h"
 #include "complemento.h"
 
-char *createChave(FILE *arquivo, int RRN){
+char *createChave(FILE *arquivo){
     registro *r = malloc(sizeof(registro));
-    
-    registroCab rC;
-    readCabecalho(&rC, arquivo);
-    verifyStatus(rC);
-
-    fseek(arquivo, RRN, SEEK_SET);
     readRegistro(r, arquivo);
 
     char *concatenada = (char *)malloc(r->tamTecnologiaDestino + r->tamTecnologiaOrigem + 1); 

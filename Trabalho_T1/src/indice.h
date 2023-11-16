@@ -18,7 +18,7 @@
 
 typedef struct tipoChave{
     int referencia;        // Pr (campo de referência para o registro no arquivo de dados)
-    char chave[TAM_CHAVE]; // C  (chave de busca)
+    char *chave;           // C  (chave de busca)
 }Chave;
 
 // Struct onde serão armazenados os atributos de um Nó do arquivo de índice.
@@ -31,5 +31,5 @@ typedef struct No{
     int subArvores[ORDEM];   // P (ponteiro que é campo de referência para uma subárvore)
 }No;
 
-char *createChave(FILE *arquivo, int RRN);
+char *createChave(FILE *arquivo);
 #endif
