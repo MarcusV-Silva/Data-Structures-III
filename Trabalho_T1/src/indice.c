@@ -5,14 +5,12 @@
 #include "funcionalidades.h"
 #include "complemento.h"
 
-char *createChave(FILE *arquivo){
-    registro *r = malloc(sizeof(registro));
-    readRegistro(r, arquivo);
+char *createChave(registro *r){
 
     char *concatenada = (char *)malloc(r->tamTecnologiaDestino + r->tamTecnologiaOrigem + 1); 
 
-    strcpy(concatenada, r->nmTecnologiaOrigem);
-    strcat(concatenada, r->nmTecnologiaDestino);
+    strncpy(concatenada, r->nmTecnologiaOrigem, r->tamTecnologiaOrigem);
+    strncat(concatenada, r->nmTecnologiaDestino, r->tamTecnologiaDestino);
 
     freeRegistro(r);
 

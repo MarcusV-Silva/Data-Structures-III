@@ -13,6 +13,11 @@
 *         Marcus Vinicius da Silva - 13833150
 */ 
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+
 int main(){
     int command;
     scanf("%d", &command);

@@ -22,10 +22,9 @@ void writeCabecalhoIndice(FILE *arquivo, cabIndice *rI){
     fwrite(&rI->RRNproxNo, sizeof(int), 1, arquivo);
     
     for(int i = 0; i<TAM_LIXO_CAB; i++) {
-        fwrite(LIXO, sizeof(char), 1, arquivo);
+        fwrite("$", sizeof(char), 1, arquivo);
     }
 }
-
 
 // TRABALHO 0
 // Função que inicializa as variáveis do cabeçalho

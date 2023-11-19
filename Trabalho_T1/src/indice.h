@@ -3,14 +3,14 @@
 
 // Definição de macros para o arquivo de indice
 #define ORDEM 4
-#define QNT_MAX_CHAVE ORDEM-1
+#define QNT_MAX_CHAVE (ORDEM-1)
 #define TAM_PAG_INDEX 205
 #define TAM_LIXO_CAB 196
 #define TAM_CHAVE 55
 #define TAM_PAG_FIXO
 
 #define LIXO "$"
-
+#include "registro.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -31,5 +31,5 @@ typedef struct No{
     int subArvores[ORDEM];   // P (ponteiro que é campo de referência para uma subárvore)
 }No;
 
-char *createChave(FILE *arquivo);
+char *createChave(registro *r);
 #endif
