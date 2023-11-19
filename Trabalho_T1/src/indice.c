@@ -8,7 +8,8 @@
 char *createChave(registro *r){
 
     char *concatenada = (char *)malloc(r->tamTecnologiaDestino + r->tamTecnologiaOrigem + 1); 
-
+    concatenada[0] = '\0';
+    
     strncpy(concatenada, r->nmTecnologiaOrigem, r->tamTecnologiaOrigem);
     strncat(concatenada, r->nmTecnologiaDestino, r->tamTecnologiaDestino);
 

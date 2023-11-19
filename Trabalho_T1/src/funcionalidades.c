@@ -21,7 +21,8 @@ void funcionalidade5(){
     writeCabecalhoIndice(indexFile, indexCab);
     
 
-    int rrn = 0;
+    int rrnDados = 0;
+    int rrnIndice = 0;
     //Criando e adicionando a primeira pagina no arquivo de indice
     registroCab rC;
     readCabecalho(&rC, dataFile);
@@ -29,15 +30,30 @@ void funcionalidade5(){
 
     printf("debug 0\n");
 
+    //Criacao e definição do Primeiro no
     No *no = criarNo();
-    writePagina(indexFile, no, rrn);
-    
-    int promoRFilho;
-    int totalNos = 0;  
-    Chave promoChave;
 
-    int flag = 0;// Insira a chave na posição apropriada
-    while(flag != -1){
+    registro *r0 = malloc(sizeof(registro));
+    createRegistro(r0);
+    readRegistro(r0, dataFile); //Arrumar dps
+
+    no->vetChaves[0].chave = createChave(r0);
+    no->vetChaves[0].referencia = rrnDados;
+    no->nroChavesNo = 1;
+    rrnDados++;
+    writePagina(indexFile, no, rrnIndice);
+
+    indexCab->noRaiz = rrnIndice;
+    indexCab->RRNproxNo= -1;
+    writeCabecalhoIndice(indexFile, indexCab);
+    
+    int totalNos = 1;  
+    Chave promoChave;
+    int promoRFilho;
+    int flag = 0;
+    while(flag < 3){    
+        //testar fira do while
+        
         printf("\ndebug 1 (inicio while)\n");
     
         registro *r = malloc(sizeof(registro));
@@ -51,17 +67,17 @@ void funcionalidade5(){
         Chave chaveI;
         chaveI.chave = createChave(r);
         printf("debug 3 %s \n", chaveI.chave);
-        chaveI.referencia = rrn++;
+        chaveI.referencia = rrnDados;
+        rrnDados++;
 
         int rrnRaiz = indexCab->noRaiz;
-        printf("debug 4 (antes insercao)\n");
-        int promo = inserirArvore(indexFile, rrnRaiz, chaveI, &promoRFilho, &promoChave );
-        printf("%d", promo);
+        printf("debug 4 (antes insercao) ");
+        int promo = inserirArvore(indexFile, rrnRaiz, chaveI, &promoRFilho, &promoChave);
+        printf("%d\n", promo);
 
         printf("debug 5 (pos insercao)\n");
         if (promo == PROMOTION) {
             No *novoNo = criarNo();
-
             novoNo->nroChavesNo = 1;
             novoNo->alturaNo = no->alturaNo + 1;
             novoNo->vetChaves[0] = chaveI;
@@ -70,11 +86,12 @@ void funcionalidade5(){
             printf("debug 6 (pre promocao)\n");
             fseek(indexFile, 0 , SEEK_END);
             writePagina(indexFile, novoNo, rrnRaiz);
-            indexCab->noRaiz = t;
+            indexCab->noRaiz = 8;
             indexCab->RRNproxNo= ++totalNos;
             writeCabecalhoIndice(indexFile, indexCab);
             
         }
+        flag++;
     }
     
     fclose(indexFile);

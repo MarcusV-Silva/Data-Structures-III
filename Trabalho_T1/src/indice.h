@@ -27,8 +27,8 @@ typedef struct No{
     int alturaNo;
     int RRNdoNo;
 
-    Chave vetChaves[QNT_MAX_CHAVE];  
-    int subArvores[ORDEM];   // P (ponteiro que é campo de referência para uma subárvore)
+    Chave vetChaves[QNT_MAX_CHAVE+1];  
+    int subArvores[ORDEM+1];   // P (ponteiro que é campo de referência para uma subárvore)
 }No;
 
 char *createChave(registro *r);
