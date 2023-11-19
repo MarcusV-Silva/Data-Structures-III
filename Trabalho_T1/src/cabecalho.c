@@ -10,7 +10,7 @@ cabIndice *createCabecalhoIndice(){
 
     cabecalho->status = '0';
     cabecalho->noRaiz = -1;
-    cabecalho->RRNproxNo = 0;
+    cabecalho->RRNproxNo = -1;
 
     return cabecalho;
 }
@@ -24,6 +24,17 @@ void writeCabecalhoIndice(FILE *arquivo, cabIndice *rI){
     for(int i = 0; i<TAM_LIXO_CAB; i++) {
         fwrite("$", sizeof(char), 1, arquivo);
     }
+}
+
+void readCabIndice(FILE *arquivo, cabIndice *rI){
+    fseek(arquivo, 0, SEEK_SET);
+    fread(&rI->status, sizeof(char), 1, arquivo);
+    fread(&rI->noRaiz, sizeof(int), 1, arquivo);
+    fread(&rI->RRNproxNo, sizeof(int), 1, arquivo);
+
+    for(int i = 0; i<TAM_LIXO_CAB; i++)
+        fread(&i,  sizeof(char), 1, arquivo);
+
 }
 
 // TRABALHO 0

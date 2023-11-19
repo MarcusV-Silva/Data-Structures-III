@@ -9,8 +9,11 @@ void funcionalidade5(){
     
     char *dataBIN = malloc(sizeof(char) * 40);
     char *dataINDEX = malloc(sizeof(char) * 40);
-    scanf("%s %s", dataBIN, dataINDEX);
+    //scanf("%s %s", dataBIN, dataINDEX);
    
+    strcpy(dataBIN, "binario1.bin");
+    strcpy(dataINDEX, "a.bin");
+    
     FILE *dataFile = fopen(dataBIN, "rb");
     checkFile(dataFile);
 
@@ -22,13 +25,10 @@ void funcionalidade5(){
     
 
     int rrnDados = 0;
-    int rrnIndice = 0;
     //Criando e adicionando a primeira pagina no arquivo de indice
     registroCab rC;
     readCabecalho(&rC, dataFile);
     verifyStatus(rC);
-
-    printf("debug 0\n");
 
     //Criacao e definição do Primeiro no
     No *no = criarNo();
@@ -36,25 +36,21 @@ void funcionalidade5(){
     registro *r0 = malloc(sizeof(registro));
     createRegistro(r0);
     readRegistro(r0, dataFile); //Arrumar dps
-
+    no->RRNdoNo = 0;
     no->vetChaves[0].chave = createChave(r0);
     no->vetChaves[0].referencia = rrnDados;
     no->nroChavesNo = 1;
-    rrnDados++;
-    writePagina(indexFile, no, rrnIndice);
 
-    indexCab->noRaiz = rrnIndice;
-    indexCab->RRNproxNo= -1;
+    rrnDados++;
+    writePagina(indexFile, no, 0);
+
+    indexCab->noRaiz = 0;
+    indexCab->RRNproxNo = 0;
     writeCabecalhoIndice(indexFile, indexCab);
     
-    int totalNos = 1;  
-    Chave promoChave;
-    int promoRFilho;
+    //int totalNos = 1;  
     int flag = 0;
-    while(flag < 3){    
-        //testar fira do while
-        
-        printf("\ndebug 1 (inicio while)\n");
+    while(flag != -1){    
     
         registro *r = malloc(sizeof(registro));
         if(readRegistro(r, dataFile) == 0){
@@ -62,40 +58,43 @@ void funcionalidade5(){
             break;
         }
 
-        printf("debug 2 (ler registro)\n");
-
         Chave chaveI;
         chaveI.chave = createChave(r);
-        printf("debug 3 %s \n", chaveI.chave);
         chaveI.referencia = rrnDados;
         rrnDados++;
 
-        int rrnRaiz = indexCab->noRaiz;
-        printf("debug 4 (antes insercao) ");
-        int promo = inserirArvore(indexFile, rrnRaiz, chaveI, &promoRFilho, &promoChave);
-        printf("%d\n", promo);
+        Chave *promoChave = malloc(sizeof(Chave));
+        int *promoRFilho = malloc(sizeof(int));
 
-        printf("debug 5 (pos insercao)\n");
+        int rrnRaiz = indexCab->noRaiz;
+        int promo = inserirArvore(indexFile, &rrnRaiz, &chaveI, promoRFilho, promoChave);
+       
         if (promo == PROMOTION) {
+            readCabIndice(indexFile, indexCab);
             No *novoNo = criarNo();
             novoNo->nroChavesNo = 1;
             novoNo->alturaNo = no->alturaNo + 1;
-            novoNo->vetChaves[0] = chaveI;
+            novoNo->vetChaves[0] = *promoChave;
             novoNo->subArvores[0] = rrnRaiz;
-            novoNo->subArvores[1] = promoRFilho;
-            printf("debug 6 (pre promocao)\n");
-            fseek(indexFile, 0 , SEEK_END);
-            writePagina(indexFile, novoNo, rrnRaiz);
-            indexCab->noRaiz = 8;
-            indexCab->RRNproxNo= ++totalNos;
-            writeCabecalhoIndice(indexFile, indexCab);
+            novoNo->subArvores[1] = *promoRFilho;
+
+            novoNo->RRNdoNo = ++indexCab->RRNproxNo;
+            writePagina(indexFile, novoNo, novoNo->RRNdoNo);
             
+            indexCab->noRaiz = indexCab->RRNproxNo;
+            writeCabecalhoIndice(indexFile, indexCab);
         }
         flag++;
     }
     
+    indexCab->status = '1';
+
+    printf("%d", indexCab->RRNproxNo);
+
     fclose(indexFile);
-    fclose(dataFile);
+    fclose(dataFile); 
+    
+    binarioNaTela(dataINDEX);
 }
 
 void funcionalidade6(){

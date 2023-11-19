@@ -25,9 +25,11 @@ No *criarNo(){
     return no;
 }
 
-void readPagina(FILE *indexFile, No *no){
+int readPagina(FILE *indexFile, No *no){
 
-    fread(&no->nroChavesNo, sizeof(int), 1, indexFile);
+    if(fread(&no->nroChavesNo, sizeof(int), 1, indexFile) == 0){
+        return 0; //fim arquivo
+    }
     fread(&no->alturaNo, sizeof(int), 1, indexFile);
     fread(&no->RRNdoNo, sizeof(int), 1, indexFile);
     
@@ -40,9 +42,9 @@ void readPagina(FILE *indexFile, No *no){
     }
 
     fread(&no->subArvores[ORDEM-1], sizeof(int), 1, indexFile);
+
+    return 1;
 }
-
-
 
 int buscaArvore(FILE *arquivo, int RRN, Chave busca){
     if(RRN == -1)
@@ -68,22 +70,45 @@ int buscaArvore(FILE *arquivo, int RRN, Chave busca){
 
 int proximoRRNLivre(FILE *arquivo) {
     int rrn = 0;
-    No *registro = criarNo();  // Assumindo que você tenha uma função criarNo que aloque memória para um nó
+    No *no = criarNo();
 
-    // Percorre os registros até encontrar um registro livre ou chegar ao final do arquivo
+    // Encontrar o primeiro RRN livre
     while (1) {
-        fseek(arquivo, rrn * TAM_PAG_INDEX, SEEK_SET);
-        fread(registro, sizeof(No), 1, arquivo);
+        fseek(arquivo, (rrn) * TAM_PAG_INDEX, SEEK_SET);
+        if (readPagina(arquivo, no) == 0) {
+            // Fim do arquivo, não há registros livres
+            free(no);
+            return rrn + 1;  // Retorna o próximo RRN disponível
+        }
 
-        if (registro->nroChavesNo == -1) {  // Verifica se o registro está livre
-            free(registro);
+        if (no->nroChavesNo == -1) {  // Verifica se o registro está livre
+            free(no);
             return rrn;
         }
 
         rrn++;
     }
 
-    free(registro);
+    free(no);
+    return rrn;  // Retorna o próximo RRN disponível caso não encontre um registro livre
+}
+
+int ultimoRRN(FILE *arquivo) {
+    int rrn = 0;
+    No *no = criarNo();  // Assumindo que você tenha uma função criarNo que aloque memória para um nó
+
+    fseek(arquivo, (rrn+1) * TAM_PAG_INDEX, SEEK_SET);
+    // Percorre os registros até encontrar um registro livre ou chegar ao final do arquivo
+    while (1) {
+        if(readPagina(arquivo, no) == 0){
+            free(no);
+            return rrn;
+        }
+
+        rrn++;
+    }
+
+    free(no);
     return rrn;  // Retorna o próximo RRN disponível caso não encontre um registro livre
 }
 
@@ -102,56 +127,63 @@ int posicaoChave(No *PAGE, Chave KEY) {
 }
     
 // Construção bottom-up
-int inserirArvore(FILE *arquivo, int rrnAtual, Chave chave, int *promoRFilho, Chave *promoChave){
+int inserirArvore(FILE *arquivo, int *rrnAtual, Chave *chave, int *promoRFilho, Chave *promoChave){
 
-    if(rrnAtual == -1){
-        *promoChave = chave;
+    if(*rrnAtual == -1){
+        *promoChave = *chave;
         *promoRFilho = -1;
         return PROMOTION;
     }else{
         No *pagina = criarNo();
-        int numPagina = (rrnAtual + 1) * TAM_PAG_INDEX;
+        int numPagina = (*rrnAtual + 1) * TAM_PAG_INDEX;
 
         fseek(arquivo, numPagina, SEEK_SET);
         readPagina(arquivo, pagina);
 
         //verificar se essa posicao ta certa (dica: criar uma funcao pra ver ser ta cheio mudar posicaoF)
-        int posicaoC = posicaoChave(pagina, chave);
+        int posicaoC = posicaoChave(pagina, *chave);
 
         if(posicaoC == -1){
             free(pagina);
             return ERRO;
         }
 
-        Chave promoBKey;
-        int rrnBPromo;
-        int valorRetorno = inserirArvore(arquivo, pagina->subArvores[posicaoC], chave, &rrnBPromo, &promoBKey);
+        Chave *promoBKey = malloc(sizeof(Chave));
+        int *rrnBPromo = malloc(sizeof(int));
+        int valorRetorno = inserirArvore(arquivo, &pagina->subArvores[posicaoC], chave, rrnBPromo, promoBKey);
 
         if(valorRetorno == NO_PROMOTION || valorRetorno == ERRO){
             free(pagina);
             return valorRetorno;
         }else if(pagina->nroChavesNo < QNT_MAX_CHAVE){
-                
                 //Inserção se o no tem Espaço
-                inserirChave(pagina, posicaoC, promoBKey, rrnBPromo);
-                *promoRFilho = -1; // nao ha uma subarvore a direita para ser promovida
-                writePagina(arquivo, pagina, rrnAtual);
+                inserirChave(pagina, posicaoC, *promoBKey, *rrnBPromo);
+                writePagina(arquivo, pagina, *rrnAtual);
                 free(pagina);
                 return NO_PROMOTION;
             }else{
                 //Ta cheio o no
-                No *newPage = criarNo();
-                splitArvore(arquivo, promoBKey, rrnBPromo, pagina, promoChave, promoRFilho, newPage);
+                No *novaPag = criarNo();
+                splitArvore(arquivo, promoBKey, rrnBPromo, &pagina, promoChave, promoRFilho, &novaPag);
 
-                writePagina(arquivo, pagina, rrnAtual);
-                writePagina(arquivo, newPage, *promoRFilho);
+                writePagina(arquivo, pagina, *rrnAtual);
 
+                cabIndice *c1 = createCabecalhoIndice();
+                readCabIndice(arquivo, c1);
+
+                novaPag->RRNdoNo = ++c1->RRNproxNo;
+                writePagina(arquivo, novaPag, novaPag->RRNdoNo);
+
+                *promoRFilho = c1->RRNproxNo;
+                writeCabecalhoIndice(arquivo,c1);
+                
                 free(pagina);
-                free(newPage);
+                free(novaPag);
                 return PROMOTION;
             }
 
-        } 
+        }
+         
 }
 
 void inserirChave(No *PAGE, int pos, Chave KEY, int RRN) {
@@ -170,54 +202,56 @@ void inserirChave(No *PAGE, int pos, Chave KEY, int RRN) {
     PAGE->nroChavesNo++;
 }
  
-void splitArvore(FILE *arquivo, Chave iChave, int iRRN, No *page, Chave *promoChave, int *promoRFilho,  No *newPage){
+void splitArvore(FILE *arquivo, Chave *iChave, int *iRRN, No **page, Chave *promoChave, int *promoRFilho,  No **newPage){
 
-    No workingPage = *criarNo();
-    workingPage.nroChavesNo = page->nroChavesNo;
-    workingPage.alturaNo = page->alturaNo;
+    //printPagina(**page);
+    No workingPage;
+    workingPage.nroChavesNo = (*page)->nroChavesNo;
+    workingPage.alturaNo = (*page)->alturaNo;
     workingPage.RRNdoNo = -1;  // O RRN do novo nó será definido após a alocação
 
     // Copiar todas as chaves e subárvores da página original para a página temporária
-    int i;
-    for (i = 0; i < QNT_MAX_CHAVE; i++) {
-        workingPage.vetChaves[i] = page->vetChaves[i];
-        workingPage.subArvores[i] = page->subArvores[i];
+    for (int i = 0; i < QNT_MAX_CHAVE; i++) {
+        workingPage.vetChaves[i] = (*page)->vetChaves[i];
+        workingPage.subArvores[i] = (*page)->subArvores[i];
     }
-    workingPage.subArvores[i] = page->subArvores[i]; // Copiar o último subárvore
+    workingPage.subArvores[QNT_MAX_CHAVE] = (*page)->subArvores[QNT_MAX_CHAVE]; // Copiar o último subárvore
 
-    //printPagina(workingPage);
+    int pos = posicaoChave(&workingPage, *iChave);
+    inserirChave(&workingPage, pos, *iChave, *iRRN);
 
-    int pos = posicaoChave(&workingPage, iChave);
-    inserirChave(&workingPage, pos, iChave, iRRN);
-
-
-    newPage->nroChavesNo = newPage->nroChavesNo / 2; 
-    newPage->alturaNo = newPage->alturaNo;
-    newPage->RRNdoNo = -1;
-
-    // Definir PROMO_KEY como a chave no meio da página temporária
-    *promoChave = workingPage.vetChaves[page->nroChavesNo / 2];
-
-    // Definir PROMO_R_CHILD como o RRN da nova página
-    *promoRFilho = page->RRNdoNo;
-
-    // Copiar as chaves e subárvores antes e depois de PROMO_KEY para as páginas PAGE e NEWPAGE
-    for (i = 0; i < page->nroChavesNo / 2; i++) {
-        page->vetChaves[i] = workingPage.vetChaves[i];
-        page->subArvores[i] = workingPage.subArvores[i];
+    for(int i = 0; i<QNT_MAX_CHAVE; i++){
+        (*page)->vetChaves[i].chave = "";
+        (*page)->vetChaves[i].referencia = -1;
+        (*page)->subArvores[i] = -1;
     }
-    page->subArvores[i] = workingPage.subArvores[i]; // Copiar o último subárvore
+    (*page)->subArvores[QNT_MAX_CHAVE] = -1;
+
+    (*page)->nroChavesNo = 0;
+    (*page)->alturaNo = workingPage.alturaNo;
+
+    (*newPage)->alturaNo = workingPage.alturaNo;
+    (*newPage)->nroChavesNo = 0;
+
+    // Copiar as chaves e subárvores antes e depois de para as páginas PAGE e NEWPAGE
+    for (int i = 0; i < ORDEM/2; i++) {
+        (*page)->vetChaves[i] = workingPage.vetChaves[i];
+        (*page)->subArvores[i] = workingPage.subArvores[i];
+        (*page)->nroChavesNo++;
+    }
+    (*page)->subArvores[ORDEM/2] = workingPage.subArvores[ORDEM/2]; // Copiar a último subárvore
+
+    *promoChave = workingPage.vetChaves[ORDEM / 2]; // Definir a chave de promocao como a chave no meio da página temporária
+    *promoRFilho = (*page)->subArvores[ORDEM / 2];
 
     int j = 0;
-    for (i = page->nroChavesNo / 2 + 1; i < workingPage.nroChavesNo; i++) {
-        newPage->vetChaves[j] = workingPage.vetChaves[i];
-        newPage->subArvores[j] = workingPage.subArvores[i];
-        j++;
+    for (int i =  ORDEM/2+ 1; i < QNT_MAX_CHAVE+1; i++ ,j++) {
+        (*newPage)->vetChaves[j] = workingPage.vetChaves[i];
+        (*newPage)->subArvores[j] = workingPage.subArvores[i];
+        (*newPage)->nroChavesNo++;
     }
-    newPage->subArvores[j] = workingPage.subArvores[i]; // Copiar o último subárvore
+    (*newPage)->subArvores[ORDEM / 2] = workingPage.subArvores[QNT_MAX_CHAVE]; // Copiar a último subárvore
 
-    // Atualizar o número de chaves na página original (PAGE)
-    page->nroChavesNo = page->nroChavesNo / 2;
 }
 
 void writePagina(FILE *arquivo, No *pagina, int rrn) {
@@ -257,11 +291,13 @@ void printPagina(No no){
         printf("\nSubArvore %d = %d ",i, no.subArvores[i]);
     }
 
-    for(int i = 0; i< QNT_MAX_CHAVE; i++){
+    for(int i = 0; i< QNT_MAX_CHAVE+1; i++){
         printf("\nChave %d = %s ",i, no.vetChaves[i].chave);
         printf("\nChave %d = %d ",i, no.vetChaves[i].referencia);
 
     }
+
+    printf("\n\n");
 }
 
 

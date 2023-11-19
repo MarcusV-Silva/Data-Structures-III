@@ -10,18 +10,18 @@
 
 
 No *criarNo();
-void readPagina(FILE *indexFile, No *no);
+int readPagina(FILE *indexFile, No *no);
 
 int posicaoChave(No *no, Chave ChaveTmp);
 int posicaoFilho(No *no , Chave chaveTmp);
 
 int buscaArvore(FILE *arquivo, int RRN, Chave busca);
-int inserirArvore(FILE *arquivo, int rrnAtual, Chave chave, int *promoRFilho, Chave *promoChave);
-void splitArvore(FILE *arquivo, Chave iChave, int iRRN, No *page, Chave *promoChave, int *promoRFilho,  No *newPage);
+int inserirArvore(FILE *arquivo, int *rrnAtual, Chave *chave, int *promoRFilho, Chave *promoChave);
+void splitArvore(FILE *arquivo, Chave *iChave, int *iRRN, No **page, Chave *promoChave, int *promoRFilho,  No **newPage);
 void writePagina(FILE *arquivo, No *pagina, int rrn);
 void inserirChave(No *PAGE, int pos, Chave KEY, int RRN);
 void defineValorNo(No *no, FILE *dadosBin);
 int proximoRRNLivre(FILE *arquivo);
 void printPagina(No no);
-
+int ultimoRRN(FILE *arquivo);
 #endif 
