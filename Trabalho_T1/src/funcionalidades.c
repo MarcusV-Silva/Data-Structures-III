@@ -47,7 +47,9 @@ void funcionalidade5(){
     indexCab->noRaiz = 0;
     indexCab->RRNproxNo = 0;
     writeCabecalhoIndice(indexFile, indexCab);
-    
+    Chave *promoChave = malloc(sizeof(Chave));
+    int *promoRFilho = malloc(sizeof(int));
+
     //int totalNos = 1;  
     int flag = 0;
     while(flag != -1){    
@@ -63,9 +65,6 @@ void funcionalidade5(){
         chaveI.referencia = rrnDados;
         rrnDados++;
 
-        Chave *promoChave = malloc(sizeof(Chave));
-        int *promoRFilho = malloc(sizeof(int));
-
         int rrnRaiz = indexCab->noRaiz;
         int promo = inserirArvore(indexFile, &rrnRaiz, &chaveI, promoRFilho, promoChave);
        
@@ -77,19 +76,20 @@ void funcionalidade5(){
             novoNo->vetChaves[0] = *promoChave;
             novoNo->subArvores[0] = rrnRaiz;
             novoNo->subArvores[1] = *promoRFilho;
-
             novoNo->RRNdoNo = ++indexCab->RRNproxNo;
-            writePagina(indexFile, novoNo, novoNo->RRNdoNo);
             
-            indexCab->noRaiz = indexCab->RRNproxNo;
+            writePagina(indexFile, novoNo, novoNo->RRNdoNo);
+            indexCab->noRaiz = novoNo->RRNdoNo;
             writeCabecalhoIndice(indexFile, indexCab);
         }
+
         flag++;
     }
     
+    readCabIndice(indexFile, indexCab);
     indexCab->status = '1';
-
-    printf("%d", indexCab->RRNproxNo);
+    indexCab->RRNproxNo++;
+    writeCabecalhoIndice(indexFile, indexCab);
 
     fclose(indexFile);
     fclose(dataFile); 
