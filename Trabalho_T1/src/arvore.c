@@ -153,7 +153,6 @@ void inserirChave(No *PAGE, int pos, Chave KEY, int RRN) {
     // Inserir a nova chave e RRN na posição correta
     PAGE->vetChaves[pos] = KEY;
     PAGE->subArvores[pos + 1] = RRN;
-
     // Atualizar o número de chaves no nó
     PAGE->nroChavesNo++;
 }

@@ -52,15 +52,15 @@ int readRegistro(registro *r, FILE *dataBinFile){
     int qntLida = TAMREGISTROFIXO + r->tamTecnologiaDestino + r->tamTecnologiaOrigem;
     int i;
 
-    if(r->removido == '1'){
-        exit(0);
-    }
-    
     while(qntLida < TAMREGISTRO){
         fread(&i, 1, 1, dataBinFile);
         qntLida++;
     }
 
+    if(r->removido == '1'){
+        return -1;
+    }
+    
     return 1;
 }
 

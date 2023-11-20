@@ -8,6 +8,10 @@
 #include <ctype.h>
 
 // Funcionalidades do trabalho
+void funcionalidade1();
+void funcionalidade2();
+void funcionalidade3();
+void funcionalidade4();
 void funcionalidade5();
 void funcionalidade6();
 void funcionalidade7();
