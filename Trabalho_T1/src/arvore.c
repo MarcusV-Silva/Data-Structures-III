@@ -173,6 +173,7 @@ void splitArvore(FILE *arquivo, Chave *iChave, int *iRRN, No **page, Chave *prom
     int pos = posicaoChave(&workingPage, *iChave);
     inserirChave(&workingPage, pos, *iChave, *iRRN);
 
+    // Coloca todos os elementos da pagina como nulos
     for(int i = 0; i<QNT_MAX_CHAVE; i++){
         (*page)->vetChaves[i].chave = "";
         (*page)->vetChaves[i].referencia = -1;
@@ -220,7 +221,7 @@ void writePagina(FILE *arquivo, No *pagina, int rrn) {
             fwrite(pagina->vetChaves[i].chave, sizeof(char), strlen(pagina->vetChaves[i].chave), arquivo);
             num = strlen(pagina->vetChaves[i].chave);
         } else {
-            printf("deu erro");
+            printf("Falha no processamento do arquivo.\n");
         }
 
         for(int j = 0; j< TAM_CHAVE - num; j++){

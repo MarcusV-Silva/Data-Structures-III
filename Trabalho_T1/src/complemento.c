@@ -20,6 +20,43 @@ int closeFile(FILE *arquivoPonteiro, char *nomeArquivo){
     return 0;
 }
 
+void retiraVirgula(char *str){
+	size_t length = strlen(str);
+
+    if (length > 0) {
+        for (size_t i = 0; i < length - 1; ++i) {
+            str[i] = str[i];
+        }
+        str[length - 1] = '\0'; 
+    }
+}
+
+void scanfEntrada(registro *r){
+	char *aux = malloc(sizeof(char)*MAX_STRING);
+
+	scanf("%s", aux);
+	retiraVirgula(aux);
+	r->nmTecnologiaOrigem = (strcmp(aux, "NULO") == 0) ? strdup("") : strdup(aux);
+	r->tamTecnologiaOrigem = strlen(r->nmTecnologiaOrigem);
+
+	scanf("%s", aux);
+	retiraVirgula(aux);
+	(strcmp(aux,"NULO") == 0) ? (r->grupo = -1) : (r->grupo = atoi(aux));
+
+	scanf("%s", aux);
+	retiraVirgula(aux);
+	(strcmp(aux,"NULO") == 0) ? (r->popularidade = -1) : (r->popularidade = atoi(aux));
+
+	scanf("%s", aux);
+	retiraVirgula(aux);
+	r->nmTecnologiaDestino = (strcmp(aux, "NULO") == 0) ? strdup("") : strdup(aux);
+	r->tamTecnologiaDestino = strlen(r->nmTecnologiaDestino);
+
+	scanf("%s", aux);
+	(strcmp(aux,"NULO") == 0) ? (r->peso = -1) : (r->peso = atoi(aux));
+
+	free(aux);
+}
 //---------------------(Funções fornecidas para o desenvolvimento do trabalho)---------------------
 
 void readline(char* string){
