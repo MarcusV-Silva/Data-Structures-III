@@ -60,11 +60,11 @@ int buscaArvore(FILE *arquivo, int RRN, Chave busca){
                 return FOUND;
         }
 
-        int posicaoF = posicaoChave(no, busca);
-        if(posicaoF == -1)
-            return ERRO;
+        int posicao = posicaoChave(no, busca);
+        if(posicao == -1)
+            return FOUND;
 
-        return buscaArvore(arquivo, no->subArvores[posicaoF], busca);
+        return buscaArvore(arquivo, no->subArvores[posicao], busca);
     }
 }
 
@@ -101,6 +101,7 @@ int inserirArvore(FILE *arquivo, int *rrnAtual, Chave *chave, int *promoRFilho, 
 
         if(posicaoC == -1){
             free(pagina);
+            printf("Erro");
             return ERRO;
         }
 
@@ -114,7 +115,8 @@ int inserirArvore(FILE *arquivo, int *rrnAtual, Chave *chave, int *promoRFilho, 
         }else if(pagina->nroChavesNo < QNT_MAX_CHAVE){
                 //no tem Espaço
                 inserirChave(pagina, posicaoC, *promoBKey, *rrnBPromo);
-                writePagina(arquivo, pagina, *rrnAtual);
+                printPagina(*pagina);
+                writePagina(arquivo, pagina, *rrnAtual+1);
                 free(pagina);
                 return NO_PROMOTION;
             }else{
@@ -158,7 +160,6 @@ void inserirChave(No *PAGE, int pos, Chave KEY, int RRN) {
 }
  
 void splitArvore(FILE *arquivo, Chave *iChave, int *iRRN, No **page, Chave *promoChave, int *promoRFilho,  No **newPage){
-
     No workingPage;
     workingPage.nroChavesNo = (*page)->nroChavesNo;
     workingPage.alturaNo = (*page)->alturaNo;
@@ -170,6 +171,7 @@ void splitArvore(FILE *arquivo, Chave *iChave, int *iRRN, No **page, Chave *prom
         workingPage.subArvores[i] = (*page)->subArvores[i];
     }
     workingPage.subArvores[QNT_MAX_CHAVE] = (*page)->subArvores[QNT_MAX_CHAVE];
+
     int pos = posicaoChave(&workingPage, *iChave);
     inserirChave(&workingPage, pos, *iChave, *iRRN);
 
@@ -194,8 +196,8 @@ void splitArvore(FILE *arquivo, Chave *iChave, int *iRRN, No **page, Chave *prom
     }
     (*page)->subArvores[ORDEM/2] = workingPage.subArvores[ORDEM/2]; 
 
-    *promoChave = workingPage.vetChaves[ORDEM / 2]; 
-    *promoRFilho = (*page)->subArvores[ORDEM / 2];
+    *promoChave = workingPage.vetChaves[ORDEM/2]; 
+    *promoRFilho = (*page)->subArvores[ORDEM/2];
 
     int j = 0;
     for (int i =  ORDEM/2+ 1; i < QNT_MAX_CHAVE+1; i++ ,j++) {

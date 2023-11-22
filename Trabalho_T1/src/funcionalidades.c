@@ -20,7 +20,6 @@ void funcionalidade5(){
     cabIndice *indexCab = createCabecalhoIndice();
     writeCabecalhoIndice(indexFile, indexCab);
     
-
     int rrnDados = 0;
     registroCab rC;
     readCabecalho(&rC, dataFile);
@@ -131,14 +130,20 @@ void funcionalidade7(){
 
     cabIndice *indexCab = createCabecalhoIndice();
     readCabIndice(indexFile, indexCab);
+    fseek(indexFile, 0, SEEK_SET);
 
-    fseek(dataFile, 0, SEEK_END);
+    registroCab *rC = malloc(sizeof(registroCab));
+    createCabecalho(rC);
+    readCabecalho(rC, dataFile);
+
     int tamanho = ftell(dataFile);// num bytes
     tamanho = (tamanho - 12)/TAMREGISTRO;// rrn final
 
     for(int i = 0; i<n; i++){
+        
         Chave *promoChave = malloc(sizeof(Chave));
         int *promoRFilho = malloc(sizeof(int));
+
         registro *registroInsercao = malloc(sizeof(registro));
         createRegistro(registroInsercao);
         scanfEntrada(registroInsercao);
@@ -173,12 +178,9 @@ void funcionalidade7(){
             writeCabecalhoIndice(indexFile, indexCab);
         }
     }
-    readCabIndice(indexFile, indexCab);
-    indexCab->RRNproxNo++;
+    
     writeCabecalhoIndice(indexFile, indexCab);
 
-
-    //SQL-SERVER, 2, 3, .NET, 33
     fclose(indexFile);
     fclose(dataFile);
 
@@ -186,7 +188,13 @@ void funcionalidade7(){
     binarioNaTela(dataINDEX);
 }
 
+/*
 
+TDD, 12, 9, AGILE, 38
+MAVEN, 8, 10, ECLIPSE, 26
+CSS, 6, 341, MYSQL, 28
+
+*/
 
 // ---------------------- TRABALHO 0 ---------------------------------
 void funcionalidade1(){

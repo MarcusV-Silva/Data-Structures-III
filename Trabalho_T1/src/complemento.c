@@ -31,6 +31,12 @@ void retiraVirgula(char *str){
     }
 }
 
+void percorreArvoreTec(int numTecnologias, int numPares){
+	
+
+}
+
+
 void scanfEntrada(registro *r){
 	char *aux = malloc(sizeof(char)*MAX_STRING);
 

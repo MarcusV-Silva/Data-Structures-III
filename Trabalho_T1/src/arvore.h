@@ -20,7 +20,6 @@ int inserirArvore(FILE *arquivo, int *rrnAtual, Chave *chave, int *promoRFilho, 
 void splitArvore(FILE *arquivo, Chave *iChave, int *iRRN, No **page, Chave *promoChave, int *promoRFilho,  No **newPage);
 void writePagina(FILE *arquivo, No *pagina, int rrn);
 void inserirChave(No *PAGE, int pos, Chave KEY, int RRN);
-void defineValorNo(No *no, FILE *dadosBin);
 int proximoRRNLivre(FILE *arquivo);
 void printPagina(No no);
 int ultimoRRN(FILE *arquivo);
