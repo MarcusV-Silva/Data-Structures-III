@@ -77,7 +77,6 @@ void funcionalidade5(){
         int promo = inserirArvore(indexFile, &rrnRaiz, &chaveI, promoRFilho, promoChave);
        
         if (promo == PROMOTION) {
-            readCabIndice(indexFile, indexCab);
             No *novoNo = criarNo();
 
             No *auxNo = criarNo();
@@ -85,10 +84,12 @@ void funcionalidade5(){
             readPagina(indexFile, auxNo);
 
             novoNo->nroChavesNo = 1;
-            novoNo->alturaNo = (rrnRaiz == -1) ? 1 : auxNo->alturaNo + 1;
+            novoNo->alturaNo = auxNo->alturaNo + 1;
             novoNo->vetChaves[0] = *promoChave;
             novoNo->subArvores[0] = rrnRaiz;
             novoNo->subArvores[1] = *promoRFilho;
+
+            readCabIndice(indexFile, indexCab);
             novoNo->RRNdoNo = ++indexCab->RRNproxNo;
             
             writePagina(indexFile, novoNo, novoNo->RRNdoNo);
@@ -111,13 +112,19 @@ void funcionalidade5(){
 }
 
 void funcionalidade6(){
+    
+    FILE *indexFile = fopen("indice10.bin", "rb+");
+    checkFile(indexFile);
 
+    printArvore(indexFile);
 }
 
 void funcionalidade7(){
     char *dataBIN = malloc(sizeof(char) * 40);
     char *dataINDEX = malloc(sizeof(char) * 40);
+    
     int n = 3;
+
     //scanf("%s %s %d", dataBIN, dataINDEX, &n);
     strcpy(dataBIN, "binario8.bin");
     strcpy(dataINDEX, "indice8.bin");
@@ -130,7 +137,8 @@ void funcionalidade7(){
 
     cabIndice *indexCab = createCabecalhoIndice();
     readCabIndice(indexFile, indexCab);
-    fseek(indexFile, 0, SEEK_SET);
+    indexCab->RRNproxNo--;
+    writeCabecalhoIndice(indexFile, indexCab);
 
     registroCab *rC = malloc(sizeof(registroCab));
     createCabecalho(rC);
@@ -178,7 +186,8 @@ void funcionalidade7(){
             writeCabecalhoIndice(indexFile, indexCab);
         }
     }
-    
+
+    indexCab->RRNproxNo+=2;
     writeCabecalhoIndice(indexFile, indexCab);
 
     fclose(indexFile);

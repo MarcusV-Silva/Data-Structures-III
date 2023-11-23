@@ -23,4 +23,5 @@ void inserirChave(No *PAGE, int pos, Chave KEY, int RRN);
 int proximoRRNLivre(FILE *arquivo);
 void printPagina(No no);
 int ultimoRRN(FILE *arquivo);
+void printArvore(FILE *arquivo);
 #endif 
