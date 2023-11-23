@@ -20,9 +20,7 @@ void funcionalidade5(){
     cabIndice *indexCab = createCabecalhoIndice();
     writeCabecalhoIndice(indexFile, indexCab);
     
-
     int rrnDados = 0;
-    //Criando e adicionando a primeira pagina no arquivo de indice
     registroCab rC;
     readCabecalho(&rC, dataFile);
     verifyStatus(rC);
@@ -42,7 +40,7 @@ void funcionalidade5(){
     writePagina(indexFile, no, 0);
 
     indexCab->noRaiz = 0;
-    indexCab->RRNproxNo = 0;
+    indexCab->RRNproxNo = 1;
     writeCabecalhoIndice(indexFile, indexCab);
     Chave *promoChave = malloc(sizeof(Chave));
     int *promoRFilho = malloc(sizeof(int));
@@ -79,22 +77,25 @@ void funcionalidade5(){
         int promo = inserirArvore(indexFile, &rrnRaiz, &chaveI, promoRFilho, promoChave);
        
         if (promo == PROMOTION) {
-            readCabIndice(indexFile, indexCab);
             No *novoNo = criarNo();
 
             No *auxNo = criarNo();
-            fseek(indexFile, TAM_PAG_INDEX*(indexCab->RRNproxNo+1), SEEK_SET);
+            fseek(indexFile, TAM_PAG_INDEX*(indexCab->noRaiz+1), SEEK_SET);
             readPagina(indexFile, auxNo);
 
             novoNo->nroChavesNo = 1;
-            novoNo->alturaNo = (rrnRaiz == -1) ? 1 : auxNo->alturaNo + 1;
+            novoNo->alturaNo = auxNo->alturaNo + 1;
             novoNo->vetChaves[0] = *promoChave;
-            novoNo->subArvores[0] = rrnRaiz;
+            novoNo->subArvores[0] = indexCab->noRaiz;
             novoNo->subArvores[1] = *promoRFilho;
-            novoNo->RRNdoNo = ++indexCab->RRNproxNo;
+
+            readCabIndice(indexFile, indexCab);
+            novoNo->RRNdoNo = indexCab->RRNproxNo;
+            
             
             writePagina(indexFile, novoNo, novoNo->RRNdoNo);
             indexCab->noRaiz = novoNo->RRNdoNo;
+            indexCab->RRNproxNo++;
             writeCabecalhoIndice(indexFile, indexCab);
         }
 
@@ -103,7 +104,6 @@ void funcionalidade5(){
     
     readCabIndice(indexFile, indexCab);
     indexCab->status = '1';
-    indexCab->RRNproxNo++;
     writeCabecalhoIndice(indexFile, indexCab);
 
     fclose(indexFile);
@@ -113,46 +113,108 @@ void funcionalidade5(){
 }
 
 void funcionalidade6(){
-
+    
 }
 
 void funcionalidade7(){
     char *dataBIN = malloc(sizeof(char) * 40);
     char *dataINDEX = malloc(sizeof(char) * 40);
-    int n = 2;
-    //scanf("%s %s", dataBIN, dataINDEX);
-    strcpy(dataBIN, "binario2.bin");
-    strcpy(dataINDEX, "a.bin");
+    int n = 0;
+    scanf("%s %s %d", dataBIN, dataINDEX, &n);
 
-    FILE *dataFile = fopen(dataBIN, "wb");
+    FILE *dataFile = fopen(dataBIN, "rb+");
     checkFile(dataFile);
 
-    FILE *indexFile = fopen(dataINDEX, "wb+");
+    FILE *indexFile = fopen(dataINDEX, "rb+");
     checkFile(indexFile);
 
-    for(int i = 0; i<n; i++){
+    cabIndice *indexCab = createCabecalhoIndice();
+    readCabIndice(indexFile, indexCab);
+    indexCab->status='0'; // verificar
+    writeCabecalhoIndice(indexFile, indexCab);
+
+    registroCab *rC = malloc(sizeof(registroCab));
+    createCabecalho(rC);
+    readCabecalho(rC, dataFile);
+
+    fseek(dataFile, 0, SEEK_END);
+    int tamanho = ftell(dataFile);// num bytes
+    tamanho = (tamanho - 12)/TAMREGISTRO;// rrn final
+
+    Chave *vetChave = malloc(sizeof(Chave)*n);
+    for(int j = 0; j<n; j++){
+        // Paginas no arquivo de  dados
         registro *registroInsercao = malloc(sizeof(registro));
         createRegistro(registroInsercao);
+        scanfEntrada(registroInsercao);
 
-        int posicao = 0;
-        char *aux = malloc(sizeof(char)*256);
-        scanf("%[^\n]s", aux);
-        setRegistro(registroInsercao, aux, &posicao);
+        verificarTecnologias(dataFile, *registroInsercao);
 
         fseek(dataFile, 0, SEEK_END);
         writeRegistro(registroInsercao, dataFile);
+
+        if(registroInsercao->tamTecnologiaDestino == 0 || registroInsercao->tamTecnologiaOrigem == 0 ){
+            vetChave[j].chave = "";
+            vetChave[j].referencia = -1;
+        }else{
+            vetChave[j].chave = createChave(registroInsercao);
+            vetChave[j].referencia = tamanho;
+        }
+        tamanho++;
     }
 
-    //SQL-SERVER, 2, 3, .NET, 33
+    for(int i = 0; i<n; i++){
+        // Pagina no arquivo de Indice
+        if(vetChave[i].referencia != -1){
+            readCabIndice(indexFile, indexCab);
+            Chave *promoChave = malloc(sizeof(Chave));
+            int *promoRFilho = malloc(sizeof(int));
+
+
+            int rrnRaiz = indexCab->noRaiz;
+            int promo = inserirArvore(indexFile, &rrnRaiz, &vetChave[i], promoRFilho, promoChave);
+        
+            if (promo == PROMOTION) {
+                No *novoNo = criarNo();
+
+                No *auxNo = criarNo();
+                fseek(indexFile, TAM_PAG_INDEX*(indexCab->noRaiz+1), SEEK_SET);
+                readPagina(indexFile, auxNo);
+
+                novoNo->nroChavesNo = 1;
+                novoNo->alturaNo = auxNo->alturaNo + 1;
+                novoNo->vetChaves[0] = *promoChave;
+                novoNo->subArvores[0] = indexCab->noRaiz;
+                novoNo->subArvores[1] = *promoRFilho;
+
+                readCabIndice(indexFile, indexCab);
+                novoNo->RRNdoNo = indexCab->RRNproxNo;
+                
+                writePagina(indexFile, novoNo, novoNo->RRNdoNo);
+                indexCab->noRaiz = novoNo->RRNdoNo;
+                indexCab->RRNproxNo++;
+                writeCabecalhoIndice(indexFile, indexCab);
+            }
+        }
+    }
+
+    indexCab->status = '1';
+    writeCabecalhoIndice(indexFile, indexCab);
+
     fclose(indexFile);
     fclose(dataFile);
 
-    //binarioNaTela(dataBIN);
-    //binarioNaTela(dataINDEX);
+    binarioNaTela(dataBIN);
+    binarioNaTela(dataINDEX);
 }
 
+/*
 
+TDD, 12, 9, AGILE, 38
+MAVEN, 8, 10, ECLIPSE, 26
+CSS, 6, 341, MYSQL, 28
 
+*/
 
 // ---------------------- TRABALHO 0 ---------------------------------
 void funcionalidade1(){

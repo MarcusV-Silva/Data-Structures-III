@@ -11,5 +11,8 @@ int closeFile(FILE *arquivoPonteiro, char *nomeArquivo);
 void binarioNaTela(char *nomeArquivoBinario);
 int scan_quote_string(char *str);
 
-void leituraTecladoDados(registro *r);
+void scanfEntrada(registro *r);
+void retiraVirgula(char *str);
+void verificarTecnologias(FILE *arquivo, registro r);
+
 #endif

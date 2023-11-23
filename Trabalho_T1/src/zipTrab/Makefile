@@ -1,4 +1,4 @@
-all: 
+all:
 	gcc -Wall -o programaTrab *.c -g
 	
 run: 

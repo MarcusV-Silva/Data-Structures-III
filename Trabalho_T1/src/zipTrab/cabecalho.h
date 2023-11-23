@@ -12,7 +12,7 @@ typedef struct cabecalhoIndice{
 cabIndice *createCabecalhoIndice();
 void writeCabecalhoIndice(FILE *arquivo, cabIndice *rI);
 void readCabIndice(FILE *arquivo, cabIndice *rI);
-
+void verificarTecnologias(FILE *dataFile, registro registroInsercao);
 
 
 

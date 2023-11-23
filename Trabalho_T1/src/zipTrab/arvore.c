@@ -54,17 +54,16 @@ int buscaArvore(FILE *arquivo, int RRN, Chave busca){
         int numPagina = (RRN + 1) * TAM_PAG_INDEX;
         fseek(arquivo, numPagina, SEEK_SET);
         readPagina(arquivo, no);
-
         for(int i = 0; i < no->nroChavesNo; i++){
             if(strcmp(no->vetChaves[i].chave,busca.chave) == 0)
                 return FOUND;
         }
 
-        int posicaoF = posicaoChave(no, busca);
-        if(posicaoF == -1)
-            return ERRO;
+        int posicao = posicaoChave(no, busca);
+        if(posicao == -1)
+            return FOUND;
 
-        return buscaArvore(arquivo, no->subArvores[posicaoF], busca);
+        return buscaArvore(arquivo, no->subArvores[posicao], busca);
     }
 }
 
@@ -95,19 +94,21 @@ int inserirArvore(FILE *arquivo, int *rrnAtual, Chave *chave, int *promoRFilho, 
 
         fseek(arquivo, numPagina, SEEK_SET);
         readPagina(arquivo, pagina);
-
+       
         //verificar se essa posicao ta certa 
         int posicaoC = posicaoChave(pagina, *chave);
 
         if(posicaoC == -1){
             free(pagina);
+            printf("Erro"); //deixar como comentario
             return ERRO;
         }
 
         Chave *promoBKey = malloc(sizeof(Chave));
         int *rrnBPromo = malloc(sizeof(int));
         int valorRetorno = inserirArvore(arquivo, &pagina->subArvores[posicaoC], chave, rrnBPromo, promoBKey);
-
+        //printPagina(*pagina);
+       
         if(valorRetorno == NO_PROMOTION || valorRetorno == ERRO){
             free(pagina);
             return valorRetorno;
@@ -115,6 +116,7 @@ int inserirArvore(FILE *arquivo, int *rrnAtual, Chave *chave, int *promoRFilho, 
                 //no tem Espaço
                 inserirChave(pagina, posicaoC, *promoBKey, *rrnBPromo);
                 writePagina(arquivo, pagina, *rrnAtual);
+                //printPagina(*pagina);
                 free(pagina);
                 return NO_PROMOTION;
             }else{
@@ -127,18 +129,19 @@ int inserirArvore(FILE *arquivo, int *rrnAtual, Chave *chave, int *promoRFilho, 
                 cabIndice *c1 = createCabecalhoIndice();
                 readCabIndice(arquivo, c1);
 
-                novaPag->RRNdoNo = ++c1->RRNproxNo;
+                novaPag->RRNdoNo = c1->RRNproxNo;
                 writePagina(arquivo, novaPag, novaPag->RRNdoNo);
-
+                
                 *promoRFilho = c1->RRNproxNo;
+                c1->RRNproxNo++;
                 writeCabecalhoIndice(arquivo,c1);
-                        
+            
                 free(pagina);
                 free(novaPag);
                 return PROMOTION;
             }
 
-        }
+    }
          
 }
 
@@ -158,7 +161,6 @@ void inserirChave(No *PAGE, int pos, Chave KEY, int RRN) {
 }
  
 void splitArvore(FILE *arquivo, Chave *iChave, int *iRRN, No **page, Chave *promoChave, int *promoRFilho,  No **newPage){
-
     No workingPage;
     workingPage.nroChavesNo = (*page)->nroChavesNo;
     workingPage.alturaNo = (*page)->alturaNo;
@@ -170,9 +172,11 @@ void splitArvore(FILE *arquivo, Chave *iChave, int *iRRN, No **page, Chave *prom
         workingPage.subArvores[i] = (*page)->subArvores[i];
     }
     workingPage.subArvores[QNT_MAX_CHAVE] = (*page)->subArvores[QNT_MAX_CHAVE];
+
     int pos = posicaoChave(&workingPage, *iChave);
     inserirChave(&workingPage, pos, *iChave, *iRRN);
 
+    // Coloca todos os elementos da pagina como nulos
     for(int i = 0; i<QNT_MAX_CHAVE; i++){
         (*page)->vetChaves[i].chave = "";
         (*page)->vetChaves[i].referencia = -1;
@@ -193,8 +197,8 @@ void splitArvore(FILE *arquivo, Chave *iChave, int *iRRN, No **page, Chave *prom
     }
     (*page)->subArvores[ORDEM/2] = workingPage.subArvores[ORDEM/2]; 
 
-    *promoChave = workingPage.vetChaves[ORDEM / 2]; 
-    *promoRFilho = (*page)->subArvores[ORDEM / 2];
+    *promoChave = workingPage.vetChaves[ORDEM/2]; 
+    *promoRFilho = (*page)->subArvores[ORDEM/2];
 
     int j = 0;
     for (int i =  ORDEM/2+ 1; i < QNT_MAX_CHAVE+1; i++ ,j++) {
@@ -220,7 +224,7 @@ void writePagina(FILE *arquivo, No *pagina, int rrn) {
             fwrite(pagina->vetChaves[i].chave, sizeof(char), strlen(pagina->vetChaves[i].chave), arquivo);
             num = strlen(pagina->vetChaves[i].chave);
         } else {
-            printf("deu erro");
+            printf("Falha no processamento do arquivo.\n");
         }
 
         for(int j = 0; j< TAM_CHAVE - num; j++){
@@ -234,9 +238,9 @@ void writePagina(FILE *arquivo, No *pagina, int rrn) {
 
 // Funcao usada para debug
 void printPagina(No no){
-    printf("\n\nNro Chaves %d ", no.nroChavesNo);
-    printf("\nAltura %d ", no.alturaNo) ;
-    printf("\nRRN no %d ", no.RRNdoNo);
+    //printf("\n\nNro Chaves %d ", no.nroChavesNo);
+   // printf("\nAltura %d ", no.alturaNo) ;
+   printf("\nRRN no %d\n ", no.RRNdoNo);
 
     for (int i = 0; i < ORDEM+1; i++){
         printf("\nSubArvore %d = %d ",i, no.subArvores[i]);
@@ -244,11 +248,20 @@ void printPagina(No no){
 
     for(int i = 0; i< QNT_MAX_CHAVE+1; i++){
         printf("\nChave %d = %s ",i, no.vetChaves[i].chave);
-        printf("\nChave %d = %d ",i, no.vetChaves[i].referencia);
+        printf(" Referencia %d = %d ",i, no.vetChaves[i].referencia);
 
     }
 
     printf("\n\n");
 }
 
+
+void printArvore(FILE *arquivo){
+    fseek(arquivo, 0, SEEK_SET);
+    No *r = criarNo();
+    for(int i = 0; i<100; i++){
+        readPagina(arquivo, r);
+        printPagina(*r);
+    }
+}
 

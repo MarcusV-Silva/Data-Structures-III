@@ -40,7 +40,7 @@ void funcionalidade5(){
     writePagina(indexFile, no, 0);
 
     indexCab->noRaiz = 0;
-    indexCab->RRNproxNo = 0;
+    indexCab->RRNproxNo = 1;
     writeCabecalhoIndice(indexFile, indexCab);
     Chave *promoChave = malloc(sizeof(Chave));
     int *promoRFilho = malloc(sizeof(int));
@@ -80,20 +80,22 @@ void funcionalidade5(){
             No *novoNo = criarNo();
 
             No *auxNo = criarNo();
-            fseek(indexFile, TAM_PAG_INDEX*(indexCab->RRNproxNo+1), SEEK_SET);
+            fseek(indexFile, TAM_PAG_INDEX*(indexCab->noRaiz+1), SEEK_SET);
             readPagina(indexFile, auxNo);
 
             novoNo->nroChavesNo = 1;
             novoNo->alturaNo = auxNo->alturaNo + 1;
             novoNo->vetChaves[0] = *promoChave;
-            novoNo->subArvores[0] = rrnRaiz;
+            novoNo->subArvores[0] = indexCab->noRaiz;
             novoNo->subArvores[1] = *promoRFilho;
 
             readCabIndice(indexFile, indexCab);
-            novoNo->RRNdoNo = ++indexCab->RRNproxNo;
+            novoNo->RRNdoNo = indexCab->RRNproxNo;
+            
             
             writePagina(indexFile, novoNo, novoNo->RRNdoNo);
             indexCab->noRaiz = novoNo->RRNdoNo;
+            indexCab->RRNproxNo++;
             writeCabecalhoIndice(indexFile, indexCab);
         }
 
@@ -102,7 +104,6 @@ void funcionalidade5(){
     
     readCabIndice(indexFile, indexCab);
     indexCab->status = '1';
-    indexCab->RRNproxNo++;
     writeCabecalhoIndice(indexFile, indexCab);
 
     fclose(indexFile);
@@ -113,23 +114,15 @@ void funcionalidade5(){
 
 void funcionalidade6(){
     
-    FILE *indexFile = fopen("indice10.bin", "rb+");
-    checkFile(indexFile);
-
-    printArvore(indexFile);
 }
 
 void funcionalidade7(){
     char *dataBIN = malloc(sizeof(char) * 40);
     char *dataINDEX = malloc(sizeof(char) * 40);
-    
-    int n = 3;
+    int n = 0;
+    scanf("%s %s %d", dataBIN, dataINDEX, &n);
 
-    //scanf("%s %s %d", dataBIN, dataINDEX, &n);
-    strcpy(dataBIN, "binario8.bin");
-    strcpy(dataINDEX, "indice8.bin");
-
-    FILE *dataFile = fopen(dataBIN, "ab");
+    FILE *dataFile = fopen(dataBIN, "rb+");
     checkFile(dataFile);
 
     FILE *indexFile = fopen(dataINDEX, "rb+");
@@ -137,57 +130,75 @@ void funcionalidade7(){
 
     cabIndice *indexCab = createCabecalhoIndice();
     readCabIndice(indexFile, indexCab);
-    indexCab->RRNproxNo--;
+    indexCab->status='0'; // verificar
     writeCabecalhoIndice(indexFile, indexCab);
 
     registroCab *rC = malloc(sizeof(registroCab));
     createCabecalho(rC);
     readCabecalho(rC, dataFile);
 
+    fseek(dataFile, 0, SEEK_END);
     int tamanho = ftell(dataFile);// num bytes
     tamanho = (tamanho - 12)/TAMREGISTRO;// rrn final
 
-    for(int i = 0; i<n; i++){
-        
-        Chave *promoChave = malloc(sizeof(Chave));
-        int *promoRFilho = malloc(sizeof(int));
-
+    Chave *vetChave = malloc(sizeof(Chave)*n);
+    for(int j = 0; j<n; j++){
+        // Paginas no arquivo de  dados
         registro *registroInsercao = malloc(sizeof(registro));
         createRegistro(registroInsercao);
         scanfEntrada(registroInsercao);
-        //printRegistro(*registroInsercao); //Debug
-        
+
+        verificarTecnologias(dataFile, *registroInsercao);
+
+        fseek(dataFile, 0, SEEK_END);
         writeRegistro(registroInsercao, dataFile);
 
-        Chave chaveI;
-        chaveI.chave = createChave(registroInsercao);
-        chaveI.referencia = tamanho++;
+        if(registroInsercao->tamTecnologiaDestino == 0 || registroInsercao->tamTecnologiaOrigem == 0 ){
+            vetChave[j].chave = "";
+            vetChave[j].referencia = -1;
+        }else{
+            vetChave[j].chave = createChave(registroInsercao);
+            vetChave[j].referencia = tamanho;
+        }
+        tamanho++;
+    }
 
-        int rrnRaiz = indexCab->noRaiz;
-        int promo = inserirArvore(indexFile, &rrnRaiz, &chaveI, promoRFilho, promoChave);
-       
-        if (promo == PROMOTION) {
+    for(int i = 0; i<n; i++){
+        // Pagina no arquivo de Indice
+        if(vetChave[i].referencia != -1){
             readCabIndice(indexFile, indexCab);
-            No *novoNo = criarNo();
+            Chave *promoChave = malloc(sizeof(Chave));
+            int *promoRFilho = malloc(sizeof(int));
 
-            No *auxNo = criarNo();
-            fseek(indexFile, TAM_PAG_INDEX*(indexCab->RRNproxNo+1), SEEK_SET);
-            readPagina(indexFile, auxNo);
 
-            novoNo->nroChavesNo = 1;
-            novoNo->alturaNo = (rrnRaiz == -1) ? 1 : auxNo->alturaNo + 1;
-            novoNo->vetChaves[0] = *promoChave;
-            novoNo->subArvores[0] = rrnRaiz;
-            novoNo->subArvores[1] = *promoRFilho;
-            novoNo->RRNdoNo = ++indexCab->RRNproxNo;
-            
-            writePagina(indexFile, novoNo, novoNo->RRNdoNo);
-            indexCab->noRaiz = novoNo->RRNdoNo;
-            writeCabecalhoIndice(indexFile, indexCab);
+            int rrnRaiz = indexCab->noRaiz;
+            int promo = inserirArvore(indexFile, &rrnRaiz, &vetChave[i], promoRFilho, promoChave);
+        
+            if (promo == PROMOTION) {
+                No *novoNo = criarNo();
+
+                No *auxNo = criarNo();
+                fseek(indexFile, TAM_PAG_INDEX*(indexCab->noRaiz+1), SEEK_SET);
+                readPagina(indexFile, auxNo);
+
+                novoNo->nroChavesNo = 1;
+                novoNo->alturaNo = auxNo->alturaNo + 1;
+                novoNo->vetChaves[0] = *promoChave;
+                novoNo->subArvores[0] = indexCab->noRaiz;
+                novoNo->subArvores[1] = *promoRFilho;
+
+                readCabIndice(indexFile, indexCab);
+                novoNo->RRNdoNo = indexCab->RRNproxNo;
+                
+                writePagina(indexFile, novoNo, novoNo->RRNdoNo);
+                indexCab->noRaiz = novoNo->RRNdoNo;
+                indexCab->RRNproxNo++;
+                writeCabecalhoIndice(indexFile, indexCab);
+            }
         }
     }
 
-    indexCab->RRNproxNo+=2;
+    indexCab->status = '1';
     writeCabecalhoIndice(indexFile, indexCab);
 
     fclose(indexFile);

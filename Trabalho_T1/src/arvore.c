@@ -129,10 +129,11 @@ int inserirArvore(FILE *arquivo, int *rrnAtual, Chave *chave, int *promoRFilho, 
                 cabIndice *c1 = createCabecalhoIndice();
                 readCabIndice(arquivo, c1);
 
-                novaPag->RRNdoNo = ++c1->RRNproxNo;
+                novaPag->RRNdoNo = c1->RRNproxNo;
                 writePagina(arquivo, novaPag, novaPag->RRNdoNo);
                 
                 *promoRFilho = c1->RRNproxNo;
+                c1->RRNproxNo++;
                 writeCabecalhoIndice(arquivo,c1);
             
                 free(pagina);

@@ -20,6 +20,78 @@ int closeFile(FILE *arquivoPonteiro, char *nomeArquivo){
     return 0;
 }
 
+void retiraVirgula(char *str){
+	size_t length = strlen(str);
+
+    if (length > 0) {
+        for (size_t i = 0; i < length - 1; ++i) {
+            str[i] = str[i];
+        }
+        str[length - 1] = '\0'; 
+    }
+}
+
+void verificarTecnologias(FILE *arquivo, registro r){
+	fseek(arquivo,  0, SEEK_SET);
+	registroCab *rC = malloc(sizeof(registroCab));
+    createCabecalho(rC);
+    readCabecalho(rC,arquivo);
+
+	registro *aux = malloc(sizeof(registro));
+	createRegistro(aux);
+
+	int flag0 = 0;
+	int flag1 = 0;
+	int flag2 = 0;
+	while(readRegistro(aux, arquivo) != 0){
+		if(strcmp(r.nmTecnologiaOrigem,aux->nmTecnologiaOrigem) == 0 || strcmp(r.nmTecnologiaOrigem,aux->nmTecnologiaDestino) == 0)
+			flag0 = 1;
+		if(strcmp(r.nmTecnologiaDestino,aux->nmTecnologiaOrigem) == 0 || strcmp(r.nmTecnologiaDestino,aux->nmTecnologiaDestino) == 0)
+			flag1 = 1;
+		if(strcmp(r.nmTecnologiaOrigem,aux->nmTecnologiaOrigem) == 0 && strcmp(r.nmTecnologiaDestino,aux->nmTecnologiaDestino) == 0)
+			flag2 = 1;
+	}
+
+	if(!flag0 && r.tamTecnologiaOrigem != 0)
+		rC->nroTecnologias++;
+
+	if(!flag1 && r.tamTecnologiaDestino != 0)
+		rC->nroTecnologias++;
+		
+	if(!flag2 && r.tamTecnologiaDestino != 0 && r.tamTecnologiaOrigem != 0)
+		rC->nroParesTecnologias++;
+	
+	rC->proxRRN++;
+	writeCabecalho(arquivo, rC);
+}
+
+
+void scanfEntrada(registro *r){
+	char *aux = malloc(sizeof(char)*MAX_STRING);
+
+	scanf("%s", aux);
+	retiraVirgula(aux);
+	r->nmTecnologiaOrigem = (strcmp(aux, "NULO") == 0) ? strdup("") : strdup(aux);
+	r->tamTecnologiaOrigem = strlen(r->nmTecnologiaOrigem);
+
+	scanf("%s", aux);
+	retiraVirgula(aux);
+	(strcmp(aux,"NULO") == 0) ? (r->grupo = -1) : (r->grupo = atoi(aux));
+
+	scanf("%s", aux);
+	retiraVirgula(aux);
+	(strcmp(aux,"NULO") == 0) ? (r->popularidade = -1) : (r->popularidade = atoi(aux));
+
+	scanf("%s", aux);
+	retiraVirgula(aux);
+	r->nmTecnologiaDestino = (strcmp(aux, "NULO") == 0) ? strdup("") : strdup(aux);
+	r->tamTecnologiaDestino = strlen(r->nmTecnologiaDestino);
+
+	scanf("%s", aux);
+	(strcmp(aux,"NULO") == 0) ? (r->peso = -1) : (r->peso = atoi(aux));
+
+	free(aux);
+}
 //---------------------(Funções fornecidas para o desenvolvimento do trabalho)---------------------
 
 void readline(char* string){

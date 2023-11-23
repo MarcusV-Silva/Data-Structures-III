@@ -13,5 +13,6 @@ int scan_quote_string(char *str);
 
 void scanfEntrada(registro *r);
 void retiraVirgula(char *str);
+void verificarTecnologias(FILE *arquivo, registro r);
 
 #endif
