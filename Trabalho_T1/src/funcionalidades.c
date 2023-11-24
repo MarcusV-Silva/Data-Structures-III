@@ -379,92 +379,6 @@ void funcionalidade2() {
     closeFile(binFile, dataBin);
 }
 
-/*void funcionalidade3(){
-    // Inicializa o arquivo binário  e verifica se ele existe
-    int n;
-    char *dataBin = malloc(sizeof(char)*40);
-    scanf("%s %d", dataBin, &n);
-
-    FILE *binFile = fopen(dataBin, "rb");
-    checkFile(binFile);
-
-    // Lê o cabeçalho do arquivo e verifica o status
-    registroCab rC;
-    readCabecalho(&rC, binFile);
-    verifyStatus(rC);
-
-    // Dados de entrada
-    int contador = 0;
-    listBuscas dadosBuscas[MAX_TECNOLOGIAS];
-    char tmp1[MAX_STRING];
-    char tmp2[MAX_STRING];
-
-    // Armazena todas os dados referentes as buscas dos campos de entrada
-    while(scanf("%s ", tmp1) != EOF){
-        strcpy(dadosBuscas[contador].nomeCampo,tmp1);
-        if(strcmp(tmp1, "nomeTecnologiaOrigem") == 0 || strcmp(tmp1, "nomeTecnologiaDestino") == 0) {
-            scan_quote_string(tmp2);
-        }else{
-            scanf("%s", tmp2);
-        }
-        strcpy(dadosBuscas[contador].valorCampo,tmp2);
-        contador++;
-    }
-
-    // Caso o numero de buscas seja maior do que o valor "n" fornecido
-    if(contador>n){
-        printf("Falha no processamento do arquivo.");
-        exit(0);
-    }
-    int flag;
-    // For para fazer as buscas solicitadas
-    for(int i = 0; i<n; i++){
-        flag = 0;
-        // For que percorre o arquivo para encontrar os registros
-        for(int j = 0; j<MAX_TECNOLOGIAS; j++){
-            int registroEncontrado = 0;
-
-            // Criação dos registros
-            registro *r1 = malloc(sizeof(registro)+1);
-            createRegistro(r1);
-
-            // Lê um registro do arquivo binário e encerra o loop no fim do arquivo
-            if(readRegistro(r1, binFile) == 0){
-                freeRegistro(r1);
-                break;
-            }
-
-            // Cadeia de if e else para verificar a existência dos campos do registro
-            if (strcmp(dadosBuscas[i].nomeCampo, "nomeTecnologiaOrigem") == 0 && strcmp(r1->nmTecnologiaOrigem, dadosBuscas[i].valorCampo) == 0) {
-                registroEncontrado = 1;
-            } else if (strcmp(dadosBuscas[i].nomeCampo, "nomeTecnologiaDestino") == 0 && strcmp(r1->nmTecnologiaDestino, dadosBuscas[i].valorCampo) == 0) {
-                registroEncontrado = 1;
-            } else if (strcmp(dadosBuscas[i].nomeCampo, "grupo") == 0 && r1->grupo == atoi(dadosBuscas[i].valorCampo)){
-                registroEncontrado = 1;
-            } else if (strcmp(dadosBuscas[i].nomeCampo, "popularidade") == 0 && r1->popularidade == atoi(dadosBuscas[i].valorCampo)){
-                registroEncontrado = 1;
-            } else if (strcmp(dadosBuscas[i].nomeCampo, "peso") == 0 && r1->peso == atoi(dadosBuscas[i].valorCampo)){
-                registroEncontrado = 1;
-            }
-
-            if(registroEncontrado){
-                printRegistro(*r1);
-                flag = 1;
-            }
-            freeRegistro(r1);
-
-        }
-        if(!(flag))
-            printf("Registro inexistente.\n");
-
-        //Retorna ao começo do arquivo
-        fseek(binFile, 13, SEEK_SET);
-    }
-
-    //Fecha o Arquivo
-    closeFile(binFile, dataBin);
-}*/
-
 void funcionalidade3(FILE *binFile,char *tmp1, char *tmp2){
 
     // Dados de entrada
@@ -507,8 +421,10 @@ void funcionalidade3(FILE *binFile,char *tmp1, char *tmp2){
         }
 
         if(registroEncontrado){
-            printRegistro(*r1);
-            flag = 1;
+            if(r1->removido == '0'){
+                printRegistro(*r1);
+                flag = 1;
+            }
         }
         freeRegistro(r1);
 
@@ -531,8 +447,11 @@ void funcionalidade4(FILE *binFile, int *RRN){
         createRegistro(r1);
         if (readRegistro(r1, binFile) == 0){
             printf("Registro inexistente.");
-        }else
-            printRegistro(*r1);
+        }else{
+            if(r1->removido == '0'){
+                printRegistro(*r1);
+            }
+        }
     }else{
         printf("Registro inexistente.");
     }
