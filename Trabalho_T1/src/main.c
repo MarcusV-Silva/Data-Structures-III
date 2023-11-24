@@ -30,10 +30,10 @@ int main(){
             funcionalidade2();
             break;
         case 3:
-            funcionalidade3();
+            //funcionalidade3();
             break;
         case 4:
-            funcionalidade4();
+            //funcionalidade4();
             break;
         case 5:
             funcionalidade5();

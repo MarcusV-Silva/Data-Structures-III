@@ -46,7 +46,7 @@ int readPagina(FILE *indexFile, No *no){
     return 1;
 }
 
-int buscaArvore(FILE *arquivo, int RRN, Chave busca){
+/*int buscaArvore(FILE *arquivo, int RRN, Chave busca){
     if(RRN == -1)
         return NOT_FOUND;
     else{
@@ -64,6 +64,32 @@ int buscaArvore(FILE *arquivo, int RRN, Chave busca){
             return FOUND;
 
         return buscaArvore(arquivo, no->subArvores[posicao], busca);
+    }
+}*/
+
+int buscaArvore(FILE *arquivoI, FILE *arquivoD, int *RRN, int *RRNBusca, Chave* busca){
+
+    if(*RRN == -1){
+        return printf("\nRegistro inexistente. \n");
+    }else{
+        No *no = criarNo();
+        int numPagina = (*RRN + 1) * TAM_PAG_INDEX;
+        fseek(arquivoI, numPagina, SEEK_SET);
+        readPagina(arquivoI, no);
+
+        /*for(int i = 0; i < no->nroChavesNo; i++){
+            if(strcmp(no->vetChaves[i].chave,busca->chave) == 0)
+                return no->vetChaves[i].referencia;
+        }*/
+        int posicao = posicaoChave(no, *busca);
+
+        if(strcmp(busca->chave,no->vetChaves[posicao].chave) == 0){
+            *RRNBusca = no->vetChaves[posicao].referencia;
+            funcionalidade4(arquivoD, RRNBusca);
+            return 0;
+        }else{
+            return buscaArvore(arquivoI, arquivoD, &no->subArvores[posicao], RRNBusca, busca);
+        }
     }
 }
 

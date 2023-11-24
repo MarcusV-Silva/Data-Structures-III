@@ -10,8 +10,8 @@
 // Funcionalidades do trabalho
 void funcionalidade1();
 void funcionalidade2();
-void funcionalidade3();
-void funcionalidade4();
+void funcionalidade3(FILE *binFile,char *tmp1, char *tmp2);
+void funcionalidade4(FILE *binFile, int *RRN);
 void funcionalidade5();
 void funcionalidade6();
 void funcionalidade7();
