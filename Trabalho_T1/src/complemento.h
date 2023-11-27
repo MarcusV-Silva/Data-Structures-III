@@ -2,6 +2,7 @@
 #define COMPLEMENTO_H
 
 #include "funcionalidades.h"
+
 // Função que verifica se o arquivo existe
 void checkFile(FILE *arquivo);
 
@@ -12,8 +13,11 @@ int closeFile(FILE *arquivoPonteiro, char *nomeArquivo);
 void binarioNaTela(char *nomeArquivoBinario);
 int scan_quote_string(char *str);
 
+// Função de atualização das tecnologias do arquivo de dados, com base em um registro 
+void verificarTecnologias(FILE *arquivo, registro r);
+
+// Funções utilizadas para captação das entradas na funcionalidade 7
 void scanfEntrada(registro *r);
 void retiraVirgula(char *str);
-void verificarTecnologias(FILE *arquivo, registro r);
 
 #endif

@@ -3,19 +3,24 @@
 
 #include "funcionalidades.h"
 
-// Struct referente aos dados do cabeçalho do arquivo
+//--------------------TRABALHO 1------------------------
+
+// Struct referente aos dados do cabeçalho no arquivo de indices
 typedef struct cabecalhoIndice{
     char status;
     int noRaiz;
     int RRNproxNo;
 }cabIndice;
 
-cabIndice *createCabecalhoIndice();
-void writeCabecalhoIndice(FILE *arquivo, cabIndice *rI);
-void readCabIndice(FILE *arquivo, cabIndice *rI);
-void verificarTecnologias(FILE *dataFile, registro registroInsercao);
+// Verifica o status no arquivo de indice
 void verifyStatusIndice(cabIndice r);
 
+// Criacao da Struct com os valores inicias do cabecalho
+cabIndice *createCabecalhoIndice();
+
+// Manipulação dos arquivos dde
+void writeCabecalhoIndice(FILE *arquivo, cabIndice *rI);
+void readCabIndice(FILE *arquivo, cabIndice *rI);
 
 //--------------------TRABALHO 0------------------------
 

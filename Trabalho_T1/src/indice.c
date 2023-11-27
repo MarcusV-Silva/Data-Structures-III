@@ -5,6 +5,7 @@
 #include "funcionalidades.h"
 #include "complemento.h"
 
+// Funcao que cria a chave, concatenando os campos de tecnologias do registro
 char *createChave(registro *r){
 
     char *concatenada = (char *)malloc(r->tamTecnologiaDestino + r->tamTecnologiaOrigem + 1); 
@@ -14,14 +15,15 @@ char *createChave(registro *r){
     strncat(concatenada, r->nmTecnologiaDestino, r->tamTecnologiaDestino);
 
     freeRegistro(r);
-
+   
     return concatenada;
 }
 
 
+// Funcao para a leitura do arquivo de indice
 int readPagina(FILE *indexFile, No *no){
 
-    //verifica se chegou no fim arquivo
+    // Verifica se chegou no fim arquivo
     if(fread(&no->nroChavesNo, sizeof(int), 1, indexFile) == 0){
         return 0; 
     }
@@ -41,7 +43,7 @@ int readPagina(FILE *indexFile, No *no){
     return 1;
 }
 
-
+// Funcao que escreve uma pagina no arquivo de indice
 void writePagina(FILE *arquivo, No *pagina, int rrn) {
     int posicao = (rrn+1) * TAM_PAG_INDEX;
     int num = 0;
@@ -56,25 +58,25 @@ void writePagina(FILE *arquivo, No *pagina, int rrn) {
         if (pagina->vetChaves[i].chave != NULL) {
             fwrite(pagina->vetChaves[i].chave, sizeof(char), strlen(pagina->vetChaves[i].chave), arquivo);
             num = strlen(pagina->vetChaves[i].chave);
-        } else {
-            printf("Falha no processamento do arquivo.\n");
-        }
-
+        } 
         for(int j = 0; j< TAM_CHAVE - num; j++){
+            // Insere $ no restante da chave
             fwrite(LIXO, sizeof(char), 1, arquivo);
         }
+
         fwrite(&pagina->vetChaves[i].referencia, sizeof(int), 1, arquivo);
     }
 
     fwrite(&pagina->subArvores[ORDEM-1], sizeof(int), 1, arquivo);
 }
 
+// Funcao que retorna a posicao correta das chaves em uma pagina
 int posicaoChave(No *PAGE, Chave KEY) {
     int pos = 0;
 
     while (pos < PAGE->nroChavesNo && strcmp(KEY.chave, PAGE->vetChaves[pos].chave) > 0) {
         if(strcmp(KEY.chave, PAGE->vetChaves[pos].chave) == 0)
-            return -1;
+            return -1; // retorna -1 caso a chave ja exista
 
         pos++;
     }

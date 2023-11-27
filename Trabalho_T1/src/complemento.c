@@ -20,6 +20,7 @@ int closeFile(FILE *arquivoPonteiro, char *nomeArquivo){
     return 0;
 }
 
+// Função criada para retirar o ultimo espaço das entradas que no caso é a virgula
 void retiraVirgula(char *str){
 	size_t length = strlen(str);
 
@@ -31,6 +32,7 @@ void retiraVirgula(char *str){
     }
 }
 
+// Função que atualiza o numero de tecnologias e seus pares no arquivo de dados
 void verificarTecnologias(FILE *arquivo, registro r){
 	fseek(arquivo,  0, SEEK_SET);
 	registroCab *rC = malloc(sizeof(registroCab));
@@ -40,9 +42,12 @@ void verificarTecnologias(FILE *arquivo, registro r){
 	registro *aux = malloc(sizeof(registro));
 	createRegistro(aux);
 
+	//flags de controle
 	int flag0 = 0;
 	int flag1 = 0;
 	int flag2 = 0;
+	
+	// Loop que percorre o arquivo de dados e verifica se a tecnologia ja existe
 	while(readRegistro(aux, arquivo) != 0){
 		if(aux->removido == '0'){
 			if(strcmp(r.nmTecnologiaOrigem,aux->nmTecnologiaOrigem) == 0 || strcmp(r.nmTecnologiaOrigem,aux->nmTecnologiaDestino) == 0)
@@ -54,6 +59,7 @@ void verificarTecnologias(FILE *arquivo, registro r){
 		}
 	}
 
+	// Caso as flags permanecam em 0 e o campo não seja nulo, o numero de tecnologias aumenta
 	if(!flag0 && r.tamTecnologiaOrigem != 0)
 		rC->nroTecnologias++;
 
@@ -64,13 +70,18 @@ void verificarTecnologias(FILE *arquivo, registro r){
 		rC->nroParesTecnologias++;
 	
 	rC->proxRRN++;
+
+	// Escreve no cabeçalho do arquivo de dados
 	writeCabecalho(arquivo, rC);
 }
 
-
+// Função criada para a leitura das entradas da funcionalidade 7
 void scanfEntrada(registro *r){
+
+	//String  auxiliar para o escaneamento
 	char *aux = malloc(sizeof(char)*MAX_STRING);
 
+	// Rotina de entradas, verificando se o campo em questão é NULO
 	scanf("%s", aux);
 	retiraVirgula(aux);
 	r->nmTecnologiaOrigem = (strcmp(aux, "NULO") == 0) ? strdup("") : strdup(aux);
@@ -94,6 +105,7 @@ void scanfEntrada(registro *r){
 
 	free(aux);
 }
+
 //---------------------(Funções fornecidas para o desenvolvimento do trabalho)---------------------
 
 void readline(char* string){

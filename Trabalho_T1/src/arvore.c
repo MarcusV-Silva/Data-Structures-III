@@ -5,14 +5,16 @@
 #include "arvore.h"
 #include "funcionalidades.h"
 
-
+// Função que cria os Nós utilizados na Arvore B
 No *criarNo(){
+    //Alocação do no
     No *no = malloc(sizeof(No));
 
     no->nroChavesNo = 0;
     no->alturaNo = 1;
     no->RRNdoNo = -1;
 
+    // Um espaço vazio a mais foi criado para utilização no split
     for (int i = 0; i < ORDEM+1; i++){
         no->subArvores[i] = -1;
     }
@@ -48,70 +50,77 @@ int buscaArvore(FILE *arquivoI, FILE *arquivoD, int *RRN, int *RRNBusca, Chave* 
 }
 
     
-// Construção bottom-up
+// Inserção na Arvore B por meio de um construção bottom-up
 int inserirArvore(FILE *arquivo, int *rrnAtual, Chave *chave, int *promoRFilho, Chave *promoChave){
 
+    // Verifica o RRN atual, para a construção a partir das folhas 
     if(*rrnAtual == -1){
         *promoChave = *chave;
         *promoRFilho = -1;
         return PROMOTION;
     }else{
+        // Se a página não é um nó folha, a função é chamada recursivamente até que ela chegue no nó folha
         No *pagina = criarNo();
         int numPagina = (*rrnAtual + 1) * TAM_PAG_INDEX;
 
+        // Armazenamento da pagina contida no rrn atual
         fseek(arquivo, numPagina, SEEK_SET);
         readPagina(arquivo, pagina);
        
-        //verificar se essa posicao ta certa 
+        // Procura a posição na arvore
         int posicaoC = posicaoChave(pagina, *chave);
 
         if(posicaoC == -1){
-            free(pagina);
-            printf("Erro"); //deixar como comentario
+            free(pagina); // A chave ja existe na pagina
             return ERRO;
         }
 
+        // Inicio da rotina de recursão
         Chave *promoBKey = malloc(sizeof(Chave));
         int *rrnBPromo = malloc(sizeof(int));
         int valorRetorno = inserirArvore(arquivo, &pagina->subArvores[posicaoC], chave, rrnBPromo, promoBKey);
-        //printPagina(*pagina);
        
+        // Se o valor de retorno não pedir promoção termina a rotina de recursão
         if(valorRetorno == NO_PROMOTION || valorRetorno == ERRO){
             free(pagina);
             return valorRetorno;
         }else if(pagina->nroChavesNo < QNT_MAX_CHAVE){
-                //no tem Espaço
+                // Caso haja espaço na pagina, ocorre a inserção sem Split
                 inserirChave(pagina, posicaoC, *promoBKey, *rrnBPromo);
                 writePagina(arquivo, pagina, *rrnAtual);
-                //printPagina(*pagina);
                 free(pagina);
                 return NO_PROMOTION;
             }else{
-                //no cheio 
+                // Caso em que não há espaço na pagina, necessitando que haja o Split
+
+                // Cria uma nova Pagina
                 No *novaPag = criarNo();
+
+                // Inicia a função de Split
                 splitArvore(arquivo, promoBKey, rrnBPromo, &pagina, promoChave, promoRFilho, &novaPag);
 
-                writePagina(arquivo, pagina, *rrnAtual);
-
+                // Inserção da pagina atual e da nova pagina, com base no valor do proximo RRN
                 cabIndice *c1 = createCabecalhoIndice();
                 readCabIndice(arquivo, c1);
-
                 novaPag->RRNdoNo = c1->RRNproxNo;
-                writePagina(arquivo, novaPag, novaPag->RRNdoNo);
                 
+                writePagina(arquivo, pagina, *rrnAtual);
+                writePagina(arquivo, novaPag, novaPag->RRNdoNo);
+
+                // Atualização de valores para o cabecalho e para a promoção da chave
                 *promoRFilho = c1->RRNproxNo;
                 c1->RRNproxNo++;
                 writeCabecalhoIndice(arquivo,c1);
             
+                // Liberação da memoria
                 free(pagina);
                 free(novaPag);
                 return PROMOTION;
             }
-
-    }
-         
+    }   
 }
 
+// Insere a Chave na posição correta
 void inserirChave(No *PAGE, int pos, Chave KEY, int RRN) {
     // Deslocar as chaves e subárvores para abrir espaço para a nova chave
     int i;
@@ -127,11 +136,13 @@ void inserirChave(No *PAGE, int pos, Chave KEY, int RRN) {
     PAGE->nroChavesNo++;
 }
  
+// Função que raeliza o Split na arvore
 void splitArvore(FILE *arquivo, Chave *iChave, int *iRRN, No **page, Chave *promoChave, int *promoRFilho,  No **newPage){
+    // Cria uma pagina temporaria
     No workingPage;
     workingPage.nroChavesNo = (*page)->nroChavesNo;
     workingPage.alturaNo = (*page)->alturaNo;
-    workingPage.RRNdoNo = -1;  // O RRN do novo nó será definido após a alocação
+    workingPage.RRNdoNo = -1;  
 
     // Copiar todas as chaves e subárvores da página original para a página temporária
     for (int i = 0; i < QNT_MAX_CHAVE; i++) {
@@ -140,6 +151,7 @@ void splitArvore(FILE *arquivo, Chave *iChave, int *iRRN, No **page, Chave *prom
     }
     workingPage.subArvores[QNT_MAX_CHAVE] = (*page)->subArvores[QNT_MAX_CHAVE];
 
+    // Insere nova chave na posicao correta da pagina auxilar, utilizando o espaço auxiliar definido na struct de No
     int pos = posicaoChave(&workingPage, *iChave);
     inserirChave(&workingPage, pos, *iChave, *iRRN);
 
@@ -151,12 +163,15 @@ void splitArvore(FILE *arquivo, Chave *iChave, int *iRRN, No **page, Chave *prom
     }
     (*page)->subArvores[QNT_MAX_CHAVE] = -1;
 
+
+    // Define os novos campos das paginas
     (*page)->nroChavesNo = 0;
     (*page)->alturaNo = workingPage.alturaNo;
 
     (*newPage)->alturaNo = workingPage.alturaNo;
     (*newPage)->nroChavesNo = 0;
 
+    // Define as chaves que devem permanecer na pagina a esquerda
     for (int i = 0; i < ORDEM/2; i++) {
         (*page)->vetChaves[i] = workingPage.vetChaves[i];
         (*page)->subArvores[i] = workingPage.subArvores[i];
@@ -164,9 +179,11 @@ void splitArvore(FILE *arquivo, Chave *iChave, int *iRRN, No **page, Chave *prom
     }
     (*page)->subArvores[ORDEM/2] = workingPage.subArvores[ORDEM/2]; 
 
+    // Definição da chave de promoção e do RRN de promoção
     *promoChave = workingPage.vetChaves[ORDEM/2]; 
     *promoRFilho = (*page)->subArvores[ORDEM/2];
 
+    // Define as chaves que devem ir para nova pagina a direita
     int j = 0;
     for (int i =  ORDEM/2+ 1; i < QNT_MAX_CHAVE+1; i++ ,j++) {
         (*newPage)->vetChaves[j] = workingPage.vetChaves[i];
@@ -175,6 +192,3 @@ void splitArvore(FILE *arquivo, Chave *iChave, int *iRRN, No **page, Chave *prom
     }
     (*newPage)->subArvores[j] = workingPage.subArvores[ORDEM]; 
 }
-
-
-
