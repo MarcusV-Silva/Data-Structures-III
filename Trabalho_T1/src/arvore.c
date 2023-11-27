@@ -25,48 +25,6 @@ No *criarNo(){
     return no;
 }
 
-int readPagina(FILE *indexFile, No *no){
-
-    if(fread(&no->nroChavesNo, sizeof(int), 1, indexFile) == 0){
-        return 0; //fim arquivo
-    }
-    fread(&no->alturaNo, sizeof(int), 1, indexFile);
-    fread(&no->RRNdoNo, sizeof(int), 1, indexFile);
-    
-    for(int i = 0; i < QNT_MAX_CHAVE; i++){
-        fread(&no->subArvores[i], sizeof(int), 1, indexFile);
-        fread(no->vetChaves[i].chave, sizeof(char), 55, indexFile);
-        size_t tamanho = strlen(no->vetChaves[i].chave);
-        no->vetChaves[i].chave[tamanho] = '\0';
-        fread(&no->vetChaves[i].referencia, sizeof(int), 1, indexFile);
-    }
-
-    fread(&no->subArvores[ORDEM-1], sizeof(int), 1, indexFile);
-
-    return 1;
-}
-
-/*int buscaArvore(FILE *arquivo, int RRN, Chave busca){
-    if(RRN == -1)
-        return NOT_FOUND;
-    else{
-        No *no = criarNo();
-        int numPagina = (RRN + 1) * TAM_PAG_INDEX;
-        fseek(arquivo, numPagina, SEEK_SET);
-        readPagina(arquivo, no);
-        for(int i = 0; i < no->nroChavesNo; i++){
-            if(strcmp(no->vetChaves[i].chave,busca.chave) == 0)
-                return FOUND;
-        }
-
-        int posicao = posicaoChave(no, busca);
-        if(posicao == -1)
-            return FOUND;
-
-        return buscaArvore(arquivo, no->subArvores[posicao], busca);
-    }
-}*/
-
 int buscaArvore(FILE *arquivoI, FILE *arquivoD, int *RRN, int *RRNBusca, Chave* busca){
 
     if(*RRN == -1){
@@ -77,10 +35,6 @@ int buscaArvore(FILE *arquivoI, FILE *arquivoD, int *RRN, int *RRNBusca, Chave* 
         fseek(arquivoI, numPagina, SEEK_SET);
         readPagina(arquivoI, no);
 
-        /*for(int i = 0; i < no->nroChavesNo; i++){
-            if(strcmp(no->vetChaves[i].chave,busca->chave) == 0)
-                return no->vetChaves[i].referencia;
-        }*/
         int posicao = posicaoChave(no, *busca);
 
         if(strcmp(busca->chave,no->vetChaves[posicao].chave) == 0){
@@ -93,19 +47,6 @@ int buscaArvore(FILE *arquivoI, FILE *arquivoD, int *RRN, int *RRNBusca, Chave* 
     }
 }
 
-int posicaoChave(No *PAGE, Chave KEY) {
-    int pos = 0;
-
-    // Encontra a posição onde a chave deve ser inserida ou onde ela está localizada
-    while (pos < PAGE->nroChavesNo && strcmp(KEY.chave, PAGE->vetChaves[pos].chave) > 0) {
-        if(strcmp(KEY.chave, PAGE->vetChaves[pos].chave) == 0)
-            return -1;
-
-        pos++;
-    }
-
-    return pos;
-}
     
 // Construção bottom-up
 int inserirArvore(FILE *arquivo, int *rrnAtual, Chave *chave, int *promoRFilho, Chave *promoChave){
@@ -235,59 +176,5 @@ void splitArvore(FILE *arquivo, Chave *iChave, int *iRRN, No **page, Chave *prom
     (*newPage)->subArvores[j] = workingPage.subArvores[ORDEM]; 
 }
 
-void writePagina(FILE *arquivo, No *pagina, int rrn) {
-    int posicao = (rrn+1) * TAM_PAG_INDEX;
-    int num = 0;
-    fseek(arquivo, posicao, SEEK_SET);
 
-    fwrite(&pagina->nroChavesNo, sizeof(int), 1, arquivo);
-    fwrite(&pagina->alturaNo, sizeof(int), 1, arquivo);
-    fwrite(&pagina->RRNdoNo, sizeof(int), 1, arquivo);
-
-    for (int i = 0; i < QNT_MAX_CHAVE; i++) {
-        fwrite(&pagina->subArvores[i], sizeof(int), 1, arquivo);
-        if (pagina->vetChaves[i].chave != NULL) {
-            fwrite(pagina->vetChaves[i].chave, sizeof(char), strlen(pagina->vetChaves[i].chave), arquivo);
-            num = strlen(pagina->vetChaves[i].chave);
-        } else {
-            printf("Falha no processamento do arquivo.\n");
-        }
-
-        for(int j = 0; j< TAM_CHAVE - num; j++){
-            fwrite(LIXO, sizeof(char), 1, arquivo);
-        }
-        fwrite(&pagina->vetChaves[i].referencia, sizeof(int), 1, arquivo);
-    }
-
-    fwrite(&pagina->subArvores[ORDEM-1], sizeof(int), 1, arquivo);
-}
-
-// Funcao usada para debug
-void printPagina(No no){
-    //printf("\n\nNro Chaves %d ", no.nroChavesNo);
-   // printf("\nAltura %d ", no.alturaNo) ;
-   printf("\nRRN no %d\n ", no.RRNdoNo);
-
-    for (int i = 0; i < ORDEM+1; i++){
-        printf("\nSubArvore %d = %d ",i, no.subArvores[i]);
-    }
-
-    for(int i = 0; i< QNT_MAX_CHAVE+1; i++){
-        printf("\nChave %d = %s ",i, no.vetChaves[i].chave);
-        printf(" Referencia %d = %d ",i, no.vetChaves[i].referencia);
-
-    }
-
-    printf("\n\n");
-}
-
-
-void printArvore(FILE *arquivo){
-    fseek(arquivo, 0, SEEK_SET);
-    No *r = criarNo();
-    for(int i = 0; i<100; i++){
-        readPagina(arquivo, r);
-        printPagina(*r);
-    }
-}
 

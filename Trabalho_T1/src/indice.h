@@ -10,11 +10,9 @@
 #define TAM_PAG_FIXO
 
 #define LIXO "$"
+
+#include "funcionalidades.h"
 #include "registro.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
 
 typedef struct tipoChave{
     int referencia;        // Pr (campo de referência para o registro no arquivo de dados)
@@ -32,4 +30,8 @@ typedef struct No{
 }No;
 
 char *createChave(registro *r);
+int readPagina(FILE *indexFile, No *no);
+int posicaoChave(No *no, Chave ChaveTmp);
+void writePagina(FILE *arquivo, No *pagina, int rrn);
+
 #endif

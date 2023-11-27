@@ -6,10 +6,7 @@
 #define TAMREGISTROFIXO 21
 #define LIXO "$"
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
+#include "funcionalidades.h"
 
 // Define um valor maximo para o tamanho das strings no registro
 #define MAX_STRING 55

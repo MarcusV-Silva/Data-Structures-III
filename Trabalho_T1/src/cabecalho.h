@@ -1,7 +1,8 @@
 #ifndef CABECALHO_H
 #define CABECALHO_H
 
-#include "registro.h"
+#include "funcionalidades.h"
+
 // Struct referente aos dados do cabeçalho do arquivo
 typedef struct cabecalhoIndice{
     char status;

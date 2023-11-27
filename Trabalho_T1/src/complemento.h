@@ -1,6 +1,7 @@
 #ifndef COMPLEMENTO_H
 #define COMPLEMENTO_H
 
+#include "funcionalidades.h"
 // Função que verifica se o arquivo existe
 void checkFile(FILE *arquivo);
 
