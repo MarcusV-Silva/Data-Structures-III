@@ -80,6 +80,13 @@ void verifyStatus(registroCab rC){
     }
 }
 
+void verifyStatusIndice(cabIndice r){
+    if(strcmp(&r.status, "0") == 0){
+        printf("Falha no processamento do arquivo.");
+        exit(0);
+    }
+}
+
 // Função que adiciona e armazena uma nova tecnologia
 void addTecnologiaUnica(char tecUnic[][MAX_STRING], char *tecnologia, int tamanho, int *numTec) {
     if(tamanho == 0){

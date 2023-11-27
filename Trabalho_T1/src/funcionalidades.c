@@ -127,7 +127,8 @@ void funcionalidade6(){
 
     cabIndice *indexCab = createCabecalhoIndice();
     readCabIndice(indexFile, indexCab);
-    
+    verifyStatusIndice(*indexCab);
+
     char tmp1[MAX_STRING];
     char tmp10[MAX_STRING];
 
@@ -186,14 +187,20 @@ void funcionalidade7(){
     FILE *indexFile = fopen(dataINDEX, "rb+");
     checkFile(indexFile);
 
+
     cabIndice *indexCab = createCabecalhoIndice();
     readCabIndice(indexFile, indexCab);
+    verifyStatusIndice(*indexCab);
     indexCab->status='0'; // verificar
     writeCabecalhoIndice(indexFile, indexCab);
+    fseek(indexFile, 0, SEEK_SET);
 
     registroCab *rC = malloc(sizeof(registroCab));
     createCabecalho(rC);
     readCabecalho(rC, dataFile);
+    verifyStatus(*rC);
+
+    rC->status='0';
 
     fseek(dataFile, 0, SEEK_END);
     int tamanho = ftell(dataFile);// num bytes
@@ -257,7 +264,12 @@ void funcionalidade7(){
     }
 
     indexCab->status = '1';
-    writeCabecalhoIndice(indexFile, indexCab);
+    fseek(indexFile, 0, SEEK_SET);
+    fwrite(&indexCab->status, sizeof(char), 1, indexFile);
+
+    rC->status = '1';
+    fseek(dataFile, 0, SEEK_SET);
+    fwrite(&rC->status, sizeof(char), 1, dataFile);
 
     fclose(indexFile);
     fclose(dataFile);
