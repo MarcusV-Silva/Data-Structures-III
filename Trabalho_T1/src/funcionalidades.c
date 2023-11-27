@@ -136,7 +136,7 @@ void funcionalidade7(){
     registroCab *rC = malloc(sizeof(registroCab));
     createCabecalho(rC);
     readCabecalho(rC, dataFile);
-
+    rC->status='0';
     fseek(dataFile, 0, SEEK_END);
     int tamanho = ftell(dataFile);// num bytes
     tamanho = (tamanho - 12)/TAMREGISTRO;// rrn final
@@ -197,9 +197,12 @@ void funcionalidade7(){
             }
         }
     }
-
+    rC->status='1';
+    fseek(dataFile, 0, SEEK_END);
+    writeCabecalho()
     indexCab->status = '1';
-    writeCabecalhoIndice(indexFile, indexCab);
+    fseek(indexFile, 0, SEEK_SET);
+    fwrite(&indexCab->status, sizeof(char), 1, indexFile);
 
     fclose(indexFile);
     fclose(dataFile);

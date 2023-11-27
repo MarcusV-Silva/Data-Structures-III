@@ -44,12 +44,14 @@ void verificarTecnologias(FILE *arquivo, registro r){
 	int flag1 = 0;
 	int flag2 = 0;
 	while(readRegistro(aux, arquivo) != 0){
-		if(strcmp(r.nmTecnologiaOrigem,aux->nmTecnologiaOrigem) == 0 || strcmp(r.nmTecnologiaOrigem,aux->nmTecnologiaDestino) == 0)
-			flag0 = 1;
-		if(strcmp(r.nmTecnologiaDestino,aux->nmTecnologiaOrigem) == 0 || strcmp(r.nmTecnologiaDestino,aux->nmTecnologiaDestino) == 0)
-			flag1 = 1;
-		if(strcmp(r.nmTecnologiaOrigem,aux->nmTecnologiaOrigem) == 0 && strcmp(r.nmTecnologiaDestino,aux->nmTecnologiaDestino) == 0)
-			flag2 = 1;
+		if(aux->removido == '0'){
+			if(strcmp(r.nmTecnologiaOrigem,aux->nmTecnologiaOrigem) == 0 || strcmp(r.nmTecnologiaOrigem,aux->nmTecnologiaDestino) == 0)
+				flag0 = 1;
+			if(strcmp(r.nmTecnologiaDestino,aux->nmTecnologiaOrigem) == 0 || strcmp(r.nmTecnologiaDestino,aux->nmTecnologiaDestino) == 0)
+				flag1 = 1;
+			if(strcmp(r.nmTecnologiaOrigem,aux->nmTecnologiaOrigem) == 0 && strcmp(r.nmTecnologiaDestino,aux->nmTecnologiaDestino) == 0)
+				flag2 = 1;
+		}
 	}
 
 	if(!flag0 && r.tamTecnologiaOrigem != 0)

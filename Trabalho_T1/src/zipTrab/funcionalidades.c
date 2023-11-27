@@ -199,7 +199,8 @@ void funcionalidade7(){
     }
 
     indexCab->status = '1';
-    writeCabecalhoIndice(indexFile, indexCab);
+    fseek(indexFile, 0, SEEK_SET);
+    fwrite(&indexCab->status, sizeof(char), 1, indexFile);
 
     fclose(indexFile);
     fclose(dataFile);
