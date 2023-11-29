@@ -79,26 +79,7 @@ void funcionalidade5(){
         int promo = inserirArvore(indexFile, &rrnRaiz, &chaveI, promoRFilho, promoChave);
        
         if (promo == PROMOTION) {
-            No *novoNo = criarNo();
-
-            No *auxNo = criarNo();
-            fseek(indexFile, TAM_PAG_INDEX*(indexCab->noRaiz+1), SEEK_SET);
-            readPagina(indexFile, auxNo);
-
-            novoNo->nroChavesNo = 1;
-            novoNo->alturaNo = auxNo->alturaNo + 1;
-            novoNo->vetChaves[0] = *promoChave;
-            novoNo->subArvores[0] = indexCab->noRaiz;
-            novoNo->subArvores[1] = *promoRFilho;
-
-            readCabIndice(indexFile, indexCab);
-            novoNo->RRNdoNo = indexCab->RRNproxNo;
-            
-            
-            writePagina(indexFile, novoNo, novoNo->RRNdoNo);
-            indexCab->noRaiz = novoNo->RRNdoNo;
-            indexCab->RRNproxNo++;
-            writeCabecalhoIndice(indexFile, indexCab);
+            realizaPromocao(indexFile, indexCab, promoRFilho, promoChave);
         }
 
         flag++;
@@ -113,6 +94,7 @@ void funcionalidade5(){
     
     binarioNaTela(dataINDEX);
 }
+
 
 void funcionalidade6(){
 
@@ -156,12 +138,12 @@ void funcionalidade6(){
             scanf("%s ", tmp10);
         }
         strcpy(chaveBuscaF3.chave, tmp10);
-
+        
         int len = strlen(tmp10);
         for(int i = len; i < MAX_STRING; i++){
             tmp10[i] = '$';
         }
-        strcpy(chaveBusca.chave ,tmp10);
+        strcpy(chaveBusca.chave,tmp10);
 
         if(strcmp(tmp1, "nomeTecnologiaOrigemDestino") == 0){
             buscaArvore(indexFile, dataFile, &rrnDados, &buscaDados, &chaveBusca);
@@ -169,12 +151,16 @@ void funcionalidade6(){
             funcionalidade3(dataFile,tmp1, chaveBuscaF3.chave);
         }
     }
-
+    
     indexCab->status = '1';
     writeCabecalhoIndice(indexFile, indexCab);
 
     fclose(indexFile);
     fclose(dataFile);
+
+    free(dataBIN);
+    free(dataINDEX);
+    free(rC);
 }
 
 void funcionalidade7(){
@@ -189,10 +175,10 @@ void funcionalidade7(){
     FILE *indexFile = fopen(dataINDEX, "rb+");
     checkFile(indexFile);
 
-
     cabIndice *indexCab = createCabecalhoIndice();
     readCabIndice(indexFile, indexCab);
     verifyStatusIndice(*indexCab);
+
     indexCab->status='0'; // verificar
     writeCabecalhoIndice(indexFile, indexCab);
     fseek(indexFile, 0, SEEK_SET);
@@ -237,30 +223,11 @@ void funcionalidade7(){
             Chave *promoChave = malloc(sizeof(Chave));
             int *promoRFilho = malloc(sizeof(int));
 
-
             int rrnRaiz = indexCab->noRaiz;
             int promo = inserirArvore(indexFile, &rrnRaiz, &vetChave[i], promoRFilho, promoChave);
         
             if (promo == PROMOTION) {
-                No *novoNo = criarNo();
-
-                No *auxNo = criarNo();
-                fseek(indexFile, TAM_PAG_INDEX*(indexCab->noRaiz+1), SEEK_SET);
-                readPagina(indexFile, auxNo);
-
-                novoNo->nroChavesNo = 1;
-                novoNo->alturaNo = auxNo->alturaNo + 1;
-                novoNo->vetChaves[0] = *promoChave;
-                novoNo->subArvores[0] = indexCab->noRaiz;
-                novoNo->subArvores[1] = *promoRFilho;
-
-                readCabIndice(indexFile, indexCab);
-                novoNo->RRNdoNo = indexCab->RRNproxNo;
-                
-                writePagina(indexFile, novoNo, novoNo->RRNdoNo);
-                indexCab->noRaiz = novoNo->RRNdoNo;
-                indexCab->RRNproxNo++;
-                writeCabecalhoIndice(indexFile, indexCab);
+                realizaPromocao(indexFile, indexCab, promoRFilho, promoChave);
             }
         }
     }
@@ -278,6 +245,10 @@ void funcionalidade7(){
 
     binarioNaTela(dataBIN);
     binarioNaTela(dataINDEX);
+
+    free(dataBIN);
+    free(dataINDEX);
+    free(rC);
 }
 
 

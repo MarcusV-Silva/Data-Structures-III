@@ -88,7 +88,7 @@ int posicaoChave(No *PAGE, Chave KEY) {
         int comparacao = strcmp(KEY.chave, PAGE->vetChaves[meio].chave);
 
         if (comparacao == 0) {
-            return -1; // Chave encontrada, retorna -1
+            return meio; 
         } else if (comparacao < 0) {
             fim = meio - 1; // A chave está na metade inferior
         } else {

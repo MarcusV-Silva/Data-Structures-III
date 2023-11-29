@@ -36,9 +36,8 @@ int buscaArvore(FILE *arquivoI, FILE *arquivoD, int *RRN, int *RRNBusca, Chave* 
         int numPagina = (*RRN + 1) * TAM_PAG_INDEX;
         fseek(arquivoI, numPagina, SEEK_SET);
         readPagina(arquivoI, no);
-
+        
         int posicao = posicaoChave(no, *busca);
-
         if(strcmp(busca->chave,no->vetChaves[posicao].chave) == 0){
             *RRNBusca = no->vetChaves[posicao].referencia;
             funcionalidade4(arquivoD, RRNBusca);
@@ -191,4 +190,45 @@ void splitArvore(FILE *arquivo, Chave *iChave, int *iRRN, No **page, Chave *prom
         (*newPage)->nroChavesNo++;
     }
     (*newPage)->subArvores[j] = workingPage.subArvores[ORDEM]; 
+}
+
+void realizaPromocao(FILE *indexFile, cabIndice *indexCab, int *promoRFilho, Chave *promoChave){
+    No *novoNo = criarNo();
+    No *auxNo = criarNo();
+
+    fseek(indexFile, TAM_PAG_INDEX*(indexCab->noRaiz+1), SEEK_SET);
+    readPagina(indexFile, auxNo);
+
+    novoNo->nroChavesNo = 1;
+    novoNo->alturaNo = auxNo->alturaNo + 1;
+    novoNo->vetChaves[0] = *promoChave;
+    novoNo->subArvores[0] = indexCab->noRaiz;
+    novoNo->subArvores[1] = *promoRFilho;
+
+    readCabIndice(indexFile, indexCab);
+    novoNo->RRNdoNo = indexCab->RRNproxNo;
+    
+    
+    writePagina(indexFile, novoNo, novoNo->RRNdoNo);
+    indexCab->noRaiz = novoNo->RRNdoNo;
+    indexCab->RRNproxNo++;
+    writeCabecalhoIndice(indexFile, indexCab);
+}
+
+void printPagina(No no){
+    //printf("\n\nNro Chaves %d ", no.nroChavesNo);
+   // printf("\nAltura %d ", no.alturaNo) ;
+   printf("\nRRN no %d\n ", no.RRNdoNo);
+
+    for (int i = 0; i < ORDEM+1; i++){
+        printf("\nSubArvore %d = %d ",i, no.subArvores[i]);
+    }
+
+    for(int i = 0; i< QNT_MAX_CHAVE+1; i++){
+        printf("\nChave %d = %s ",i, no.vetChaves[i].chave);
+        printf(" Referencia %d = %d ",i, no.vetChaves[i].referencia);
+
+    }
+
+    printf("\n\n");
 }

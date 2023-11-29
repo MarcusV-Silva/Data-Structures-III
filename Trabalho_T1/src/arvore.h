@@ -44,4 +44,8 @@ void splitArvore(FILE *arquivo, Chave *iChave, int *iRRN, No **page, Chave *prom
 */
 void inserirChave(No *PAGE, int pos, Chave KEY, int RRN);
 
+
+void realizaPromocao(FILE *indexFile, cabIndice *indexCab, int *promoRFilho, Chave *promoChave);
+
+void printPagina(No no);
 #endif 
