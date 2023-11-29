@@ -27,17 +27,22 @@ No *criarNo(){
     return no;
 }
 
+// Função de busca na árvore B
 int buscaArvore(FILE *arquivoI, FILE *arquivoD, int *RRN, int *RRNBusca, Chave* busca){
 
     if(*RRN == -1){
         return printf("Registro inexistente.\n");
     }else{
+        // Busca a chave na árvore B com o fseek e faz a leitura da página de disco
+
         No *no = criarNo();
         int numPagina = (*RRN + 1) * TAM_PAG_INDEX;
         fseek(arquivoI, numPagina, SEEK_SET);
         readPagina(arquivoI, no);
         
         int posicao = posicaoChave(no, *busca);
+
+        // If e else para verificar se a chave foi encontrada, ou se ainda é necessário percorrer a árvore
         if(strcmp(busca->chave,no->vetChaves[posicao].chave) == 0){
             *RRNBusca = no->vetChaves[posicao].referencia;
             funcionalidade4(arquivoD, RRNBusca);
@@ -192,6 +197,7 @@ void splitArvore(FILE *arquivo, Chave *iChave, int *iRRN, No **page, Chave *prom
     (*newPage)->subArvores[j] = workingPage.subArvores[ORDEM]; 
 }
 
+// Função que faz a promoção das chaves na árvore B
 void realizaPromocao(FILE *indexFile, cabIndice *indexCab, int *promoRFilho, Chave *promoChave){
     No *novoNo = criarNo();
     No *auxNo = criarNo();

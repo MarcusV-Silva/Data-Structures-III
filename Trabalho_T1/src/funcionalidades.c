@@ -85,6 +85,7 @@ void funcionalidade5(){
         flag++;
     }
     
+    // Atualizao status e fecha os arquivos
     readCabIndice(indexFile, indexCab);
     indexCab->status = '1';
     writeCabecalhoIndice(indexFile, indexCab);
@@ -92,11 +93,20 @@ void funcionalidade5(){
     fclose(indexFile);
     fclose(dataFile); 
     
+    // Usando a função fornecida e liberando memória
     binarioNaTela(dataINDEX);
+
+    free(no);
+    free(r0);
+    free(dataBIN);
+    free(promoChave);
+    free(promoRFilho);
+    free(indexCab);
 }
 
 
 void funcionalidade6(){
+    // Inicializa o arquivo de dados e o de índices e verifica se eles existem
 
     char *dataBIN = malloc(sizeof(char) * 40);
     char *dataINDEX = malloc(sizeof(char) * 40);
@@ -109,14 +119,18 @@ void funcionalidade6(){
     FILE *indexFile = fopen(dataINDEX, "rb");
     checkFile(indexFile);
 
+    // Cria o cabeçalho do arquivo de índices
     cabIndice *indexCab = createCabecalhoIndice();
     readCabIndice(indexFile, indexCab);
     verifyStatusIndice(*indexCab);
 
+    // Strings temporárias
     char tmp1[MAX_STRING];
-    char tmp10[MAX_STRING];
+    char tmpT[MAX_STRING];
 
     int rrnDados = indexCab->noRaiz;
+
+    // Cria o cabeçalho do arquivo de dados
     registroCab *rC = malloc(sizeof(registroCab));
     createCabecalho(rC);
     readCabecalho(rC, dataFile);
@@ -124,46 +138,58 @@ void funcionalidade6(){
 
     int buscaDados = -1;
 
+    // For para realizar a quantidade de buscas solicitadas
     for(int i = 0; i < n; i++){
         Chave chaveBusca, chaveBuscaF3;
         
+        // Strings para armazenar as entradas
         chaveBusca.chave = malloc(sizeof(char)*MAX_STRING);
         chaveBuscaF3.chave = malloc(sizeof(char)*MAX_STRING);
 
         scanf(" %s", tmp1);
 
+        // Retira as aspas das strings caso alguma entrada tenha aspas
         if(strcmp(tmp1,"nomeTecnologiaOrigemDestino") == 0 || strcmp(tmp1,"nomeTecnologiaOrigem") == 0 || strcmp(tmp1,"nomeTecnologiaDestino") == 0){
-            scan_quote_string(tmp10);
+            scan_quote_string(tmpT);
         }else{
-            scanf("%s ", tmp10);
+            scanf("%s ", tmpT);
         }
-        strcpy(chaveBuscaF3.chave, tmp10);
-        
-        int len = strlen(tmp10);
-        for(int i = len; i < MAX_STRING; i++){
-            tmp10[i] = '$';
-        }
-        strcpy(chaveBusca.chave,tmp10);
 
+        // Atribui o valor das strings temporárias para as chaves de busca
+        // Também são colocados '$' em uma das chaves para facilitar a busca na árvore B
+        strcpy(chaveBuscaF3.chave, tmpT);
+        
+        int len = strlen(tmpT);
+        for(int i = len; i < MAX_STRING; i++){
+            tmpT[i] = '$';
+        }
+        strcpy(chaveBusca.chave,tmpT);
+
+        // If e else para verificar se a busca será feita na árvore ou no arquivo de dados
         if(strcmp(tmp1, "nomeTecnologiaOrigemDestino") == 0){
             buscaArvore(indexFile, dataFile, &rrnDados, &buscaDados, &chaveBusca);
         }else{
             funcionalidade3(dataFile,tmp1, chaveBuscaF3.chave);
         }
     }
-    
+
+    // Atualizando o status do arquivo e fechando eles
     indexCab->status = '1';
     writeCabecalhoIndice(indexFile, indexCab);
 
     fclose(indexFile);
     fclose(dataFile);
 
+    // Liberando memória
+    free(rC);
+    free(indexCab);
     free(dataBIN);
     free(dataINDEX);
-    free(rC);
 }
 
 void funcionalidade7(){
+
+    // Inicializa o arquivo de dados e o de índices e verifica se eles existem
     char *dataBIN = malloc(sizeof(char) * 40);
     char *dataINDEX = malloc(sizeof(char) * 40);
     int n = 0;
@@ -175,10 +201,12 @@ void funcionalidade7(){
     FILE *indexFile = fopen(dataINDEX, "rb+");
     checkFile(indexFile);
 
+    // Cria o cabeçalho do arquivo de índices
     cabIndice *indexCab = createCabecalhoIndice();
     readCabIndice(indexFile, indexCab);
     verifyStatusIndice(*indexCab);
 
+    // Cria o cabeçalho do arquivo de dados
     indexCab->status='0'; // verificar
     writeCabecalhoIndice(indexFile, indexCab);
     fseek(indexFile, 0, SEEK_SET);
@@ -232,6 +260,7 @@ void funcionalidade7(){
         }
     }
 
+    // Atualizando os status dos arquivos e fechando-os
     indexCab->status = '1';
     fseek(indexFile, 0, SEEK_SET);
     fwrite(&indexCab->status, sizeof(char), 1, indexFile);
@@ -243,12 +272,14 @@ void funcionalidade7(){
     fclose(indexFile);
     fclose(dataFile);
 
+    // Usando as funções fornecidas e liberando memória
     binarioNaTela(dataBIN);
     binarioNaTela(dataINDEX);
 
+    free(rC);
+    free(indexCab);
     free(dataBIN);
     free(dataINDEX);
-    free(rC);
 }
 
 
