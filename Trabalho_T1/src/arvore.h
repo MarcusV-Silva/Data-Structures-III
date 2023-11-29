@@ -13,6 +13,14 @@
 // Função que cria um No da Arvore B
 No *criarNo();
 
+/* @brief Realiza busca na Arvore B
+* @param arquivoI Arquivo de Indices
+* @param arquivoD Arquivo de Dados
+* @param RRN RRN do arquivo de indice que guiara a busca
+* @param RRNBusca RRN do arquivo que dados que sera definido
+* @param busca Chave buscada
+* @return Rotina de busca
+*/
 int buscaArvore(FILE *arquivoI, FILE *arquivoD, int *RRN, int *RRNBusca, Chave* busca);
 
 /*@brief - Função de inserção na Arvore B
@@ -44,8 +52,7 @@ void splitArvore(FILE *arquivo, Chave *iChave, int *iRRN, No **page, Chave *prom
 */
 void inserirChave(No *PAGE, int pos, Chave KEY, int RRN);
 
-
+// Função que reliza a promoção de uma chave em um arquivo de indices
 void realizaPromocao(FILE *indexFile, cabIndice *indexCab, int *promoRFilho, Chave *promoChave);
 
-void printPagina(No no);
 #endif 

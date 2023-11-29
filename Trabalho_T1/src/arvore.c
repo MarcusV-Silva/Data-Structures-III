@@ -205,6 +205,7 @@ void realizaPromocao(FILE *indexFile, cabIndice *indexCab, int *promoRFilho, Cha
     fseek(indexFile, TAM_PAG_INDEX*(indexCab->noRaiz+1), SEEK_SET);
     readPagina(indexFile, auxNo);
 
+    // Definição dos campos da nova pagina
     novoNo->nroChavesNo = 1;
     novoNo->alturaNo = auxNo->alturaNo + 1;
     novoNo->vetChaves[0] = *promoChave;
@@ -213,28 +214,11 @@ void realizaPromocao(FILE *indexFile, cabIndice *indexCab, int *promoRFilho, Cha
 
     readCabIndice(indexFile, indexCab);
     novoNo->RRNdoNo = indexCab->RRNproxNo;
-    
-    
     writePagina(indexFile, novoNo, novoNo->RRNdoNo);
+
+    // Atualização do cabeçalho
     indexCab->noRaiz = novoNo->RRNdoNo;
     indexCab->RRNproxNo++;
     writeCabecalhoIndice(indexFile, indexCab);
 }
 
-void printPagina(No no){
-    //printf("\n\nNro Chaves %d ", no.nroChavesNo);
-   // printf("\nAltura %d ", no.alturaNo) ;
-   printf("\nRRN no %d\n ", no.RRNdoNo);
-
-    for (int i = 0; i < ORDEM+1; i++){
-        printf("\nSubArvore %d = %d ",i, no.subArvores[i]);
-    }
-
-    for(int i = 0; i< QNT_MAX_CHAVE+1; i++){
-        printf("\nChave %d = %s ",i, no.vetChaves[i].chave);
-        printf(" Referencia %d = %d ",i, no.vetChaves[i].referencia);
-
-    }
-
-    printf("\n\n");
-}

@@ -55,16 +55,19 @@ void funcionalidade5(){
         registro *r = malloc(sizeof(registro));
         int aux = readRegistro(r, dataFile);
         
+        // Fim do arquivo
         if(aux == 0){
             flag = -1;
             break;
         }
 
+        // Registro Removido
         if(aux == -1){
             rrnDados++;
             continue;
         }
 
+        // Registro com campo Nulo
         if(r->tamTecnologiaDestino == 0 || r->tamTecnologiaOrigem == 0){
             rrnDados++;
             continue;
@@ -75,9 +78,11 @@ void funcionalidade5(){
         chaveI.referencia = rrnDados;
         rrnDados++;
 
+        // Realiza inserção
         int rrnRaiz = indexCab->noRaiz;
         int promo = inserirArvore(indexFile, &rrnRaiz, &chaveI, promoRFilho, promoChave);
        
+        // Realiza promoção se necessario
         if (promo == PROMOTION) {
             realizaPromocao(indexFile, indexCab, promoRFilho, promoChave);
         }
@@ -205,35 +210,39 @@ void funcionalidade7(){
     cabIndice *indexCab = createCabecalhoIndice();
     readCabIndice(indexFile, indexCab);
     verifyStatusIndice(*indexCab);
-
-    // Cria o cabeçalho do arquivo de dados
-    indexCab->status='0'; // verificar
+    indexCab->status='0';
     writeCabecalhoIndice(indexFile, indexCab);
     fseek(indexFile, 0, SEEK_SET);
 
+    //C ria o cabeçalho do arquivo de dados
     registroCab *rC = malloc(sizeof(registroCab));
     createCabecalho(rC);
     readCabecalho(rC, dataFile);
     verifyStatus(*rC);
-
     rC->status='0';
+    fseek(dataFile, 0, SEEK_SET);
+    fwrite(&rC->status, sizeof(char), 1, dataFile);
 
+    // Encontrando o ultimo RRN do arquivo de dados
     fseek(dataFile, 0, SEEK_END);
     int tamanho = ftell(dataFile);// num bytes
     tamanho = (tamanho - 12)/TAMREGISTRO;// rrn final
 
+    // Loop para escrever no arquivo de dados e armazenar as chaves
     Chave *vetChave = malloc(sizeof(Chave)*n);
     for(int j = 0; j<n; j++){
         // Paginas no arquivo de  dados
         registro *registroInsercao = malloc(sizeof(registro));
         createRegistro(registroInsercao);
+
+        // Leitura de entrada
         scanfEntrada(registroInsercao);
 
         verificarTecnologias(dataFile, *registroInsercao);
-
         fseek(dataFile, 0, SEEK_END);
         writeRegistro(registroInsercao, dataFile);
 
+        // Armazenamento das chaves
         if(registroInsercao->tamTecnologiaDestino == 0 || registroInsercao->tamTecnologiaOrigem == 0 ){
             vetChave[j].chave = "";
             vetChave[j].referencia = -1;
@@ -244,16 +253,19 @@ void funcionalidade7(){
         tamanho++;
     }
 
+    //Loop para inserir no arquivo de indices
+    Chave *promoChave = malloc(sizeof(Chave));
+    int *promoRFilho = malloc(sizeof(int));
     for(int i = 0; i<n; i++){
         // Pagina no arquivo de Indice
         if(vetChave[i].referencia != -1){
             readCabIndice(indexFile, indexCab);
-            Chave *promoChave = malloc(sizeof(Chave));
-            int *promoRFilho = malloc(sizeof(int));
 
+            // Realiza inserção
             int rrnRaiz = indexCab->noRaiz;
             int promo = inserirArvore(indexFile, &rrnRaiz, &vetChave[i], promoRFilho, promoChave);
         
+            // Realiza promocao se necessario
             if (promo == PROMOTION) {
                 realizaPromocao(indexFile, indexCab, promoRFilho, promoChave);
             }
