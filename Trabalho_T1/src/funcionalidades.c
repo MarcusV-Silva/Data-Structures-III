@@ -7,6 +7,7 @@
 
 void funcionalidade5(){
     
+    // Inicializa e abre os arquivos binários com base na entrada
     char *dataBIN = malloc(sizeof(char) * 40);
     char *dataINDEX = malloc(sizeof(char) * 40);
     scanf("%s %s", dataBIN, dataINDEX);
@@ -17,40 +18,41 @@ void funcionalidade5(){
     FILE *indexFile = fopen(dataINDEX, "wb+");
     checkFile(indexFile);
 
+    // Criação do Cabeçalho do arquivo de Indices
     cabIndice *indexCab = createCabecalhoIndice();
     writeCabecalhoIndice(indexFile, indexCab);
     
-    int rrnDados = 0;
+    // Verificação do Cabeçalho do arquivo de Dados
     registroCab rC;
     readCabecalho(&rC, dataFile);
     verifyStatus(rC);
 
-    //Criacao e definição do Primeiro no
+    // Criacao e definição do Primeiro No
     No *no = criarNo();
-
+    int rrnDados = 0;
     registro *r0 = malloc(sizeof(registro));
     createRegistro(r0);
-    readRegistro(r0, dataFile); //Arrumar dps
+    readRegistro(r0, dataFile);
     no->RRNdoNo = 0;
     no->vetChaves[0].chave = createChave(r0);
     no->vetChaves[0].referencia = rrnDados;
     no->nroChavesNo = 1;
-
     rrnDados++;
-    writePagina(indexFile, no, 0);
 
+    // Inserindo o primeiro No no arquivo de Indice, com alterações no cabecalho
+    writePagina(indexFile, no, 0);
     indexCab->noRaiz = 0;
     indexCab->RRNproxNo = 1;
     writeCabecalhoIndice(indexFile, indexCab);
+
+    // Variaveis utilizadas na função de Inserção
     Chave *promoChave = malloc(sizeof(Chave));
     int *promoRFilho = malloc(sizeof(int));
 
-    //int totalNos = 1;  
+    // Loop de Inserção
     int flag = 0;
     while(flag != -1){    
-    
         registro *r = malloc(sizeof(registro));
-
         int aux = readRegistro(r, dataFile);
         
         if(aux == 0){
@@ -63,7 +65,7 @@ void funcionalidade5(){
             continue;
         }
 
-        if(r->tamTecnologiaDestino == 0  || r->tamTecnologiaOrigem == 0){
+        if(r->tamTecnologiaDestino == 0 || r->tamTecnologiaOrigem == 0){
             rrnDados++;
             continue;
         }
@@ -278,13 +280,6 @@ void funcionalidade7(){
     binarioNaTela(dataINDEX);
 }
 
-/*
-
-TDD, 12, 9, AGILE, 38
-MAVEN, 8, 10, ECLIPSE, 26
-CSS, 6, 341, MYSQL, 28
-
-*/
 
 // ---------------------- TRABALHO 0 ---------------------------------
 void funcionalidade1(){
