@@ -23,6 +23,8 @@ No *criarNo(){
     }
 
     return no;
+
+    free(no);
 }
 
 int readPagina(FILE *indexFile, No *no){
@@ -44,28 +46,9 @@ int readPagina(FILE *indexFile, No *no){
     fread(&no->subArvores[ORDEM-1], sizeof(int), 1, indexFile);
 
     return 1;
+
+    free(no);
 }
-
-/*int buscaArvore(FILE *arquivo, int RRN, Chave busca){
-    if(RRN == -1)
-        return NOT_FOUND;
-    else{
-        No *no = criarNo();
-        int numPagina = (RRN + 1) * TAM_PAG_INDEX;
-        fseek(arquivo, numPagina, SEEK_SET);
-        readPagina(arquivo, no);
-        for(int i = 0; i < no->nroChavesNo; i++){
-            if(strcmp(no->vetChaves[i].chave,busca.chave) == 0)
-                return FOUND;
-        }
-
-        int posicao = posicaoChave(no, busca);
-        if(posicao == -1)
-            return FOUND;
-
-        return buscaArvore(arquivo, no->subArvores[posicao], busca);
-    }
-}*/
 
 int buscaArvore(FILE *arquivoI, FILE *arquivoD, int *RRN, int *RRNBusca, Chave* busca){
 
@@ -91,6 +74,12 @@ int buscaArvore(FILE *arquivoI, FILE *arquivoD, int *RRN, int *RRNBusca, Chave* 
             return buscaArvore(arquivoI, arquivoD, &no->subArvores[posicao], RRNBusca, busca);
         }
     }
+
+    free(RRN);
+    free(busca);
+    free(RRNBusca);
+    free(arquivoI);
+    free(arquivoD);
 }
 
 int posicaoChave(No *PAGE, Chave KEY) {
@@ -105,6 +94,8 @@ int posicaoChave(No *PAGE, Chave KEY) {
     }
 
     return pos;
+
+    free(PAGE);
 }
     
 // Construção bottom-up
@@ -166,9 +157,16 @@ int inserirArvore(FILE *arquivo, int *rrnAtual, Chave *chave, int *promoRFilho, 
                 free(novaPag);
                 return PROMOTION;
             }
-
+        free(pagina);
+        free(promoBKey);
+        free(rrnBPromo);
     }
-         
+
+    free(arquivo);
+    free(chave);
+    free(rrnAtual);
+    free(promoChave);
+    free(promoRFilho);
 }
 
 void inserirChave(No *PAGE, int pos, Chave KEY, int RRN) {
@@ -184,6 +182,7 @@ void inserirChave(No *PAGE, int pos, Chave KEY, int RRN) {
     PAGE->subArvores[pos + 1] = RRN;
     // Atualizar o número de chaves no nó
     PAGE->nroChavesNo++;
+    //free(PAGE);
 }
  
 void splitArvore(FILE *arquivo, Chave *iChave, int *iRRN, No **page, Chave *promoChave, int *promoRFilho,  No **newPage){
@@ -232,7 +231,16 @@ void splitArvore(FILE *arquivo, Chave *iChave, int *iRRN, No **page, Chave *prom
         (*newPage)->subArvores[j] = workingPage.subArvores[i];
         (*newPage)->nroChavesNo++;
     }
-    (*newPage)->subArvores[j] = workingPage.subArvores[ORDEM]; 
+    (*newPage)->subArvores[j] = workingPage.subArvores[ORDEM];
+
+
+    free(iRRN);
+    free(page);
+    free(iChave);
+    free(arquivo);
+    free(newPage);
+    free(promoChave);
+    free(promoRFilho);
 }
 
 void writePagina(FILE *arquivo, No *pagina, int rrn) {
@@ -260,6 +268,9 @@ void writePagina(FILE *arquivo, No *pagina, int rrn) {
     }
 
     fwrite(&pagina->subArvores[ORDEM-1], sizeof(int), 1, arquivo);
+
+    /*free(arquivo);
+    free(pagina);*/
 }
 
 // Funcao usada para debug
@@ -289,5 +300,6 @@ void printArvore(FILE *arquivo){
         readPagina(arquivo, r);
         printPagina(*r);
     }
+    //free(r);
 }
 

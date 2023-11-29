@@ -11,6 +11,7 @@ void checkFile(FILE *arquivo){
         printf("Falha no processamento do arquivo.\n");
         exit(0);
     }
+	//free(arquivo);
 }
 
 // Função que libera o ponteiro do arquivo, como também fecha o arquivo
@@ -65,6 +66,9 @@ void verificarTecnologias(FILE *arquivo, registro r){
 	
 	rC->proxRRN++;
 	writeCabecalho(arquivo, rC);
+
+	free(aux);
+	//free(rC);
 }
 
 

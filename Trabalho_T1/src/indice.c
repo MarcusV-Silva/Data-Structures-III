@@ -13,7 +13,10 @@ char *createChave(registro *r){
     strncpy(concatenada, r->nmTecnologiaOrigem, r->tamTecnologiaOrigem);
     strncat(concatenada, r->nmTecnologiaDestino, r->tamTecnologiaDestino);
 
-    freeRegistro(r);
+    //free(concatenada);
+    //freeRegistro(r);
 
     return concatenada;
+
+    //free(concatenada);
 }

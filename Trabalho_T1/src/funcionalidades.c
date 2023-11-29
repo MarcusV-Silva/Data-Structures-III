@@ -6,7 +6,7 @@
 #include "complemento.h"
 
 void funcionalidade5(){
-    
+    //Lendo o arquivo de dados, criando o arquivo de índice e verficando a existencia deles
     char *dataBIN = malloc(sizeof(char) * 40);
     char *dataINDEX = malloc(sizeof(char) * 40);
     scanf("%s %s", dataBIN, dataINDEX);
@@ -97,19 +97,29 @@ void funcionalidade5(){
             indexCab->noRaiz = novoNo->RRNdoNo;
             indexCab->RRNproxNo++;
             writeCabecalhoIndice(indexFile, indexCab);
-        }
 
+            free(novoNo);
+            free(auxNo);
+        }
+        free(r);
         flag++;
     }
-    
+
     readCabIndice(indexFile, indexCab);
     indexCab->status = '1';
     writeCabecalhoIndice(indexFile, indexCab);
 
     fclose(indexFile);
-    fclose(dataFile); 
+    fclose(dataFile);
     
     binarioNaTela(dataINDEX);
+
+    free(no);
+    free(r0);
+    free(dataBIN);
+    free(promoChave);
+    free(promoRFilho);
+    free(indexCab);
 }
 
 void funcionalidade6(){
@@ -173,6 +183,11 @@ void funcionalidade6(){
 
     fclose(indexFile);
     fclose(dataFile);
+
+    free(rC);
+    free(indexCab);
+    free(dataBIN);
+    free(dataINDEX);
 }
 
 void funcionalidade7(){
@@ -226,6 +241,7 @@ void funcionalidade7(){
             vetChave[j].referencia = tamanho;
         }
         tamanho++;
+        free(registroInsercao);
     }
 
     for(int i = 0; i<n; i++){
@@ -259,7 +275,12 @@ void funcionalidade7(){
                 indexCab->noRaiz = novoNo->RRNdoNo;
                 indexCab->RRNproxNo++;
                 writeCabecalhoIndice(indexFile, indexCab);
+
+                free(auxNo);
+                free(novoNo);
             }
+            free(promoChave);
+            free(promoRFilho);
         }
     }
 
@@ -276,6 +297,12 @@ void funcionalidade7(){
 
     binarioNaTela(dataBIN);
     binarioNaTela(dataINDEX);
+
+    free(rC);
+    free(dataBIN);
+    free(dataINDEX);
+    free(indexCab);
+    free(vetChave);
 }
 
 /*
@@ -444,6 +471,10 @@ void funcionalidade3(FILE *binFile,char *tmp1, char *tmp2){
     if(!(flag))
         printf("Registro inexistente.\n");
 
+
+    //free(tmp1);
+    //free(tmp2);
+
     //Retorna ao começo do arquivo
     fseek(binFile, 13, SEEK_SET);
 }
@@ -467,7 +498,9 @@ void funcionalidade4(FILE *binFile, int *RRN){
     }else{
         printf("Registro inexistente.");
     }
- 
+
+    //free(RRN);
+
     // Libera memoria do registro
     freeRegistro(r1);
 }

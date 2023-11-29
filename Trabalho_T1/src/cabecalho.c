@@ -13,6 +13,8 @@ cabIndice *createCabecalhoIndice(){
     cabecalho->RRNproxNo = -1;
 
     return cabecalho;
+
+    free(cabecalho);
 }
 
 void writeCabecalhoIndice(FILE *arquivo, cabIndice *rI){
@@ -24,6 +26,7 @@ void writeCabecalhoIndice(FILE *arquivo, cabIndice *rI){
     for(int i = 0; i<TAM_LIXO_CAB; i++) {
         fwrite("$", sizeof(char), 1, arquivo);
     }
+    
 }
 
 void readCabIndice(FILE *arquivo, cabIndice *rI){
@@ -53,6 +56,7 @@ void setCabecalho(registroCab *rC, int numParesUnicos, int numTecnologiasUnicas)
     rC->status = '1';
     rC->nroParesTecnologias = numParesUnicos;
     rC->nroTecnologias = numTecnologiasUnicas;
+
 }
 
 // Função que escreve os dados no cabeçalho do arquivo binário
@@ -62,6 +66,7 @@ void writeCabecalho(FILE *binFile, registroCab *rC){
     fwrite(&rC->proxRRN, sizeof(int), 1, binFile);
     fwrite(&rC->nroTecnologias, sizeof(int), 1, binFile);
     fwrite(&rC->nroParesTecnologias, sizeof(int), 1, binFile);
+
 }
 
 // Função que lê os campos do cabeçalho
@@ -70,6 +75,7 @@ void readCabecalho(registroCab *rC, FILE *dataBinFile){
     fread(&rC->proxRRN, sizeof(int), 1, dataBinFile);
     fread(&rC->nroTecnologias, sizeof(int), 1, dataBinFile);
     fread(&rC->nroParesTecnologias, sizeof(int), 1, dataBinFile);
+
 }
 
 // Verifica o campo status do cabeçalho
@@ -115,4 +121,6 @@ void addParUnico(char parUnic[][2][MAX_STRING], registro r1, int *numPares) {
     strcpy(parUnic[*numPares][0], r1.nmTecnologiaOrigem);
     strcpy(parUnic[*numPares][1], r1.nmTecnologiaDestino);
     (*numPares)++;
+
+    //free(numPares);
 }
