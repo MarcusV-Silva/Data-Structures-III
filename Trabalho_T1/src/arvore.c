@@ -69,7 +69,7 @@ int inserirArvore(FILE *arquivo, int *rrnAtual, Chave *chave, int *promoRFilho, 
         // Procura a posição na arvore
         int posicaoC = posicaoChave(pagina, *chave);
 
-        if(posicaoC == -1){
+        if(strcmp(pagina->vetChaves[posicaoC].chave, chave->chave)==0){
             free(pagina); // A chave ja existe na pagina
             return ERRO;
         }
