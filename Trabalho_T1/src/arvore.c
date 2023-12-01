@@ -53,7 +53,6 @@ int buscaArvore(FILE *arquivoI, FILE *arquivoD, int *RRN, int *RRNBusca, Chave* 
     }
 }
 
-    
 // Inserção na Arvore B por meio de um construção bottom-up
 int inserirArvore(FILE *arquivo, int *rrnAtual, Chave *chave, int *promoRFilho, Chave *promoChave){
 

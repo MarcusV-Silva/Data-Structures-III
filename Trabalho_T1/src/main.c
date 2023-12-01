@@ -8,7 +8,8 @@
 /*
 *                    TRABALHO 1 
 *           Estrutura de Dados III (SCC0607)
-*
+*                   
+*                       G-16
 *       Rodrigo Rodrigues de Castro - 13695362
 *         Marcus Vinicius da Silva - 13833150
 */ 
@@ -23,18 +24,6 @@ int main(){
     scanf("%d", &command);
 
     switch (command){
-        case 1:
-            funcionalidade1();
-            break;
-        case 2:
-            funcionalidade2();
-            break;
-        case 3:
-            //funcionalidade3();
-            break;
-        case 4:
-            //funcionalidade4();
-            break;
         case 5:
             funcionalidade5();
             break;

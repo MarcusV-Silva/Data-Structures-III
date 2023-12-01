@@ -72,13 +72,6 @@ void writePagina(FILE *arquivo, No *pagina, int rrn) {
 
 // Funcao que retorna a posicao correta das chaves em uma pagina
 int posicaoChave(No *PAGE, Chave KEY) {
-
-    /*while (pos < PAGE->nroChavesNo && strcmp(KEY.chave, PAGE->vetChaves[pos].chave) > 0) {
-        if(strcmp(KEY.chave, PAGE->vetChaves[pos].chave) == 0)
-            return -1; // retorna -1 caso a chave ja exista
-
-        pos++;
-    }*/
     int inicio = 0;
     int fim = PAGE->nroChavesNo - 1;
 
