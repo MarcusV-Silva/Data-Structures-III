@@ -51,19 +51,36 @@ void adicionarElemento(grafo *grafo, registro r, int numVertice){
         }
     }
 
+    // Não encontrou tec origem
     if(iOrigem == -1){
-        adicionarVertice(grafo, r, numVertice);
-        quickSort(grafo, 0, numVertice - 1);
+        inserirVertice(grafo, r, numVertice);
         return;
     }
 
-    inserirLista(grafo[iOrigem].iAdjacente);
-    lista *novaAresta = criarNo(r);
-    novaAresta->prox = grafo[iOrigem].iAdjacente;
-    grafo[iOrigem].iAdjacente = novaAresta;
+    inserirLista(&grafo[iOrigem].iAdjacente,r);
 }
 
-void adicionarVertice(grafo *grafo, registro r, int numVertice){
+void inserirLista(lista **listaAdj, registro r){
+    lista *tmp = malloc(sizeof(lista));
+    lista *novaAresta = criarNo(r);
+
+    if(*listaAdj == NULL){
+        novaAresta->prox = NULL;
+        *listaAdj = novaAresta;
+    }else if(strcmp(novaAresta->nomeDestino, (*listaAdj)->nomeDestino) < 0){
+        novaAresta->prox = *listaAdj;
+        *listaAdj = novaAresta;
+    }else{
+        tmp = *listaAdj;
+        while(tmp->prox && strcmp(novaAresta->nomeDestino, tmp->prox->nomeDestino) > 0)
+            tmp = tmp->prox;
+
+        novaAresta->prox = tmp->prox;
+        tmp->prox = novaAresta;
+    }
+}
+
+void inserirVertice(grafo *grafo, registro r, int numVertice){
     int index = -1;
     for(int i = 0; i<numVertice; i++){
         if(grafo[i].iVertice == -1)
@@ -75,18 +92,8 @@ void adicionarVertice(grafo *grafo, registro r, int numVertice){
     grafo[index].nomeOrigem = malloc(sizeof(char)*r.tamTecnologiaOrigem);
     strcpy(grafo[index].nomeOrigem, r.nmTecnologiaOrigem);
     grafo[index].iGrupo = r.grupo;
-}
 
-void inserirLista(lista **listaAdj){
-    lista *aux = criarNo()
-}
-
-void ordenarGrafo(grafo *g, int numVertice){
-    quickSort(g, 0, numVertice - 1);
-
-    for (int i = 0; i < numVertice; i++) {
-       
-    }
+    quickSort(grafo, 0, numVertice - 1); // ordena vetor de vertices
 }
 
 int particionarVertice(grafo *g, int baixo, int topo) {
@@ -121,5 +128,15 @@ void quickSort(grafo *g, int baixo, int topo) {
         // Recursivamente ordena os elementos antes e depois do pivo
         quickSort(g, baixo, pivo - 1);
         quickSort(g, pivo + 1, topo);
+    }
+}
+
+
+void imprimirGrafo(grafo *g, int numVertices){
+    for(int i = 0; i<numVertices; i++){
+        while(g[i].iAdjacente != NULL){
+            printf("%s %d %d %d %d %s %d", g[i].nomeOrigem, g[i].iGrupo, g[i].grauEntrada, g[i].grauSaida, g[i].grauGeral, g[i].iAdjacente->nomeDestino, g[i].iAdjacente->pesoAresta);
+            g[i].iAdjacente = g[i].iAdjacente->prox;
+        }
     }
 }
