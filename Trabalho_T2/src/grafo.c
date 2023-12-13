@@ -53,10 +53,11 @@ void adicionarElemento(grafo *grafo, registro r, int numVertice){
 
     if(iOrigem == -1){
         adicionarVertice(grafo, r, numVertice);
+        quickSort(grafo, 0, numVertice - 1);
         return;
     }
 
-
+    inserirLista(grafo[iOrigem].iAdjacente);
     lista *novaAresta = criarNo(r);
     novaAresta->prox = grafo[iOrigem].iAdjacente;
     grafo[iOrigem].iAdjacente = novaAresta;
@@ -76,34 +77,49 @@ void adicionarVertice(grafo *grafo, registro r, int numVertice){
     grafo[index].iGrupo = r.grupo;
 }
 
-
-
-
-void quick_sort(lista l){
-    recursive_quick(l, 0, l.size-1);
+void inserirLista(lista **listaAdj){
+    lista *aux = criarNo()
 }
 
-void recursive_quick(lista l, long ini, long end){
-    long j, i, aux;
+void ordenarGrafo(grafo *g, int numVertice){
+    quickSort(g, 0, numVertice - 1);
 
-    if(ini >= end)
-        return;
+    for (int i = 0; i < numVertice; i++) {
+       
+    }
+}
 
-    i = ini;
+int particionarVertice(grafo *g, int baixo, int topo) {
+    char pivo[MAX_STRING];
+    strcpy(pivo, g[topo].nomeOrigem);
 
-    for(j = ini; j < end; j++)
-        if(l.data[j] < l.data[end]){
-            
-            aux = l.data[i];
-            l.data[i] = l.data[j];
-            l.data[j] = aux;
+    int i = (baixo - 1);
+
+    for (int j = baixo; j <= topo - 1; j++) {
+        if (strcmp(g[j].nomeOrigem, pivo) < 0) {
             i++;
+            // Trocar g[i] e g[j]
+            grafo temp = g[i];
+            g[i] = g[j];
+            g[j] = temp;
         }
+    }
+    // Trocar g[i + 1] e g[topo]
+    grafo temp = g[i + 1];
+    g[i + 1] = g[topo];
+    g[topo] = temp;
 
-    aux = l.data[i];
-    l.data[i] = l.data[end];
-    l.data[end] = aux;
+    return (i + 1);
+}
 
-    recursive_quick(l, ini, i-1);
-    recursive_quick(l, i+1, end);
+// Função QuickSort para o vetor de vértices
+void quickSort(grafo *g, int baixo, int topo) {
+    if (baixo < topo) {
+        // Obtém o índice da partição, g[pivo] agora está no lugar correto
+        int pivo = particionarVertice(g, baixo, topo);
+
+        // Recursivamente ordena os elementos antes e depois do pivo
+        quickSort(g, baixo, pivo - 1);
+        quickSort(g, pivo + 1, topo);
+    }
 }
