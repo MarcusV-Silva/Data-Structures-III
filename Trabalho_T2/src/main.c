@@ -1,5 +1,12 @@
+#include "indice.h"
+#include "registro.h"
+#include "cabecalho.h"
+#include "arvore.h"
+#include "funcionalidades.h"
+#include "complemento.h"
+
 /*
-*                    TRABALHO 1 
+*                    TRABALHO 2 
 *           Estrutura de Dados III (SCC0607)
 *                   
 *                       G-16
@@ -13,11 +20,10 @@
 #include <ctype.h>
 
 int main(){
-
     int command;
-    scanf("%d",&command);
+    scanf("%d", &command);
 
-    switch(command){
+    switch (command){
         case 8:
             funcionalidade8();
             break;
@@ -37,6 +43,5 @@ int main(){
             printf("Falha no processamento do arquivo.\n");
             break;
     }
-
     return 0;
 }
