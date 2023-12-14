@@ -32,7 +32,7 @@ lista *criarNo(registro r){
     if (novoNo == NULL) 
         exit(0);
 
-    novoNo->nomeDestino = malloc(sizeof(char)*r.tamTecnologiaDestino);
+    novoNo->nomeDestino = malloc(sizeof(char)*(r.tamTecnologiaDestino+1));
     strcpy(novoNo->nomeDestino, r.nmTecnologiaDestino);
     novoNo->pesoAresta = r.peso;
     novoNo->prox = NULL;
@@ -43,61 +43,73 @@ lista *criarNo(registro r){
 
 void adicionarElemento(grafo *grafo, registro r, int numVertice){
     int iOrigem = -1;
-
+    int iDestino = -1;
+    int index = 0;
     for(int i = 0; i< numVertice; i++){
-        if(strcmp(grafo[i].nomeOrigem, r.nmTecnologiaOrigem) == 0){
+        if(grafo[i].nomeOrigem != NULL && strcmp(grafo[i].nomeOrigem, r.nmTecnologiaOrigem) == 0)
             iOrigem = i;
+            
+        if(grafo[i].nomeOrigem != NULL && strcmp(grafo[i].nomeOrigem, r.nmTecnologiaDestino) == 0 && r.nmTecnologiaDestino!=NULL)
+            iDestino = i;
+    }
+
+    //Encontra a ultima posicao 
+    for(int i = 0; i<numVertice; i++){
+        if(grafo[i].nomeOrigem == NULL){
+            index = i;
             break;
         }
     }
 
     // Não encontrou tec origem
     if(iOrigem == -1){
-        inserirVertice(grafo, r, numVertice);
-        return;
+        inserirVertice(grafo, r.nmTecnologiaOrigem, r.grupo, numVertice);
+        iOrigem = index;
     }
-
+    //if(iDestino == -1){
+     //   inserirVertice(grafo, r.nmTecnologiaDestino, r.grupo, numVertice);
+    //}
     inserirLista(&grafo[iOrigem].iAdjacente,r);
 }
 
 void inserirLista(lista **listaAdj, registro r){
-    lista *tmp = malloc(sizeof(lista));
     lista *novaAresta = criarNo(r);
 
-    if(*listaAdj == NULL){
-        novaAresta->prox = NULL;
-        *listaAdj = novaAresta;
-    }else if(strcmp(novaAresta->nomeDestino, (*listaAdj)->nomeDestino) < 0){
+    if(*listaAdj == NULL || strcmp(novaAresta->nomeDestino, (*listaAdj)->nomeDestino) < 0) {
         novaAresta->prox = *listaAdj;
         *listaAdj = novaAresta;
     }else{
-        tmp = *listaAdj;
-        while(tmp->prox && strcmp(novaAresta->nomeDestino, tmp->prox->nomeDestino) > 0)
-            tmp = tmp->prox;
+        lista *tmp = *listaAdj;
 
+        while(tmp->prox != NULL && strcmp(novaAresta->nomeDestino, (*listaAdj)->nomeDestino) < 0)
+            tmp = tmp->prox;
+        
         novaAresta->prox = tmp->prox;
         tmp->prox = novaAresta;
     }
+
 }
 
-void inserirVertice(grafo *grafo, registro r, int numVertice){
+void inserirVertice(grafo *grafo, char*nome, int grupo, int numVertice){
     int index = -1;
     for(int i = 0; i<numVertice; i++){
-        if(grafo[i].iVertice == -1)
+        if(grafo[i].nomeOrigem == NULL){
             index = i;
+            break;
+        }
     }
     //verificar se inedx = -1, em tese nao poderia
 
     //vai adicionar o novo elemento no fim para depois ordenar
-    grafo[index].nomeOrigem = malloc(sizeof(char)*r.tamTecnologiaOrigem);
-    strcpy(grafo[index].nomeOrigem, r.nmTecnologiaOrigem);
-    grafo[index].iGrupo = r.grupo;
+    grafo[index].nomeOrigem = malloc(sizeof(char)*strlen(nome));
+    strcpy(grafo[index].nomeOrigem, nome);
+    grafo[index].iGrupo = grupo;
 
-    quickSort(grafo, 0, numVertice - 1); // ordena vetor de vertices
+    quickSort(grafo, 0, index - 1); // ordena vetor de vertices
 }
 
 int particionarVertice(grafo *g, int baixo, int topo) {
-    char pivo[MAX_STRING];
+    char *pivo = malloc(sizeof(char)*strlen(g[topo].nomeOrigem));
     strcpy(pivo, g[topo].nomeOrigem);
 
     int i = (baixo - 1);
@@ -135,7 +147,7 @@ void quickSort(grafo *g, int baixo, int topo) {
 void imprimirGrafo(grafo *g, int numVertices){
     for(int i = 0; i<numVertices; i++){
         while(g[i].iAdjacente != NULL){
-            printf("%s %d %d %d %d %s %d", g[i].nomeOrigem, g[i].iGrupo, g[i].grauEntrada, g[i].grauSaida, g[i].grauGeral, g[i].iAdjacente->nomeDestino, g[i].iAdjacente->pesoAresta);
+            printf("%s %d %d %d %d %s %d\n", g[i].nomeOrigem, g[i].iGrupo, g[i].grauEntrada, g[i].grauSaida, g[i].grauGeral, g[i].iAdjacente->nomeDestino, g[i].iAdjacente->pesoAresta);
             g[i].iAdjacente = g[i].iAdjacente->prox;
         }
     }

@@ -14,10 +14,10 @@ void funcionalidade8(){
     registroCab rC;
     readCabecalho(&rC, dataFile);
     verifyStatus(rC);
+    printf("%d debug 0\n", rC.nroTecnologias);
 
     grafo *grafoFinal = criarGrafo(rC.nroTecnologias);
 
-    printf("debug 0");
     int flag = 0;
     while(flag != -1){
         registro *r = malloc(sizeof(registro));
@@ -33,10 +33,12 @@ void funcionalidade8(){
         
         if(r->grupo == -1)
             continue;
-         printf("debug 1");
+
         adicionarElemento(grafoFinal, *r, rC.nroTecnologias);
     }
     imprimirGrafo(grafoFinal, rC.nroTecnologias);
+
+    fclose(dataFile);
 }
 
 
