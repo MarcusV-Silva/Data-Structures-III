@@ -40,11 +40,71 @@ lista *criarNo(registro r){
     return novoNo;
 }
 
+void criarListaAdjacencia(grafo *g, int numVertice, FILE *arquivo){
+    int flag = 0;
+    while(flag != -1){
+        registro *r = malloc(sizeof(registro));
+        int aux = readRegistro(r, arquivo);
 
-void adicionarElemento(grafo *grafo, registro r, int numVertice){
+        if(aux == 0){
+            flag = -1;
+            break;
+        }
+
+        if(aux == -1)
+            continue;
+        
+        if(r->grupo == -1)
+            continue;
+
+        adicionarAresta(g, *r, numVertice);
+    }
+}
+void criarVetElementos(grafo *g, int numVertice, FILE *arquivo){
+    int flag = 0;
+    while(flag != -1){
+        int iOrigem = -1;
+        int iDestino = -1;
+
+        registro *r = malloc(sizeof(registro));
+        int aux = readRegistro(r, arquivo);
+
+        if(aux == 0){
+            flag = -1;
+            break;
+        }
+
+        if(aux == -1)
+            continue;
+        
+        if(r->grupo == -1)
+            continue;
+
+        for(int i = 0; i< numVertice; i++){
+            if(g[i].nomeOrigem != NULL && strcmp(g[i].nomeOrigem, r->nmTecnologiaOrigem) == 0)
+                iOrigem = i;
+
+            if(g[i].nomeOrigem != NULL && strcmp(g[i].nomeOrigem, r->nmTecnologiaDestino) == 0)
+                iDestino = i;
+        }
+
+        if(iOrigem != -1 && g[iOrigem].iGrupo == -2)
+            g[iOrigem].iGrupo = r->grupo;
+
+        if(iOrigem == -1)
+            inserirVertice(g, r->nmTecnologiaOrigem, r->grupo, numVertice);
+        
+        if(iDestino == -1)
+            inserirVertice(g, r->nmTecnologiaDestino, -2, numVertice);
+    }
+
+    quickSort(g, 0, numVertice-1);
+    fseek(arquivo, TAM_CAB, SEEK_SET);
+}
+
+void adicionarAresta(grafo *grafo, registro r, int numVertice){
     int iOrigem = -1;
     int iDestino = -1;
-    int index = 0;
 
     for(int i = 0; i< numVertice; i++){
         if(grafo[i].nomeOrigem != NULL && strcmp(grafo[i].nomeOrigem, r.nmTecnologiaOrigem) == 0)
@@ -54,30 +114,12 @@ void adicionarElemento(grafo *grafo, registro r, int numVertice){
             iDestino = i;
     }
 
-    //Encontra a ultima posicao 
-    for(int i = 0; i<numVertice; i++){
-        if(grafo[i].nomeOrigem == NULL){
-            index = i;
-            break;
-        }
-    }
-
-    // Não encontrou tec origem
-    if(iOrigem == -1){
-        inserirVertice(grafo, r.nmTecnologiaOrigem, r.grupo, numVertice);
-        iOrigem = index;
-    }
-
-
-
     int aux = inserirLista(&grafo[iOrigem].iAdjacente,r);
 
     if(aux){
         grafo[iOrigem].grauSaida++;
         grafo[iDestino].grauEntrada++;
     }
-    
-    //printf("%s %s %s %s\n ", r.nmTecnologiaOrigem, r.nmTecnologiaDestino, grafo[iOrigem].nomeOrigem, grafo[iDestino].nomeOrigem);
 }
 
 int inserirLista(lista **listaAdj, registro r){
@@ -109,14 +151,10 @@ void inserirVertice(grafo *grafo, char*nome, int grupo, int numVertice){
             break;
         }
     }
-    //verificar se inedx = -1, em tese nao poderia
-
-    //vai adicionar o novo elemento no fim para depois ordenar
     grafo[index].nomeOrigem = malloc(sizeof(char)*strlen(nome));
     strcpy(grafo[index].nomeOrigem, nome);
     grafo[index].iGrupo = grupo;
 
-    quickSort(grafo, 0, index - 1); // ordena vetor de vertices
 }
 
 
@@ -151,10 +189,9 @@ int particionarVertice(grafo *g, int baixo, int topo) {
 // Função QuickSort para o vetor de vértices
 void quickSort(grafo *g, int baixo, int topo) {
     if (baixo < topo) {
-        // Obtém o índice da partição, g[pivo] agora está no lugar correto
+
         int pivo = particionarVertice(g, baixo, topo);
 
-        // Recursivamente ordena os elementos antes e depois do pivo
         quickSort(g, baixo, pivo - 1);
         quickSort(g, pivo + 1, topo);
     }

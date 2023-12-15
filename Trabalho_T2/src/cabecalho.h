@@ -3,24 +3,7 @@
 
 #include "funcionalidades.h"
 
-//--------------------TRABALHO 1------------------------
-
-// Struct referente aos dados do cabeçalho no arquivo de indices
-typedef struct cabecalhoIndice{
-    char status;
-    int noRaiz;
-    int RRNproxNo;
-}cabIndice;
-
-// Verifica o status no arquivo de indice
-void verifyStatusIndice(cabIndice r);
-
-// Criacao da Struct com os valores inicias do cabecalho
-cabIndice *createCabecalhoIndice();
-
-// Manipulação dos arquivos dde
-void writeCabecalhoIndice(FILE *arquivo, cabIndice *rI);
-void readCabIndice(FILE *arquivo, cabIndice *rI);
+#define TAM_CAB 13
 
 //--------------------TRABALHO 0------------------------
 

@@ -14,31 +14,16 @@ void funcionalidade8(){
     registroCab rC;
     readCabecalho(&rC, dataFile);
     verifyStatus(rC);
-    printf("%d debug 0\n", rC.nroTecnologias);
 
-    grafo *grafoFinal = criarGrafo(rC.nroTecnologias);
+    int numVertices = rC.nroTecnologias;
+    grafo *grafoFinal = criarGrafo(numVertices);
+    
+    criarVetElementos(grafoFinal, numVertices, dataFile);
+    criarListaAdjacencia(grafoFinal, numVertices, dataFile);
 
-    int flag = 0;
-    while(flag != -1){
-        registro *r = malloc(sizeof(registro));
-        int aux = readRegistro(r, dataFile);
+    calculaGrau(grafoFinal, numVertices);
 
-        if(aux == 0){
-            flag = -1;
-            break;
-        }
-
-        if(aux == -1)
-            continue;
-        
-        if(r->grupo == -1)
-            continue;
-
-        adicionarElemento(grafoFinal, *r, rC.nroTecnologias);
-    }
-    quickSort(grafoFinal, 0, rC.nroTecnologias-1);
-    calculaGrau(grafoFinal, rC.nroTecnologias);
-    imprimirGrafo(grafoFinal, rC.nroTecnologias);
+    imprimirGrafo(grafoFinal, numVertices);
 
     fclose(dataFile);
 }
