@@ -32,7 +32,7 @@ lista *criarNo(registro r){
     if (novoNo == NULL) 
         exit(0);
 
-    novoNo->nomeDestino = malloc(sizeof(char)*(r.tamTecnologiaDestino+1));
+    novoNo->nomeDestino = malloc(sizeof(char)*(r.tamTecnologiaDestino));
     strcpy(novoNo->nomeDestino, r.nmTecnologiaDestino);
     novoNo->pesoAresta = r.peso;
     novoNo->prox = NULL;
@@ -45,11 +45,12 @@ void adicionarElemento(grafo *grafo, registro r, int numVertice){
     int iOrigem = -1;
     int iDestino = -1;
     int index = 0;
+
     for(int i = 0; i< numVertice; i++){
         if(grafo[i].nomeOrigem != NULL && strcmp(grafo[i].nomeOrigem, r.nmTecnologiaOrigem) == 0)
             iOrigem = i;
-            
-        if(grafo[i].nomeOrigem != NULL && strcmp(grafo[i].nomeOrigem, r.nmTecnologiaDestino) == 0 && r.nmTecnologiaDestino!=NULL)
+
+        if(grafo[i].nomeOrigem != NULL && strcmp(grafo[i].nomeOrigem, r.nmTecnologiaDestino) == 0)
             iDestino = i;
     }
 
@@ -66,28 +67,38 @@ void adicionarElemento(grafo *grafo, registro r, int numVertice){
         inserirVertice(grafo, r.nmTecnologiaOrigem, r.grupo, numVertice);
         iOrigem = index;
     }
-    //if(iDestino == -1){
-     //   inserirVertice(grafo, r.nmTecnologiaDestino, r.grupo, numVertice);
-    //}
-    inserirLista(&grafo[iOrigem].iAdjacente,r);
+
+
+
+    int aux = inserirLista(&grafo[iOrigem].iAdjacente,r);
+
+    if(aux){
+        grafo[iOrigem].grauSaida++;
+        grafo[iDestino].grauEntrada++;
+    }
+    
+    //printf("%s %s %s %s\n ", r.nmTecnologiaOrigem, r.nmTecnologiaDestino, grafo[iOrigem].nomeOrigem, grafo[iDestino].nomeOrigem);
 }
 
-void inserirLista(lista **listaAdj, registro r){
+int inserirLista(lista **listaAdj, registro r){
     lista *novaAresta = criarNo(r);
 
     if(*listaAdj == NULL || strcmp(novaAresta->nomeDestino, (*listaAdj)->nomeDestino) < 0) {
         novaAresta->prox = *listaAdj;
-        *listaAdj = novaAresta;
+        *listaAdj = novaAresta;   
     }else{
         lista *tmp = *listaAdj;
 
-        while(tmp->prox != NULL && strcmp(novaAresta->nomeDestino, (*listaAdj)->nomeDestino) < 0)
+        if(strcmp(novaAresta->nomeDestino, (*listaAdj)->nomeDestino) == 0)
+            return 0;
+
+        while(tmp->prox != NULL && strcmp(novaAresta->nomeDestino, (*listaAdj)->nomeDestino) > 0)
             tmp = tmp->prox;
         
         novaAresta->prox = tmp->prox;
         tmp->prox = novaAresta;
     }
-
+    return 1;
 }
 
 void inserirVertice(grafo *grafo, char*nome, int grupo, int numVertice){
@@ -108,6 +119,12 @@ void inserirVertice(grafo *grafo, char*nome, int grupo, int numVertice){
     quickSort(grafo, 0, index - 1); // ordena vetor de vertices
 }
 
+
+void calculaGrau(grafo *g, int numVertices){
+    for(int i = 0; i<numVertices; i++){
+        g[i].grauGeral = g[i].grauEntrada + g[i].grauSaida;
+    }
+}
 int particionarVertice(grafo *g, int baixo, int topo) {
     char *pivo = malloc(sizeof(char)*strlen(g[topo].nomeOrigem));
     strcpy(pivo, g[topo].nomeOrigem);

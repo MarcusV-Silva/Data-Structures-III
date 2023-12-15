@@ -24,12 +24,13 @@ lista *criarNo(registro r);
 void adicionarElemento(grafo *grafo, registro r, int numVertice);
 void adicionarVertice(grafo *grafo, registro r, int numVertice);
 
-void inserirLista(lista **listaAdj, registro r);
+int inserirLista(lista **listaAdj, registro r);
 void inserirVertice(grafo *grafo, char*nome, int grupo, int numVertice);
 
 int particionarVertice(grafo *g, int baixo, int topo);
 void quickSort(grafo *g, int baixo, int topo);
 
-
 void imprimirGrafo(grafo *g, int numVertices);
+
+void calculaGrau(grafo *g, int numVertices);
 #endif

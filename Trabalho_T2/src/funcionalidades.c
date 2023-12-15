@@ -36,13 +36,12 @@ void funcionalidade8(){
 
         adicionarElemento(grafoFinal, *r, rC.nroTecnologias);
     }
+    quickSort(grafoFinal, 0, rC.nroTecnologias-1);
+    calculaGrau(grafoFinal, rC.nroTecnologias);
     imprimirGrafo(grafoFinal, rC.nroTecnologias);
 
     fclose(dataFile);
 }
-
-
-
 
 
 void funcionalidade9(){}
