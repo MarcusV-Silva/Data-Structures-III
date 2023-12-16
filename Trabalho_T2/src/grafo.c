@@ -249,14 +249,17 @@ int encontrarTecnologiasOrigem(grafo *grafo, int numVertices, char *tecnologiaDe
   return 0;
 }
 
+//Função que realiza a busca em profundidade
 void buscaEmProfundidade(grafo *g, int numVertices, int* ehFortementeConexo, int* numComponentes){
     int* cor = (int*)malloc(numVertices * sizeof(int));
     int* pre = (int*)malloc(numVertices * sizeof(int));
     int* low = (int*)malloc(numVertices * sizeof(int));
 
+    //Atribui a cor branca a todos os vétices
     for(int i=0; i<numVertices; i++){
         cor[i] = BRANCO;
     }
+    //Inicia a visita nos vértices
     for(int i=0; i<numVertices; i++){
         if(cor[i] == BRANCO){
             visitaVertice(g, i, numVertices,cor, pre, low, ehFortementeConexo, numComponentes);
@@ -267,6 +270,7 @@ void buscaEmProfundidade(grafo *g, int numVertices, int* ehFortementeConexo, int
     free(low);
 }
 
+//Função que faz a visita nos vértices
 void visitaVertice(grafo* g, int i, int numVertices, int* cor, int* pre, int* low, int* ehFortementeConexo, int* numComponentes) {
     int tempo = 0;
     
@@ -274,10 +278,14 @@ void visitaVertice(grafo* g, int i, int numVertices, int* cor, int* pre, int* lo
     pre[i] = low[i] = ++tempo;
 
     lista* adjacente = g[i].iAdjacente;
+    int v = indiceTecnologia(adjacente->nomeDestino, g, numVertices);
+    lista* tmp = g[v].iAdjacente;
     
-    while (adjacente != NULL) {
-        char* nomeAdjacente = adjacente->nomeDestino;
+    //Percorre o grafo analisando e pintando os vértices
+    while (tmp != NULL) {
+        char* nomeAdjacente = tmp->nomeDestino;
         int adj = -1; // Inicializa como -1, indicando que não encontrou o vértice
+        //int v = indiceTecnologia(adjacente->nomeDestino, g, numVertices);
 
         // Procura o vértice no grafo
         for (int j = 0; j < numVertices; j++) {
@@ -296,7 +304,7 @@ void visitaVertice(grafo* g, int i, int numVertices, int* cor, int* pre, int* lo
             }
         }
 
-        adjacente = adjacente->prox;
+        tmp = tmp->prox;
     }
 
     cor[i] = PRETO;
@@ -311,6 +319,7 @@ void visitaVertice(grafo* g, int i, int numVertices, int* cor, int* pre, int* lo
     }
 }
 
+//Algoritmo de Tarjan para verificar se o grafo é ou não fortemente conexo
 void algoritmoDeTarjan(grafo* g, int numVertices) {
     int numComponentes = 0;
     int* ehFortementeConexo = (int*)malloc(sizeof(int));
