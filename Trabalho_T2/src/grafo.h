@@ -22,10 +22,12 @@ grafo *criarGrafo(int numVertices);
 lista *criarNo(registro r);
 void criarListaAdjacencia(grafo *g, int numVertice, FILE *arquivo);
 void criarVetElementos(grafo *g, int numVertice, FILE *arquivo);
+void criaGrafoTransposto(grafo *grafoI, grafo *grafoT, int numVertice);
+
 
 void adicionarAresta(grafo *grafo, registro r, int numVertice);
 
-int inserirLista(lista **listaAdj, registro r);
+int inserirLista(lista **listaAdj, lista **novaAresta);
 void inserirVertice(grafo *grafo, char*nome, int grupo, int numVertice);
 
 int particionarVertice(grafo *g, int baixo, int topo);
@@ -33,5 +35,8 @@ void quickSort(grafo *g, int baixo, int topo);
 
 void imprimirGrafo(grafo *g, int numVertices);
 void calculaGrau(grafo *g, int numVertices);
+
+int indiceTecnologia(char *nome, grafo *g, int numVertice);
+int encontrarTecnologiasOrigem(grafo *grafo, int numVertices, char *tecnologiaDestino);
 
 #endif

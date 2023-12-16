@@ -56,9 +56,14 @@ void criarListaAdjacencia(grafo *g, int numVertice, FILE *arquivo){
         
         if(r->grupo == -1)
             continue;
+        
+        if(r->peso== -1)
+            continue;
 
         adicionarAresta(g, *r, numVertice);
     }
+
+    fseek(arquivo, TAM_CAB, SEEK_SET);
 }
 void criarVetElementos(grafo *g, int numVertice, FILE *arquivo){
     int flag = 0;
@@ -80,11 +85,14 @@ void criarVetElementos(grafo *g, int numVertice, FILE *arquivo){
         if(r->grupo == -1)
             continue;
 
+        if(r->peso== -1)
+            continue;
+
         for(int i = 0; i< numVertice; i++){
             if(g[i].nomeOrigem != NULL && strcmp(g[i].nomeOrigem, r->nmTecnologiaOrigem) == 0)
                 iOrigem = i;
 
-            if(g[i].nomeOrigem != NULL && strcmp(g[i].nomeOrigem, r->nmTecnologiaDestino) == 0)
+            if(g[i].nomeOrigem != NULL && strcmp(g[i].nomeOrigem, r->nmTecnologiaDestino) == 0 && r->nmTecnologiaDestino != NULL )
                 iDestino = i;
         }
 
@@ -114,7 +122,8 @@ void adicionarAresta(grafo *grafo, registro r, int numVertice){
             iDestino = i;
     }
 
-    int aux = inserirLista(&grafo[iOrigem].iAdjacente,r);
+    lista *novaAresta = criarNo(r);
+    int aux = inserirLista(&grafo[iOrigem].iAdjacente, &novaAresta);
 
     if(aux){
         grafo[iOrigem].grauSaida++;
@@ -122,23 +131,70 @@ void adicionarAresta(grafo *grafo, registro r, int numVertice){
     }
 }
 
-int inserirLista(lista **listaAdj, registro r){
-    lista *novaAresta = criarNo(r);
+void criaGrafoTransposto(grafo *grafoI, grafo *grafoT, int numVertice){
+    //imprimirGrafo(grafoI, numVertice);
+    
+    for(int u = 0; u < numVertice; u++){
+        lista *tmp = grafoI[u].iAdjacente;
+        
+        while(tmp != NULL){
+            int v = indiceTecnologia(tmp->nomeDestino, grafoI, numVertice);
 
-    if(*listaAdj == NULL || strcmp(novaAresta->nomeDestino, (*listaAdj)->nomeDestino) < 0) {
-        novaAresta->prox = *listaAdj;
-        *listaAdj = novaAresta;   
+            lista *aux = malloc(sizeof(lista));
+            aux->nomeDestino = malloc(sizeof(char)*MAX_STRING);
+            strcpy(aux->nomeDestino, grafoI[u].nomeOrigem);
+
+            aux->pesoAresta = tmp->pesoAresta;
+
+            int aux2 = inserirLista(&(grafoT[v].iAdjacente), &aux);
+
+            if(aux2){
+                grafoT[v].grauSaida++;
+                grafoT[u].grauEntrada++;
+            }
+
+            tmp = tmp->prox;
+        }
+    }
+}
+
+
+int indiceTecnologia(char *nome, grafo *g, int numVertice){
+    int inicio = 0;
+    int fim = numVertice -1;
+
+    while (inicio <= fim) {
+        int meio = (inicio + fim) / 2;
+
+        int comparacao = strcmp(nome, g[meio].nomeOrigem);
+
+        if (comparacao == 0) {
+            return meio; 
+        } else if (comparacao < 0) {
+            fim = meio - 1; //  metade inferior
+        } else {
+            inicio = meio + 1; // metade superior
+        }
+    }
+    return inicio; // Retorna a posição onde esta
+}
+
+int inserirLista(lista **listaAdj, lista **novaAresta){
+
+    if(*listaAdj == NULL || strcmp((*novaAresta)->nomeDestino, (*listaAdj)->nomeDestino) < 0) {
+        (*novaAresta)->prox = *listaAdj;
+        *listaAdj = *novaAresta;   
     }else{
         lista *tmp = *listaAdj;
 
-        if(strcmp(novaAresta->nomeDestino, (*listaAdj)->nomeDestino) == 0)
+        if(strcmp((*novaAresta)->nomeDestino, (*listaAdj)->nomeDestino) == 0)
             return 0;
 
-        while(tmp->prox != NULL && strcmp(novaAresta->nomeDestino, (*listaAdj)->nomeDestino) > 0)
+        while(tmp->prox != NULL && strcmp((*novaAresta)->nomeDestino, (*listaAdj)->nomeDestino) > 0)
             tmp = tmp->prox;
         
-        novaAresta->prox = tmp->prox;
-        tmp->prox = novaAresta;
+        (*novaAresta)->prox = tmp->prox;
+        tmp->prox = *novaAresta;
     }
     return 1;
 }
@@ -163,46 +219,32 @@ void calculaGrau(grafo *g, int numVertices){
         g[i].grauGeral = g[i].grauEntrada + g[i].grauSaida;
     }
 }
-int particionarVertice(grafo *g, int baixo, int topo) {
-    char *pivo = malloc(sizeof(char)*strlen(g[topo].nomeOrigem));
-    strcpy(pivo, g[topo].nomeOrigem);
-
-    int i = (baixo - 1);
-
-    for (int j = baixo; j <= topo - 1; j++) {
-        if (strcmp(g[j].nomeOrigem, pivo) < 0) {
-            i++;
-            // Trocar g[i] e g[j]
-            grafo temp = g[i];
-            g[i] = g[j];
-            g[j] = temp;
-        }
-    }
-    // Trocar g[i + 1] e g[topo]
-    grafo temp = g[i + 1];
-    g[i + 1] = g[topo];
-    g[topo] = temp;
-
-    return (i + 1);
-}
-
-// Função QuickSort para o vetor de vértices
-void quickSort(grafo *g, int baixo, int topo) {
-    if (baixo < topo) {
-
-        int pivo = particionarVertice(g, baixo, topo);
-
-        quickSort(g, baixo, pivo - 1);
-        quickSort(g, pivo + 1, topo);
-    }
-}
-
 
 void imprimirGrafo(grafo *g, int numVertices){
+    lista *tmp;
     for(int i = 0; i<numVertices; i++){
-        while(g[i].iAdjacente != NULL){
-            printf("%s %d %d %d %d %s %d\n", g[i].nomeOrigem, g[i].iGrupo, g[i].grauEntrada, g[i].grauSaida, g[i].grauGeral, g[i].iAdjacente->nomeDestino, g[i].iAdjacente->pesoAresta);
-            g[i].iAdjacente = g[i].iAdjacente->prox;
+        tmp = g[i].iAdjacente;
+        while(tmp != NULL){
+            printf("%s %d %d %d %d %s %d\n", g[i].nomeOrigem, g[i].iGrupo, g[i].grauEntrada, g[i].grauSaida, g[i].grauGeral, tmp->nomeDestino, tmp->pesoAresta);
+            tmp = tmp->prox;
         }
     }
+}
+
+int encontrarTecnologiasOrigem(grafo *grafo, int numVertices, char *tecnologiaDestino) {
+    int i;
+    for (i = 0; i < numVertices; i++) {
+        if (strcmp(grafo[i].nomeOrigem, tecnologiaDestino) == 0) {
+            lista *adjacente = grafo[i].iAdjacente;
+            while (adjacente != NULL) {
+                printf("%s, ", adjacente->nomeDestino);
+                adjacente = adjacente->prox;
+            }
+            printf("\n");
+            return 1;
+        }
+    }
+
+    // Se chegou aqui, a tecnologia destino não foi encontrada no grafo
+  return 0;
 }

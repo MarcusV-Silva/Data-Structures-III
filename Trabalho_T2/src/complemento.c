@@ -105,6 +105,40 @@ void scanfEntrada(registro *r){
 	free(aux);
 }
 
+int particionarVertice(grafo *g, int baixo, int topo) {
+    char *pivo = malloc(sizeof(char)*strlen(g[topo].nomeOrigem));
+    strcpy(pivo, g[topo].nomeOrigem);
+
+    int i = (baixo - 1);
+
+    for (int j = baixo; j <= topo - 1; j++) {
+        if (strcmp(g[j].nomeOrigem, pivo) < 0) {
+            i++;
+            // Trocar g[i] e g[j]
+            grafo temp = g[i];
+            g[i] = g[j];
+            g[j] = temp;
+        }
+    }
+    // Trocar g[i + 1] e g[topo]
+    grafo temp = g[i + 1];
+    g[i + 1] = g[topo];
+    g[topo] = temp;
+
+    return (i + 1);
+}
+
+// Função QuickSort para o vetor de vértices durante a criação do grafo
+void quickSort(grafo *g, int baixo, int topo) {
+    if (baixo < topo) {
+
+        int pivo = particionarVertice(g, baixo, topo);
+
+        quickSort(g, baixo, pivo - 1);
+        quickSort(g, pivo + 1, topo);
+    }
+}
+
 //---------------------(Funções fornecidas para o desenvolvimento do trabalho)---------------------
 
 void readline(char* string){
