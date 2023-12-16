@@ -1,6 +1,10 @@
 #ifndef GRAFO_H
 #define GRAFO_H
 
+#define BRANCO 0
+#define CINZA 1
+#define PRETO 2
+
 typedef struct lista{
     char *nomeDestino;
     int pesoAresta;
@@ -38,5 +42,10 @@ void calculaGrau(grafo *g, int numVertices);
 
 int indiceTecnologia(char *nome, grafo *g, int numVertice);
 int encontrarTecnologiasOrigem(grafo *grafo, int numVertices, char *tecnologiaDestino);
+
+//void calculaMin(int a, int b);
+void buscaEmProfundidade(grafo *g, int numVertices, int *ehFortementeConexo, int* numComponentes);
+void visitaVertice(grafo* g, int i, int numVertices,int* cor, int* pre, int* low, int* ehFortementeConexo, int* numComponentes);
+void algoritmoDeTarjan(grafo* g, int numVertices);
 
 #endif

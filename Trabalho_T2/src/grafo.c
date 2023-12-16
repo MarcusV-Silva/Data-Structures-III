@@ -248,3 +248,79 @@ int encontrarTecnologiasOrigem(grafo *grafo, int numVertices, char *tecnologiaDe
     // Se chegou aqui, a tecnologia destino não foi encontrada no grafo
   return 0;
 }
+
+void buscaEmProfundidade(grafo *g, int numVertices, int* ehFortementeConexo, int* numComponentes){
+    int* cor = (int*)malloc(numVertices * sizeof(int));
+    int* pre = (int*)malloc(numVertices * sizeof(int));
+    int* low = (int*)malloc(numVertices * sizeof(int));
+
+    for(int i=0; i<numVertices; i++){
+        cor[i] = BRANCO;
+    }
+    for(int i=0; i<numVertices; i++){
+        if(cor[i] == BRANCO){
+            visitaVertice(g, i, numVertices,cor, pre, low, ehFortementeConexo, numComponentes);
+        }
+    }
+
+    free(pre);
+    free(low);
+}
+
+void visitaVertice(grafo* g, int i, int numVertices, int* cor, int* pre, int* low, int* ehFortementeConexo, int* numComponentes) {
+    int tempo = 0;
+    
+    cor[i] = CINZA;
+    pre[i] = low[i] = ++tempo;
+
+    lista* adjacente = g[i].iAdjacente;
+    
+    while (adjacente != NULL) {
+        char* nomeAdjacente = adjacente->nomeDestino;
+        int adj = -1; // Inicializa como -1, indicando que não encontrou o vértice
+
+        // Procura o vértice no grafo
+        for (int j = 0; j < numVertices; j++) {
+            if (strcmp(g[j].nomeOrigem, nomeAdjacente) == 0) {
+                adj = j;
+                break;
+            }
+        }
+
+        if (adj != -1) {
+            if (cor[adj] == BRANCO) {
+                visitaVertice(g, adj, numVertices,cor, pre, low, ehFortementeConexo, numComponentes);
+                low[i] = (low[i] < low[adj]) ? low[i] : low[adj];
+            } else if (cor[adj] == CINZA) {
+                low[i] = (low[i] < pre[adj]) ? low[i] : pre[adj];
+            }
+        }
+
+        adjacente = adjacente->prox;
+    }
+
+    cor[i] = PRETO;
+
+    if (pre[i] == low[i]) {
+        (*numComponentes)++;
+    }
+
+    // Se o número de componentes for igual ao número de vértices, o grafo é fortemente conexo
+    if (*numComponentes == numVertices) {
+        *ehFortementeConexo = 1;
+    }
+}
+
+void algoritmoDeTarjan(grafo* g, int numVertices) {
+    int numComponentes = 0;
+    int* ehFortementeConexo = (int*)malloc(sizeof(int));
+    *ehFortementeConexo = 1;
+
+    buscaEmProfundidade(g, numVertices, ehFortementeConexo, &numComponentes);
+
+    if(*ehFortementeConexo){
+        printf("O grafo é fortemente conexo e tem %d componentes\n", numComponentes);
+    }else{
+        printf("O grafo não é fortemente conexo e tem %d componentes\n", numComponentes);
+    }
+}

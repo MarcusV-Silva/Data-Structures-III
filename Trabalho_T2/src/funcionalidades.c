@@ -89,5 +89,26 @@ void funcionalidade10(){
     
     fclose(dataFile);
 }
-void funcionalidade11(){}
+
+void funcionalidade11(){
+    char *dataBIN = malloc(sizeof(char) * 40);
+    scanf("%s", dataBIN);
+
+    FILE *dataFile = fopen(dataBIN, "rb");
+    checkFile(dataFile);
+
+    registroCab rC;
+    readCabecalho(&rC, dataFile);
+    verifyStatus(rC);
+
+    int numVertices = rC.nroTecnologias;
+    grafo *grafoFinal = criarGrafo(numVertices);
+
+    criarVetElementos(grafoFinal, numVertices, dataFile);
+    criarListaAdjacencia(grafoFinal, numVertices, dataFile);
+
+    algoritmoDeTarjan(grafoFinal, numVertices);
+
+}
+
 void funcionalidade12(){}
