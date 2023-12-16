@@ -102,12 +102,20 @@ void funcionalidade11(){
     verifyStatus(rC);
 
     int numVertices = rC.nroTecnologias;
-    grafo *grafoFinal = criarGrafo(numVertices);
+    //grafo *grafoFinal = criarGrafo(numVertices);
 
-    criarVetElementos(grafoFinal, numVertices, dataFile);
-    criarListaAdjacencia(grafoFinal, numVertices, dataFile);
+    //criarVetElementos(grafoFinal, numVertices, dataFile);
+    //criarListaAdjacencia(grafoFinal, numVertices, dataFile);
 
-    algoritmoDeTarjan(grafoFinal, numVertices);
+    //algoritmoDeTarjan(grafoFinal, numVertices);
+
+    int res = calcularComponentesFortes(numVertices);
+
+    if(res == 1){
+        printf("O grafo é fortemente conexo com %d componente\n", numVertices);
+    }else{
+        printf("O grafo não é fortemente conexo com %d componentes\n", numVertices);
+    }
 
 }
 

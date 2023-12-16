@@ -44,8 +44,14 @@ int indiceTecnologia(char *nome, grafo *g, int numVertice);
 int encontrarTecnologiasOrigem(grafo *grafo, int numVertices, char *tecnologiaDestino);
 
 //void calculaMin(int a, int b);
-void buscaEmProfundidade(grafo *g, int numVertices, int *ehFortementeConexo, int* numComponentes);
+/*void buscaEmProfundidade(grafo *g, int numVertices, int *ehFortementeConexo, int* numComponentes);
 void visitaVertice(grafo* g, int i, int numVertices,int* cor, int* pre, int* low, int* ehFortementeConexo, int* numComponentes);
 void algoritmoDeTarjan(grafo* g, int numVertices);
+
+void algoritmoDeDijkstra(int numVertices, char *nomeOrigem, char *nomeDestino);*/
+
+void dfsR(grafo *grafoT, int v, int numVertices);
+void dfsRStrongCompsK(grafo *grafoI, int v, int *sc, int k, int numVertices);
+int calcularComponentesFortes(int numVertices);
 
 #endif

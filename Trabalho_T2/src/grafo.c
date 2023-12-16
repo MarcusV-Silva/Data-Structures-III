@@ -249,7 +249,7 @@ int encontrarTecnologiasOrigem(grafo *grafo, int numVertices, char *tecnologiaDe
   return 0;
 }
 
-//Função que realiza a busca em profundidade
+/*//Função que realiza a busca em profundidade
 void buscaEmProfundidade(grafo *g, int numVertices, int* ehFortementeConexo, int* numComponentes){
     int* cor = (int*)malloc(numVertices * sizeof(int));
     int* pre = (int*)malloc(numVertices * sizeof(int));
@@ -332,4 +332,135 @@ void algoritmoDeTarjan(grafo* g, int numVertices) {
     }else{
         printf("O grafo não é fortemente conexo e tem %d componentes\n", numComponentes);
     }
+}*/
+
+void push(int x, int numVertices){
+    int stack[numVertices];
+    int top;
+    if (top >= numVertices - 1){
+        printf("A pilha está cheia");
+    }else{
+        top++;
+        stack[top] = x;
+    }
 }
+
+void pop(){
+    int top;
+    if (top <= - 1){
+        printf("A pilha está vazia");
+    }else{
+        top --;
+    }
+}
+
+
+// Implementação da função para realizar a DFS no grafo reverso
+void dfsR(grafo *grafoT, int v, int numVertices) {
+    int pre[numVertices];
+    //int cntt; //post[numVertices];
+    //int vv[numVertices];
+
+    //pre[v] = cnt++;
+    lista *tmp = grafoT[v].iAdjacente;
+
+    while (tmp != NULL) {
+        int w = indiceTecnologia(tmp->nomeDestino, grafoT, numVertices);
+        if (pre[w] == -1){
+            dfsR(grafoT, w, numVertices);
+
+        tmp = tmp->prox;
+        }
+    }
+
+    //post[v] = cntt++;
+}
+
+// Implementação da função para realizar a DFS na etapa de atribuir rótulos
+void dfsRStrongCompsK(grafo *grafoI, int v, int *sc, int k, int numVertices) {
+    sc[v] = k;
+
+    lista *tmp = grafoI[v].iAdjacente;
+    while (tmp != NULL) {
+        int w = indiceTecnologia(tmp->nomeDestino, grafoI, numVertices);
+        if (sc[w] == -1)
+            dfsRStrongCompsK(grafoI, w, sc, k, numVertices);
+
+        tmp = tmp->prox;
+    }
+}
+
+
+// Implementação da função para calcular as componentes fortes
+int calcularComponentesFortes(int numVertices) {
+    int *sc = malloc(sizeof(int*));
+    int pre[numVertices];
+    int post[numVertices];
+    int vv[numVertices];
+
+    // Fase 1
+    grafo *grafoR = criarGrafo(numVertices);
+    grafo *grafoT = criarGrafo(numVertices);
+    criaGrafoTransposto(grafoR, grafoT, numVertices);
+
+    //cnt = cntt = 0;
+    for (int v = 0; v < numVertices; ++v){
+        pre[v] = -1;
+    }
+    printf("\n 1\n");
+
+    for (int v = 0; v < numVertices; ++v){
+        if (pre[v] == -1)
+            dfsR(grafoT, v, numVertices);
+    }
+    printf("\n 2\n");
+
+    for (int v = 0; v < numVertices; ++v){
+        vv[post[v]] = v;
+        printf("\n %d\n", vv[post[v]]);
+    }
+    printf("\n 3\n");
+
+    // Fase 2
+    for (int v = 0; v < numVertices; ++v){
+        sc[v] = -1;
+    }
+    printf("\n 4 \n");
+
+    int k = 0;
+    for (int i = numVertices - 1; i >= 0; --i) {
+        printf("\n 5 \n");
+        int v = vv[i];
+        if (sc[v] == -1) {
+            printf("entrou if");
+            dfsRStrongCompsK(grafoR, v, sc, k, numVertices);
+            k++;
+        }
+    }
+    printf("\n %d!! \n", k);
+    printf("\n 5 \n");
+
+    //free(grafoR);
+    //free(grafoT);
+
+    return k;
+}
+
+/*void algoritmoDeDijkstra(int numVertices, char *nomeOrigem, char *nomeDestino){
+    int u, v, count = 0;
+    int *ant, *tmp;
+    int *z;
+
+    ant = malloc(sizeof(int*));
+    tmp = malloc(sizeof(int*));
+
+    if(ant == NULL){
+        printf("Erro!");
+    }
+
+    z = malloc(sizeof(int*));
+    if(z == NULL){
+        printf("erro!");
+    }
+    
+}*/
