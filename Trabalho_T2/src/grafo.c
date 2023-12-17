@@ -310,24 +310,28 @@ int verificarFortementeConexo(grafo *g, grafo *grafoTransposto, int numVertice) 
 }
 
 
-int Dijkstra(grafo *g, char *nmOrigem, char *nmDestino, int numVertice){
+/*int Dijkstra(grafo *g, char *nmOrigem, char *nmDestino, int numVertice){
     int menorCaminho[numVertice];
     int visitado[numVertice];
 
     for(int i = 0; i< numVertice; i++){
-        visitado[i] = 0;
         menorCaminho[i]= INT_MAX;
+        visitado[i] = 0;
     }
 
     int iOrigem = indiceTecnologia(nmOrigem, g, numVertice);
     int iDestino = indiceTecnologia(nmDestino, g, numVertice);
+    printf("\nmeio\n");
 
     menorCaminho[iOrigem] = 0;
     for(int i = 0; i< numVertice; i++){
+        printf("\n for dij\n");
         lista *tmp = g[iOrigem].iAdjacente;
         while(tmp != NULL){
+            printf("\n while dij\n");
             int v = indiceTecnologia(tmp->nomeDestino, g, numVertice);
-            int w = indiceTecnologia(g[iOrigem].nomeOrigem, g, numVertice);
+            int w = indiceTecnologia(tmp->nomeDestino, g, numVertice);
+            //int w = indiceTecnologia(g[iOrigem].nomeOrigem, g, numVertice);
             menorCaminho[v] = menorValor(menorCaminho[v], menorCaminho[w] + tmp->pesoAresta);
             tmp = tmp->prox;
         }
@@ -341,17 +345,77 @@ int Dijkstra(grafo *g, char *nmOrigem, char *nmDestino, int numVertice){
 }
 
 int menorValorCaminho(int *visitado, int *caminho, int numVertice){
-    int aux = INT_MAX;
+    int aux = INT_MAX, min_index;
+
     for(int i = 0; i< numVertice; i++){
-        if(caminho[i]<aux && visitado[i] != 1)
-            aux = caminho[i];
+        if(caminho[i] == 0 && visitado[i] <= aux){
+            aux = visitado[i];
+            min_index = i;
+        }
     }
 
-    return aux;
+    return min_index;
 }
 
 int menorValor(int a, int b){
     return (a>b) ? b : a ;
+}*/
+
+int minDistancia(int pesos[], int verticeS[], int numVertices) {
+    int min = INT_MAX;
+    int minIndex = 0;
+
+    for (int i = 0; i < numVertices; i++) {
+        if (!verticeS[i] && pesos[i] <= min) {
+            min = pesos[i];
+            minIndex = i;
+        }
+    }
+
+    return minIndex;
 }
 
-        
+int algoritmoDijkstra(grafo *g, char *nmOrigem, char *nmDestino, int numVertices){
+    int *pesos = (int *)malloc(numVertices * sizeof(int));
+    int *verticeS = (int *)malloc(numVertices * sizeof(int));
+    int *distancias = (int *)malloc(numVertices * sizeof(int));
+
+    for(int i = 0; i < numVertices; i++){
+        pesos[i] = INT_MAX;
+        verticeS[i] = 0;
+    }
+
+    int origem = indiceTecnologia(nmOrigem, g, numVertices);
+    int destino = indiceTecnologia(nmOrigem, g, numVertices);
+
+    pesos[origem] = 0;
+
+    for(int i = 0; i < numVertices; i++){
+        int w = minDistancia(pesos, verticeS, numVertices);
+        verticeS[w] = 1;
+        for(int j = 0; j < numVertices; j++){
+            if(!verticeS[j] && g[w].iAdjacente != NULL){
+                lista *adjacente = g[w].iAdjacente;
+
+                while (adjacente != NULL){
+                    destino = indiceTecnologia(adjacente->nomeDestino, g, numVertices);
+
+                    if(pesos[w] != INT_MAX && pesos[w] + adjacente->pesoAresta < pesos[destino]){
+                        pesos[destino] = pesos[w] + adjacente->pesoAresta;
+                    }
+                    adjacente = adjacente->prox;
+                }
+                
+            }
+        }
+    }
+
+    for (int i = 0; i < numVertices; i++) {
+        distancias[i] = pesos[i];
+    }
+
+    free(pesos);
+    free(verticeS);
+
+    return distancias[destino];
+}

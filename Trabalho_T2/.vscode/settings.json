@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "complemento.h": "c",
+        "funcionalidades.h": "c"
+    }
+}
