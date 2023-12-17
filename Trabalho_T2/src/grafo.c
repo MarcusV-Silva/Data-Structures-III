@@ -265,14 +265,14 @@ void preencherPilhaFinalizacao(grafo *g, int v, int visitado[], pilhaTAD* pilha,
     empilhar(pilha, v);
 }
 
-void buscaProfundidade(grafo *g, int v, int visitado[], int currentComponent, int numVertice) {
+void buscaProfundidade(grafo *g, int v, int visitado[], int numVertice) {
     visitado[v] = 1;
 
     lista* temp = g[v].iAdjacente;
     while (temp != NULL) {
         int adjVertex = indiceTecnologia(temp->nomeDestino, g, numVertice);
         if (!visitado[adjVertex]) {
-            buscaProfundidade(g, adjVertex, visitado, currentComponent, numVertice);
+            buscaProfundidade(g, adjVertex, visitado, numVertice);
         }
         temp = temp->prox;
     }
@@ -301,7 +301,7 @@ int verificarFortementeConexo(grafo *g, grafo *grafoTransposto, int numVertice) 
         int v = desempilhar(pilha);
         if (!visitado[v]) {
             numComponentes++;
-            buscaProfundidade(grafoTransposto, v, visitado, numComponentes, numVertice);
+            buscaProfundidade(grafoTransposto, v, visitado, numVertice);
         }
     }
 
@@ -323,16 +323,20 @@ int Dijkstra(grafo *g, char *nmOrigem, char *nmDestino, int numVertice){
     int iDestino = indiceTecnologia(nmDestino, g, numVertice);
 
     menorCaminho[iOrigem] = 0;
+
     for(int i = 0; i< numVertice; i++){
+        int w = indiceTecnologia(g[iOrigem].nomeOrigem, g, numVertice);
         lista *tmp = g[iOrigem].iAdjacente;
-        while(tmp != NULL){
+    
+        while(tmp != NULL && !visitado[w]){
             int v = indiceTecnologia(tmp->nomeDestino, g, numVertice);
-            int w = indiceTecnologia(g[iOrigem].nomeOrigem, g, numVertice);
             menorCaminho[v] = menorValor(menorCaminho[v], menorCaminho[w] + tmp->pesoAresta);
             tmp = tmp->prox;
         }
+
         int aux = menorValorCaminho(visitado, menorCaminho, numVertice);
         visitado[iOrigem] = 1;
+
         if(aux != INT_MAX)
             iOrigem = aux;
     }
@@ -340,13 +344,13 @@ int Dijkstra(grafo *g, char *nmOrigem, char *nmDestino, int numVertice){
     return menorCaminho[iDestino];
 }
 
-int menorValorCaminho(int *visitado, int *caminho, int numVertice){
+
+int menorValorCaminho(int visitado[], int caminho[], int numVertice){
     int aux = INT_MAX;
     for(int i = 0; i< numVertice; i++){
         if(caminho[i]<aux && visitado[i] != 1)
-            aux = caminho[i];
+            aux = i;
     }
-
     return aux;
 }
 
