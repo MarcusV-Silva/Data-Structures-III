@@ -14,7 +14,6 @@ grafo *criarGrafo(int numVertices){
         exit(0);
     
     for (int i = 0; i < numVertices; i++) {
-        novoGrafo[i].iVertice = -1;
         novoGrafo[i].iAdjacente = NULL;  
         novoGrafo[i].grauEntrada = 0;
         novoGrafo[i].grauGeral = 0;
@@ -89,14 +88,11 @@ void criarVetElementos(grafo *g, int numVertice, FILE *arquivo){
         if(r->grupo == -1)
             continue;
 
-        if(r->peso== -1)
-            continue;
-
         for(int i = 0; i< numVertice; i++){
             if(g[i].nomeOrigem != NULL && strcmp(g[i].nomeOrigem, r->nmTecnologiaOrigem) == 0)
                 iOrigem = i;
 
-            if(g[i].nomeOrigem != NULL && strcmp(g[i].nomeOrigem, r->nmTecnologiaDestino) == 0 && r->nmTecnologiaDestino != NULL )
+            if(g[i].nomeOrigem != NULL && strcmp(g[i].nomeOrigem, r->nmTecnologiaDestino) == 0 && r->tamTecnologiaDestino != 0)
                 iDestino = i;
         }
 
@@ -106,7 +102,7 @@ void criarVetElementos(grafo *g, int numVertice, FILE *arquivo){
         if(iOrigem == -1)
             inserirVertice(g, r->nmTecnologiaOrigem, r->grupo, numVertice);
         
-        if(iDestino == -1)
+        if(iDestino == -1 && r->tamTecnologiaDestino != 0)
             inserirVertice(g, r->nmTecnologiaDestino, -2, numVertice);
     }
 
@@ -122,12 +118,15 @@ void adicionarAresta(grafo *grafo, registro r, int numVertice){
         if(grafo[i].nomeOrigem != NULL && strcmp(grafo[i].nomeOrigem, r.nmTecnologiaOrigem) == 0)
             iOrigem = i;
 
-        if(grafo[i].nomeOrigem != NULL && strcmp(grafo[i].nomeOrigem, r.nmTecnologiaDestino) == 0)
+        if(grafo[i].nomeOrigem != NULL && strcmp(grafo[i].nomeOrigem, r.nmTecnologiaDestino) == 0 && r.tamTecnologiaDestino != 0)
             iDestino = i;
     }
 
     lista *novaAresta = criarNo(r);
-    int aux = inserirLista(&grafo[iOrigem].iAdjacente, novaAresta);
+
+    int aux;
+    if(iDestino != -1)
+        aux = inserirLista(&grafo[iOrigem].iAdjacente, novaAresta);
 
     if(aux){
         grafo[iOrigem].grauSaida++;
