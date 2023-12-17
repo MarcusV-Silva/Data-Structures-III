@@ -29,7 +29,6 @@ void funcionalidade8(){
 
 
 void funcionalidade9(){
-    //printf("debug 0\n");
     char *dataBIN = malloc(sizeof(char) * 40);
     scanf("%s", dataBIN);
 

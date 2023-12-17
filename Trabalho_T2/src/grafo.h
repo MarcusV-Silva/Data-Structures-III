@@ -1,12 +1,14 @@
 #ifndef GRAFO_H
 #define GRAFO_H
 
+// Struct que define os campos de uma lista de ajacencia
 typedef struct lista{
     char *nomeDestino;
     int pesoAresta;
-    struct lista *prox;
+    struct lista *prox; // Ponteiro que aponta para o proximo elemento
 }lista;
 
+// Struct que define os campos de cada valor do vetor de elementos de um grafo
 typedef struct grafo{
     int iVertice;
     int iGrupo;
@@ -17,32 +19,38 @@ typedef struct grafo{
     lista *iAdjacente; 
 }grafo;
 
-
+// Struct que define a pilha utilizada na Funcionalidade
 typedef struct pilha{
 	int topo; 
 	int *array;
     int capacidade;
 }pilhaTAD;
 
+// Inicialização dos campos de um grafo
 grafo *criarGrafo(int numVertices);
+
+// Inicialização das listas de ajacencias com base no registro do arquivo binario
 lista *criarNo(registro r);
-void criarListaAdjacencia(grafo *g, int numVertice, FILE *arquivo);
+
+// Funções que definem o vetor de elementos de um grafo
 void criarVetElementos(grafo *g, int numVertice, FILE *arquivo);
+void inserirVertice(grafo *grafo, char *tecnologia, int grupo, int numVertice);
+
+// Funções que definem as listas de adjacencia do grafo
+void criarListaAdjacencia(grafo *g, int numVertice, FILE *arquivo);
+void adicionarAresta(grafo *grafo, registro r, int numVertice);
+int inserirLista(lista **listaAdj, lista *novaAresta);
+
+// Função que realiza a criação de um grafo transposto
 void criaGrafoTransposto(grafo *grafoI, grafo *grafoT, int numVertice);
 
-
-void adicionarAresta(grafo *grafo, registro r, int numVertice);
-
-int inserirLista(lista **listaAdj, lista *novaAresta);
-void inserirVertice(grafo *grafo, char*nome, int grupo, int numVertice);
-
-int particionarVertice(grafo *g, int baixo, int topo);
-void quickSort(grafo *g, int baixo, int topo);
-
+// Função que imprime o grafo
 void imprimirGrafo(grafo *g, int numVertices);
+
+// Função que calcula o grau geral de um grafo
 void calculaGrau(grafo *g, int numVertices);
 
-int indiceTecnologia(char *nome, grafo *g, int numVertice);
+int indiceTecnologia(char *tecnologia, grafo *g, int numVertice);
 int encontrarTecnologiasOrigem(grafo *grafo, int numVertices, char *tecnologiaDestino);
 
 void preencherPilhaFinalizacao(grafo *g, int v, int visitado[], pilhaTAD* pilha, int numVertice);
@@ -52,5 +60,5 @@ int verificarFortementeConexo(grafo *g, grafo *grafoTransposto, int numVertice);
 int Dijkstra(grafo *g, char *nmOrigem, char *nmDestino, int numVertice);
 int menorValorCaminho(int *visitado, int *caminho, int numVertice);
 int menorValor(int a, int b);
-int minDistancia(int pesos[], int verticeS[], int numVertices);
+
 #endif

@@ -29,10 +29,10 @@ int particionarVertice(grafo *g, int baixo, int topo);
 void quickSortLista(lista *primeiro, lista *ultimo);
 lista *particionarLista(lista *primeiro, lista *ultimo);
 void trocaLista(lista *l1, lista *l2);
-lista* ultimoNo(lista *l);
+lista *ultimoNo(lista *l);
 
 // Funções utilizadas na manipulação de Pilhas
-pilhaTAD* criarPilha(int capacidade);
+pilhaTAD *criarPilha(int capacidade);
 int pilhaVazia(pilhaTAD* pilha);
 void empilhar(pilhaTAD* pilha, int item);
 int desempilhar(pilhaTAD* pilha);
