@@ -157,8 +157,13 @@ void funcionalidade12(){
         scan_quote_string(tmp1);
         scan_quote_string(tmp2);
 
-        printf("%s %s:\n", tmp1, tmp2);
+        //printf("%s %s:\n", tmp1, tmp2);
+        int aux = Dijkstra(grafoInicial, tmp1, tmp2, numVertices);
 
+        if(aux == -1)
+            printf("%s %s: CAMINHO INEXISTENTE\n", tmp1, tmp2);
+        else
+            printf("%s %s: %d\n", tmp1, tmp2, aux);
     }
     
     fclose(dataFile);

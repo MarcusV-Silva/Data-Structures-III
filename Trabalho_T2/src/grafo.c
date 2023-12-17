@@ -322,9 +322,7 @@ int Dijkstra(grafo *g, char *nmOrigem, char *nmDestino, int numVertice){
     int iOrigem = indiceTecnologia(nmOrigem, g, numVertice);
     int iDestino = indiceTecnologia(nmDestino, g, numVertice);
 
-    visitado[iOrigem] = 1;
     menorCaminho[iOrigem] = 0;
-
     for(int i = 0; i< numVertice; i++){
         lista *tmp = g[iOrigem].iAdjacente;
         while(tmp != NULL){
@@ -333,9 +331,8 @@ int Dijkstra(grafo *g, char *nmOrigem, char *nmDestino, int numVertice){
             menorCaminho[v] = menorValor(menorCaminho[v], menorCaminho[w] + tmp->pesoAresta);
             tmp = tmp->prox;
         }
-
         int aux = menorValorCaminho(visitado, menorCaminho, numVertice);
-
+        visitado[iOrigem] = 1;
         if(aux != INT_MAX)
             iOrigem = aux;
     }
