@@ -290,6 +290,8 @@ int encontrarTecnologiasOrigem(grafo *grafo, int numVertices, char *tecnologia) 
 
     // Numero de saidas do grafo
     int lim = grafo[aux].grauSaida;
+    if(lim == 0)
+        return 0;
 
     // Impressão das tecnologias
     while (adjacente != NULL && lim>1) {

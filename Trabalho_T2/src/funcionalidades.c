@@ -5,87 +5,109 @@
 #include "grafo.h"
 
 void funcionalidade8(){
-    char *dataBIN = malloc(sizeof(char) * 40);
-    scanf("%s", dataBIN);
+    // Inicializa e abre o arquivo binário com base na entrada
+    char *arquivoBIN = malloc(sizeof(char) * 40);
+    scanf("%s", arquivoBIN);
 
-    FILE *dataFile = fopen(dataBIN, "rb");
-    checkFile(dataFile);
+    FILE *arquivo = fopen(arquivoBIN, "rb");
+    checkFile(arquivo);
 
+    // Verificação do Cabeçalho do arquivo binario
     registroCab rC;
-    readCabecalho(&rC, dataFile);
+    readCabecalho(&rC, arquivo);
     verifyStatus(rC);
 
+    // Atribuição do numero total de vertices
     int numVertices = rC.nroTecnologias;
-    grafo *grafoInicial = criarGrafo(numVertices);
 
-    criarVetElementos(grafoInicial, numVertices, dataFile);
-    criarListaAdjacencia(grafoInicial, numVertices, dataFile);
-    calculaGrau(grafoInicial, numVertices);
+    // Criação e definição do grafo
+    grafo *grafoOriginal = criarGrafo(numVertices);
+    criarVetElementos(grafoOriginal, numVertices, arquivo);
+    criarListaAdjacencia(grafoOriginal, numVertices, arquivo);
+    calculaGrau(grafoOriginal, numVertices);
 
-    imprimirGrafo(grafoInicial, numVertices);
+    // Impressão do grafo
+    imprimirGrafo(grafoOriginal, numVertices);
 
-    fclose(dataFile);
+    // Fechando o arquivo
+    fclose(arquivo);
+    free(arquivoBIN);
 }
 
 
 void funcionalidade9(){
-    char *dataBIN = malloc(sizeof(char) * 40);
-    scanf("%s", dataBIN);
+    // Inicializa e abre o arquivo binário com base na entrada
+    char *arquivoBIN = malloc(sizeof(char) * 40);
+    scanf("%s", arquivoBIN);
 
-    FILE *dataFile = fopen(dataBIN, "rb");
-    checkFile(dataFile);
+    FILE *arquivo = fopen(arquivoBIN, "rb");
+    checkFile(arquivo);
 
+    // Verificação do Cabeçalho do arquivo binario
     registroCab rC;
-    readCabecalho(&rC, dataFile);
+    readCabecalho(&rC, arquivo);
     verifyStatus(rC);
 
+    // Atribuição do numero total de vertices
     int numVertices = rC.nroTecnologias;
 
-    grafo *grafoInicial = criarGrafo(numVertices);
-    criarVetElementos(grafoInicial, numVertices, dataFile);
-    criarListaAdjacencia(grafoInicial, numVertices, dataFile);
-    calculaGrau(grafoInicial, numVertices);
+    // Criação e definição do grafo original
+    grafo *grafoOriginal = criarGrafo(numVertices);
+    criarVetElementos(grafoOriginal, numVertices, arquivo);
+    criarListaAdjacencia(grafoOriginal, numVertices, arquivo);
+    calculaGrau(grafoOriginal, numVertices);
       
+    // Criação e definição do grafo transposto com base no grafo original
     grafo *grafoTransposto = criarGrafo(numVertices);
-    criarVetElementos(grafoTransposto, numVertices, dataFile); //
-    criaGrafoTransposto(grafoInicial, grafoTransposto, numVertices);
+    criarVetElementos(grafoTransposto, numVertices, arquivo); 
+    criaGrafoTransposto(grafoOriginal, grafoTransposto, numVertices);
     calculaGrau(grafoTransposto, numVertices);
 
+    // Impressão do grafo transposto
     imprimirGrafo(grafoTransposto, numVertices);
 
-    fclose(dataFile);
+    // Fechando o arquivo
+    fclose(arquivo);
+    free(arquivoBIN);
 }
 
 void funcionalidade10(){
+    // Inicializa e abre o arquivo binário com base na entrada e no numero de execucoes da funcionalidade
     int n;
-    char *dataBIN = malloc(sizeof(char) * 40);
-    scanf("%s %d", dataBIN, &n);
+    char *arquivoBIN = malloc(sizeof(char) * 40);
+    scanf("%s %d", arquivoBIN, &n);
 
-    FILE *dataFile = fopen(dataBIN, "rb");
-    checkFile(dataFile);
+    FILE *arquivo = fopen(arquivoBIN, "rb");
+    checkFile(arquivo);
 
+    // Verificação do Cabeçalho do arquivo binario
     registroCab rC;
-    readCabecalho(&rC, dataFile);
+    readCabecalho(&rC, arquivo);
     verifyStatus(rC);
 
+    // Atribuição do numero total de vertices
     int numVertices = rC.nroTecnologias;
 
-    grafo *grafoInicial = criarGrafo(numVertices);
-    criarVetElementos(grafoInicial, numVertices, dataFile);
-    criarListaAdjacencia(grafoInicial, numVertices, dataFile);
-    calculaGrau(grafoInicial, numVertices);
+     // Criação e definição do grafo original
+    grafo *grafoOriginal = criarGrafo(numVertices);
+    criarVetElementos(grafoOriginal, numVertices, arquivo);
+    criarListaAdjacencia(grafoOriginal, numVertices, arquivo);
+    calculaGrau(grafoOriginal, numVertices);
 
+    // Criação e definição do grafo transposto com base no grafo original
     grafo *grafoTransposto = criarGrafo(numVertices);
-    criarVetElementos(grafoTransposto, numVertices, dataFile); //
-    criaGrafoTransposto(grafoInicial, grafoTransposto, numVertices);
+    criarVetElementos(grafoTransposto, numVertices, arquivo); //
+    criaGrafoTransposto(grafoOriginal, grafoTransposto, numVertices);
     calculaGrau(grafoTransposto, numVertices);
 
+    // Loop de execução da funcionalidade
     for(int i = 0; i<n; i++){
-        char tmp[MAX_STRING];
-        scan_quote_string(tmp);
-        printf("%s: ", tmp);
+        char tecnologia[MAX_STRING];
+        scan_quote_string(tecnologia);
+        printf("%s: ", tecnologia);
 
-        int aux = encontrarTecnologiasOrigem(grafoTransposto, numVertices, tmp);
+        // Encontra as tecnologias que originaram o clique a tecnologia destino
+        int aux = encontrarTecnologiasOrigem(grafoTransposto, numVertices, tecnologia);
 
         if(!aux)
             printf("Registro inexistente.");
@@ -93,62 +115,65 @@ void funcionalidade10(){
         printf("\n");
     }
     
-    fclose(dataFile);
+    // Fechando o arquivo
+    fclose(arquivo);
+    free(arquivoBIN);
 }
 
 
 void funcionalidade11(){
-    char *dataBIN = malloc(sizeof(char) * 40);
-    scanf("%s", dataBIN);
+    char *arquivoBIN = malloc(sizeof(char) * 40);
+    scanf("%s", arquivoBIN);
 
-    FILE *dataFile = fopen(dataBIN, "rb");
-    checkFile(dataFile);
+    FILE *arquivo = fopen(arquivoBIN, "rb");
+    checkFile(arquivo);
 
     registroCab rC;
-    readCabecalho(&rC, dataFile);
+    readCabecalho(&rC, arquivo);
     verifyStatus(rC);
 
     int numVertices = rC.nroTecnologias;
 
-    grafo *grafoInicial = criarGrafo(numVertices);
-    criarVetElementos(grafoInicial, numVertices, dataFile);
-    criarListaAdjacencia(grafoInicial, numVertices, dataFile);
-    calculaGrau(grafoInicial, numVertices);
+    grafo *grafoOriginal = criarGrafo(numVertices);
+    criarVetElementos(grafoOriginal, numVertices, arquivo);
+    criarListaAdjacencia(grafoOriginal, numVertices, arquivo);
+    calculaGrau(grafoOriginal, numVertices);
 
     grafo *grafoTransposto = criarGrafo(numVertices);
-    criarVetElementos(grafoTransposto, numVertices, dataFile); //
-    criaGrafoTransposto(grafoInicial, grafoTransposto, numVertices);
+    criarVetElementos(grafoTransposto, numVertices, arquivo); //
+    criaGrafoTransposto(grafoOriginal, grafoTransposto, numVertices);
     calculaGrau(grafoTransposto, numVertices);
 
-    int aux = verificarFortementeConexo(grafoInicial, grafoTransposto, numVertices);
+    int aux = verificarFortementeConexo(grafoOriginal, grafoTransposto, numVertices);
 
     if(aux == 1)
         printf("Sim, o grafo é fortemente conexo e possui 1 componente.");
     else
         printf("Não, o grafo não é fortemente conexo e possui %d componentes.", aux);
 
-    fclose(dataFile);
+    fclose(arquivo);
+    free(arquivoBIN);
 }
 
 
 void funcionalidade12(){
     int n;
-    char *dataBIN = malloc(sizeof(char) * 40);
-    scanf("%s %d", dataBIN, &n);
+    char *arquivoBIN = malloc(sizeof(char) * 40);
+    scanf("%s %d", arquivoBIN, &n);
 
-    FILE *dataFile = fopen(dataBIN, "rb");
-    checkFile(dataFile);
+    FILE *arquivo = fopen(arquivoBIN, "rb");
+    checkFile(arquivo);
 
     registroCab rC;
-    readCabecalho(&rC, dataFile);
+    readCabecalho(&rC, arquivo);
     verifyStatus(rC);
 
     int numVertices = rC.nroTecnologias;
 
-    grafo *grafoInicial = criarGrafo(numVertices);
-    criarVetElementos(grafoInicial, numVertices, dataFile);
-    criarListaAdjacencia(grafoInicial, numVertices, dataFile);
-    calculaGrau(grafoInicial, numVertices);
+    grafo *grafoOriginal = criarGrafo(numVertices);
+    criarVetElementos(grafoOriginal, numVertices, arquivo);
+    criarListaAdjacencia(grafoOriginal, numVertices, arquivo);
+    calculaGrau(grafoOriginal, numVertices);
 
      for(int i = 0; i<n; i++){
         char *tmp1 = malloc(sizeof(char)*MAX_STRING);
@@ -157,13 +182,14 @@ void funcionalidade12(){
         scan_quote_string(tmp2);
 
         //printf("%s %s:\n", tmp1, tmp2);
-        int aux = Dijkstra(grafoInicial, tmp1, tmp2, numVertices);
+        int aux = Dijkstra(grafoOriginal, tmp1, tmp2, numVertices);
 
         if(aux == -1 || aux == INT_MAX)
-            printf("%s %s: CAMINHO INEXISTENTE\n", tmp1, tmp2);
+            printf("%s %s: CAMINHO INEXISTENTE.\n", tmp1, tmp2);
         else
             printf("%s %s: %d\n", tmp1, tmp2, aux);
     }
     
-    fclose(dataFile);
+    fclose(arquivo);
+    free(arquivoBIN);
 }
