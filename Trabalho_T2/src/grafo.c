@@ -58,18 +58,15 @@ void criarVetElementos(grafo *g, int numVertice, FILE *arquivo){
         // Caso em que chegou no fim do arquivo
         if(aux == 0){
             flag = -1;
-            freeRegistro(r);
             break;
         }
 
         // Caso em que o registro esta removido
         if(aux == -1){
-            freeRegistro(r);
             continue;
         }
         
         if(r->grupo == -1){
-            freeRegistro(r);
             continue;
         }
 
@@ -94,7 +91,6 @@ void criarVetElementos(grafo *g, int numVertice, FILE *arquivo){
         if(iOrigem != -1 && g[iOrigem].iGrupo == -2)
             g[iOrigem].iGrupo = r->grupo;
 
-        freeRegistro(r);
     }
 
     // Ordenação do vetor de elementos
@@ -135,30 +131,22 @@ void criarListaAdjacencia(grafo *g, int numVertice, FILE *arquivo){
         // Caso em que chegou no fim do arquivo
         if(aux == 0){
             flag = -1;
-            freeRegistro(r);
             break;
         }
 
         // Caso em que o registro esta removido
-        if(aux == -1){
-            freeRegistro(r);
-            continue;
-        }
-        
+        if(aux == -1)
+             continue;
+    
         // Valores que nao podem entrar no grafo
-        if(r->grupo == -1){
-            freeRegistro(r);
+        if(r->grupo == -1)
             continue;
-        }
-        
-        if(r->peso== -1){
-            freeRegistro(r);
+
+        if(r->peso== -1)
             continue;
-        }
 
         // Adiciona a aresta na lista de adjacencia
         adicionarAresta(g, *r, numVertice);
-        freeRegistro(r);
     }
 
     // Ordena cada lista de adjacencia
