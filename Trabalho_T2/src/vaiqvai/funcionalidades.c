@@ -151,7 +151,7 @@ void funcionalidade12(){
     criarListaAdjacencia(grafoInicial, numVertices, dataFile);
     calculaGrau(grafoInicial, numVertices);
 
-    for(int i = 0; i<n; i++){
+     for(int i = 0; i<n; i++){
         char *tmp1 = malloc(sizeof(char)*MAX_STRING);
         char *tmp2 = malloc(sizeof(char)*MAX_STRING);
         scan_quote_string(tmp1);

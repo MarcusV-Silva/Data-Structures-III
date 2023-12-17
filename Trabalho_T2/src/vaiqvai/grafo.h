@@ -54,6 +54,7 @@ int algoritmoDijkstra(grafo *g, char *nmOrigem, char *nmDestino, int numVertices
 
 /*int Dijkstra(grafo *g, char *nmOrigem, char *nmDestino, int numVertice);
 int menorValorCaminho(int *visitado, int *caminho, int numVertice);
-int menorValor(int a, int b);*/
+int menorValor(int a, int b);
+*/
 
 #endif

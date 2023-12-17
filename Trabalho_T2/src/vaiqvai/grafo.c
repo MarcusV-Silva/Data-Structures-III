@@ -321,26 +321,24 @@ int verificarFortementeConexo(grafo *g, grafo *grafoTransposto, int numVertice) 
 
     int iOrigem = indiceTecnologia(nmOrigem, g, numVertice);
     int iDestino = indiceTecnologia(nmDestino, g, numVertice);
+    printf("\nmeio\n");
 
     menorCaminho[iOrigem] = 0;
     for(int i = 0; i< numVertice; i++){
+        printf("\n for dij\n");
         lista *tmp = g[iOrigem].iAdjacente;
         while(tmp != NULL){
+            printf("\n while dij\n");
             int v = indiceTecnologia(tmp->nomeDestino, g, numVertice);
-            //int w = indiceTecnologia(tmp->nomeDestino, g, numVertice);
-            int w = indiceTecnologia(g[iOrigem].nomeOrigem, g, numVertice);
+            int w = indiceTecnologia(tmp->nomeDestino, g, numVertice);
+            //int w = indiceTecnologia(g[iOrigem].nomeOrigem, g, numVertice);
             menorCaminho[v] = menorValor(menorCaminho[v], menorCaminho[w] + tmp->pesoAresta);
             tmp = tmp->prox;
         }
         int aux = menorValorCaminho(visitado, menorCaminho, numVertice);
         visitado[iOrigem] = 1;
-        
-        if(aux == iDestino){
-            break;
-        }
-        iOrigem = aux;
-        //if(aux != INT_MAX)
-            //iOrigem = aux;
+        if(aux != INT_MAX)
+            iOrigem = aux;
     }
 
     return menorCaminho[iDestino];
