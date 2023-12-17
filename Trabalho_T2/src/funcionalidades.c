@@ -88,7 +88,7 @@ void funcionalidade10(){
     // Atribuição do numero total de vertices
     int numVertices = rC.nroTecnologias;
 
-     // Criação e definição do grafo original
+    // Criação e definição do grafo original
     grafo *grafoOriginal = criarGrafo(numVertices);
     criarVetElementos(grafoOriginal, numVertices, arquivo);
     criarListaAdjacencia(grafoOriginal, numVertices, arquivo);
@@ -122,28 +122,34 @@ void funcionalidade10(){
 
 
 void funcionalidade11(){
+    // Inicializa e abre o arquivo binário com base na entrada e no numero de execucoes da funcionalidade
     char *arquivoBIN = malloc(sizeof(char) * 40);
     scanf("%s", arquivoBIN);
 
     FILE *arquivo = fopen(arquivoBIN, "rb");
     checkFile(arquivo);
 
+    // Verificação do Cabeçalho do arquivo binario
     registroCab rC;
     readCabecalho(&rC, arquivo);
     verifyStatus(rC);
 
+    // Atribuição do numero total de vertices
     int numVertices = rC.nroTecnologias;
 
+    // Criação e definição do grafo original
     grafo *grafoOriginal = criarGrafo(numVertices);
     criarVetElementos(grafoOriginal, numVertices, arquivo);
     criarListaAdjacencia(grafoOriginal, numVertices, arquivo);
     calculaGrau(grafoOriginal, numVertices);
 
+    // Criação e definição do grafo transposto com base no grafo original
     grafo *grafoTransposto = criarGrafo(numVertices);
     criarVetElementos(grafoTransposto, numVertices, arquivo); //
     criaGrafoTransposto(grafoOriginal, grafoTransposto, numVertices);
     calculaGrau(grafoTransposto, numVertices);
 
+    //Verifica se o grafo é fortemente conexo e quantos componentes ele possui
     int aux = verificarFortementeConexo(grafoOriginal, grafoTransposto, numVertices);
 
     if(aux == 1)
@@ -151,12 +157,14 @@ void funcionalidade11(){
     else
         printf("Não, o grafo não é fortemente conexo e possui %d componentes.", aux);
 
+    // Fechando o arquivo
     fclose(arquivo);
     free(arquivoBIN);
 }
 
 
 void funcionalidade12(){
+    // Inicializa e abre o arquivo binário com base na entrada e no numero de execucoes da funcionalidade
     int n;
     char *arquivoBIN = malloc(sizeof(char) * 40);
     scanf("%s %d", arquivoBIN, &n);
@@ -164,24 +172,28 @@ void funcionalidade12(){
     FILE *arquivo = fopen(arquivoBIN, "rb");
     checkFile(arquivo);
 
+    // Verificação do Cabeçalho do arquivo binario
     registroCab rC;
     readCabecalho(&rC, arquivo);
     verifyStatus(rC);
 
+    // Atribuição do numero total de vertices
     int numVertices = rC.nroTecnologias;
 
+    // Criação e definição do grafo original
     grafo *grafoOriginal = criarGrafo(numVertices);
     criarVetElementos(grafoOriginal, numVertices, arquivo);
     criarListaAdjacencia(grafoOriginal, numVertices, arquivo);
     calculaGrau(grafoOriginal, numVertices);
 
-     for(int i = 0; i<n; i++){
+    // Loop de execução da funcionalidade
+    for(int i = 0; i<n; i++){
         char *tmp1 = malloc(sizeof(char)*MAX_STRING);
         char *tmp2 = malloc(sizeof(char)*MAX_STRING);
         scan_quote_string(tmp1);
         scan_quote_string(tmp2);
 
-        //printf("%s %s:\n", tmp1, tmp2);
+        // Encontra qual é o menor caminho entre os dois vértices
         int aux = Dijkstra(grafoOriginal, tmp1, tmp2, numVertices);
 
         if(aux == -1 || aux == INT_MAX)
@@ -190,6 +202,7 @@ void funcionalidade12(){
             printf("%s %s: %d\n", tmp1, tmp2, aux);
     }
     
+    // Fechando o arquivo
     fclose(arquivo);
     free(arquivoBIN);
 }

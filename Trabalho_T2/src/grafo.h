@@ -50,13 +50,18 @@ void imprimirGrafo(grafo *g, int numVertices);
 // Função que calcula o grau geral de um grafo
 void calculaGrau(grafo *g, int numVertices);
 
+// Função que encontra o índice de um grafo
 int indiceTecnologia(char *tecnologia, grafo *g, int numVertice);
+
+//Função que encontra as tecnologias de origem
 int encontrarTecnologiasOrigem(grafo *grafo, int numVertices, char *tecnologiaDestino);
 
+// Funções para executar o algoritmo de Kosaraju
 void preencherPilhaFinalizacao(grafo *g, int v, int visitado[], pilhaTAD* pilha, int numVertice);
 void buscaProfundidade(grafo *g, int v, int visitado[], int numVertice) ;
 int verificarFortementeConexo(grafo *g, grafo *grafoTransposto, int numVertice);
 
+// Funções para executar o algoritmo de Dijkstra
 int Dijkstra(grafo *g, char *nmOrigem, char *nmDestino, int numVertice);
 int menorValorCaminho(int *visitado, int *caminho, int numVertice);
 int menorValor(int a, int b);
