@@ -6,7 +6,7 @@
 
 // Inicialização dos campos de um grafo
 grafo *criarGrafo(int numVertices){
-    grafo *novoGrafo = (grafo *) malloc(numVertices*sizeof(grafo));
+    grafo *novoGrafo = (grafo *) malloc((numVertices+1)*sizeof(grafo));
 
     if (novoGrafo == NULL) 
         exit(0);
@@ -380,9 +380,13 @@ int Dijkstra(grafo *g, char *nmOrigem, char *nmDestino, int numVertice){
     menorCaminho[iOrigem] = 0;
 
     for(int i = 0; i< numVertice; i++){
+        
+        if(iOrigem == -1)
+            return -1;
+
         int w = indiceTecnologia(g[iOrigem].nomeOrigem, g, numVertice);
         lista *tmp = g[iOrigem].iAdjacente;
-    
+
         while(tmp != NULL && !visitado[w]){
             int v = indiceTecnologia(tmp->nomeDestino, g, numVertice);
             menorCaminho[v] = menorValor(menorCaminho[v], menorCaminho[w] + tmp->pesoAresta);
@@ -398,7 +402,6 @@ int Dijkstra(grafo *g, char *nmOrigem, char *nmDestino, int numVertice){
 
     return menorCaminho[iDestino];
 }
-
 
 int menorValorCaminho(int visitado[], int caminho[], int numVertice){
     int aux = INT_MAX;
