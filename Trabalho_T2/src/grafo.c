@@ -318,11 +318,12 @@ int encontrarTecnologiasOrigem(grafo *grafo, int numVertices, char *tecnologia) 
     return 1;
 }
 
-// Ordem de finalização Kosaraju
+// Função para preencher a pilha que será usada no algoritmo de Kosaraju
 void preencherPilhaFinalizacao(grafo *g, int v, int visitado[], pilhaTAD* pilha, int numVertice) {
     visitado[v] = 1;
 
     lista* temp = g[v].iAdjacente;
+    // While para preencher a pilha recursicamente
     while (temp != NULL) {
         int adjVertex = indiceTecnologia(temp->nomeDestino, g, numVertice);
         if (!visitado[adjVertex]) {
@@ -330,16 +331,19 @@ void preencherPilhaFinalizacao(grafo *g, int v, int visitado[], pilhaTAD* pilha,
         }
         temp = temp->prox;
     }
-
+    // Insere um item na pilha
     empilhar(pilha, v);
 }
 
+// Função para realizar a busca em profundidade no grafo
 void buscaProfundidade(grafo *g, int v, int visitado[], int numVertice) {
     visitado[v] = 1;
 
     lista* temp = g[v].iAdjacente;
+    // While para que a função possa ser realizada de forma recursiva
     while (temp != NULL) {
         int adjVertex = indiceTecnologia(temp->nomeDestino, g, numVertice);
+        // Se  o vértice não foi visitado ainda,realiza a busca em profundidade
         if (!visitado[adjVertex]) {
             buscaProfundidade(g, adjVertex, visitado, numVertice);
         }
@@ -347,66 +351,82 @@ void buscaProfundidade(grafo *g, int v, int visitado[], int numVertice) {
     }
 }
 
+// Função que verifica se o grafo é fortemente conexo
 int verificarFortementeConexo(grafo *g, grafo *grafoTransposto, int numVertice) {
     int visitado[numVertice];
+    // Criando o TAD de pilha
     pilhaTAD *pilha = criarPilha(numVertice);
 
+    // Preenche o visitado como 0 para mostrar que o vértice não foi visitado
     for (int i = 0; i < numVertice; i++) {
         visitado[i] = 0;
     }
 
+    // Preenche a pilha usando o grafo normal para usar na busca
     for (int i = 0; i < numVertice; i++) {
         if (!visitado[i]) {
             preencherPilhaFinalizacao(g, i, visitado, pilha, numVertice);
         }
     }
 
-    for (int i = 0; i < numVertice; i++)
+    // Zera os vértices para que possam ser reutilizados
+    for (int i = 0; i < numVertice; i++){
         visitado[i] = 0;
+    }
 
     int numComponentes = 0;
 
+    // Realiza a busca em profundidade usando o grafo transposto e conta o número de componentes
     while (!pilhaVazia(pilha)) {
         int v = desempilhar(pilha);
+        // Caso o vértice não tenha sido visitado, a busca é feita
         if (!visitado[v]) {
             numComponentes++;
             buscaProfundidade(grafoTransposto, v, visitado, numVertice);
         }
     }
 
+    // Libera espaço e retorna o número de componentes
     liberarPilha(pilha);
     return numComponentes;
 }
 
-
+// Função que utiliza o algoritmo de Dijkstra para encontrar o menor caminho
 int Dijkstra(grafo *g, char *nmOrigem, char *nmDestino, int numVertice){
     int menorCaminho[numVertice];
     int visitado[numVertice];
 
+    // For para indicar que os vértices ainda não foram visitados
+    // e que o menor caminho incialmente é máximo
     for(int i = 0; i< numVertice; i++){
         visitado[i] = 0;
         menorCaminho[i]= INT_MAX;
     }
 
+    // Encontrando o índice das entradas
     int iOrigem = indiceTecnologia(nmOrigem, g, numVertice);
     int iDestino = indiceTecnologia(nmDestino, g, numVertice);
 
     menorCaminho[iOrigem] = 0;
 
+    // For loop para encontrar o menor caminho executando o Dijkstra
     for(int i = 0; i< numVertice; i++){
         
+        // Verifica se a origem não é inexistente
         if(iOrigem == -1)
             return -1;
 
         int w = indiceTecnologia(g[iOrigem].nomeOrigem, g, numVertice);
         lista *tmp = g[iOrigem].iAdjacente;
 
+        // While para percorrer o grafo calculando o qual é o caminho de menor valor de forma gulosa
         while(tmp != NULL && !visitado[w]){
             int v = indiceTecnologia(tmp->nomeDestino, g, numVertice);
             menorCaminho[v] = menorValor(menorCaminho[v], menorCaminho[w] + tmp->pesoAresta);
             tmp = tmp->prox;
         }
 
+        // Variável auxiliar que recebe menor valor do caminho
         int aux = menorValorCaminho(visitado, menorCaminho, numVertice);
         visitado[iOrigem] = 1;
 
@@ -414,9 +434,11 @@ int Dijkstra(grafo *g, char *nmOrigem, char *nmDestino, int numVertice){
             iOrigem = aux;
     }
 
+    // Retorna o valor do menor caminho
     return menorCaminho[iDestino];
 }
 
+// Função que calcula qual é o caminho que tem menor valor
 int menorValorCaminho(int visitado[], int caminho[], int numVertice){
     int aux = INT_MAX;
     int minIndex = -1;
@@ -429,6 +451,7 @@ int menorValorCaminho(int visitado[], int caminho[], int numVertice){
     return minIndex;
 }
 
+// Função que dado dois valores, ela retorna o menor entre eles
 int menorValor(int a, int b){
     return (a>b) ? b : a ;
 }
