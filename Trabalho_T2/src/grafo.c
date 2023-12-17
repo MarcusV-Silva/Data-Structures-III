@@ -346,11 +346,14 @@ int Dijkstra(grafo *g, char *nmOrigem, char *nmDestino, int numVertice){
 
 int menorValorCaminho(int visitado[], int caminho[], int numVertice){
     int aux = INT_MAX;
+    int minIndex = -1;
     for(int i = 0; i< numVertice; i++){
-        if(caminho[i]<aux && visitado[i] != 1)
-            aux = i;
+        if(caminho[i]<aux && visitado[i] != 1){
+            minIndex = i;
+            aux = caminho[i];
+        }
     }
-    return aux;
+    return minIndex;
 }
 
 int menorValor(int a, int b){
