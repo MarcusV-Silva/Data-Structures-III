@@ -105,6 +105,22 @@ void scanfEntrada(registro *r){
 	free(aux);
 }
 
+// Função de ordenação do tipo QuickSort para o vetor de elementos
+void quickSort(grafo *g, int baixo, int topo) {
+    if (baixo < topo) {
+
+		// Definição do pivo
+        int pivo = particionarVertice(g, baixo, topo);
+
+		// Função para a parte inferior
+        quickSort(g, baixo, pivo - 1);
+
+		// Função para a parte superior
+        quickSort(g, pivo + 1, topo);
+    }
+}
+
+// Função utilizada na rotina de quicksort do vetor de elementos
 int particionarVertice(grafo *g, int baixo, int topo) {
     char *pivo = malloc(sizeof(char)*strlen(g[topo].nomeOrigem));
     strcpy(pivo, g[topo].nomeOrigem);
@@ -112,6 +128,7 @@ int particionarVertice(grafo *g, int baixo, int topo) {
     int i = (baixo - 1);
 
     for (int j = baixo; j <= topo - 1; j++) {
+		// Ordenação
         if (strcmp(g[j].nomeOrigem, pivo) < 0) {
             i++;
             // Trocar g[i] e g[j]
@@ -128,41 +145,34 @@ int particionarVertice(grafo *g, int baixo, int topo) {
     return (i + 1);
 }
 
-// Função QuickSort para o vetor de vértices durante a criação do grafo
-void quickSort(grafo *g, int baixo, int topo) {
-    if (baixo < topo) {
-
-        int pivo = particionarVertice(g, baixo, topo);
-
-        quickSort(g, baixo, pivo - 1);
-        quickSort(g, pivo + 1, topo);
-    }
+// Função de ordenação do tipo QuickSort para a lista de ajacencia
+void quickSortLista(lista* primeiro, lista* ultimo){
+    if (primeiro == ultimo) 
+        return;
+    
+	// Definição do pivo
+    lista* pivo = particionarLista(primeiro, ultimo);
+ 
+	// Função na parte superior
+    if (pivo != NULL && pivo->prox != NULL) 
+        quickSortLista(pivo->prox, ultimo);
+    
+	// Função na parte inferior
+    if (pivo != NULL && primeiro != pivo) 
+        quickSortLista(primeiro, pivo);
 }
 
-void trocaLista(lista *l1, lista* l2){
-	lista *tmp = malloc(sizeof(lista));
-	tmp->nomeDestino= malloc(sizeof(char)*MAX_STRING);
-
-	strcpy(tmp->nomeDestino,l1->nomeDestino);
-	tmp->pesoAresta = l1->pesoAresta;
-
-    strcpy(l1->nomeDestino, l2->nomeDestino);
-	l1->pesoAresta = l2->pesoAresta;
-
-	strcpy(l2->nomeDestino, tmp->nomeDestino);
-	l2->pesoAresta = tmp->pesoAresta;	
-
-	free(tmp->nomeDestino);
-	free(tmp);
-}
-
+// Função utilizada na rotina de quicksort da lista de ajacencia
 lista *particionarLista(lista* primeiro, lista* ultimo) {
 
     lista* pivo = primeiro;
     lista* inicio = primeiro;
     while (inicio != NULL && inicio != ultimo) {
+		// Ordenação
         if (strcmp(inicio->nomeDestino, ultimo->nomeDestino)<0) {
             pivo = primeiro;
+
+			// Realiza a troca entre as listas
 			trocaLista(primeiro, inicio);
             primeiro = primeiro->prox;
         }
@@ -173,6 +183,28 @@ lista *particionarLista(lista* primeiro, lista* ultimo) {
     return pivo;
 }
  
+// Função que realiza a troca dos campos entre duas listas
+void trocaLista(lista *l1, lista* l2){
+	lista *tmp = malloc(sizeof(lista));
+	tmp->nomeDestino= malloc(sizeof(char)*MAX_STRING);
+
+	strcpy(tmp->nomeDestino,l1->nomeDestino);
+	tmp->pesoAresta = l1->pesoAresta;
+
+	// l1 -> l2 
+    strcpy(l1->nomeDestino, l2->nomeDestino);
+	l1->pesoAresta = l2->pesoAresta;
+
+	// l2 -> l1
+	strcpy(l2->nomeDestino, tmp->nomeDestino);
+	l2->pesoAresta = tmp->pesoAresta;	
+
+	// Liberação da memoria
+	free(tmp->nomeDestino);
+	free(tmp);
+}
+
+// Encontra o ultimo valor da lista de ajacencias
 lista* ultimoNo(lista *l){
     lista* temp = l;
     while (temp != NULL && temp->prox != NULL) {
@@ -181,21 +213,9 @@ lista* ultimoNo(lista *l){
     return temp;
 }
 
-void quickSortLista(lista* primeiro, lista* ultimo){
-    if (primeiro == ultimo) 
-        return;
-    
-    lista* pivo = particionarLista(primeiro, ultimo);
- 
-    if (pivo != NULL && pivo->prox != NULL) 
-        quickSortLista(pivo->prox, ultimo);
-    
-    if (pivo != NULL && primeiro != pivo) 
-        quickSortLista(primeiro, pivo);
-}
+// Funções utilizadas na manipulação de Pilhas
 
-
-// Funções para operações na pilha
+// Inicialização das Pilhas
 pilhaTAD* criarPilha(int capacidade) {
     pilhaTAD* pilha = (pilhaTAD*)malloc(sizeof(pilhaTAD));
     pilha->capacidade = capacidade;
@@ -204,26 +224,31 @@ pilhaTAD* criarPilha(int capacidade) {
     return pilha;
 }
 
+// Verifica se a Pilha esta vazia
 int pilhaVazia(pilhaTAD* pilha) {
     return pilha->topo == -1;
 }
 
+// Insere um item na pilha (PUSH)
 void empilhar(pilhaTAD* pilha, int item) {
     pilha->array[++pilha->topo] = item;
 }
 
+// Remove um item da pilha (POP)
 int desempilhar(pilhaTAD* pilha) {
     if (pilhaVazia(pilha))
         return -1; 
     return pilha->array[pilha->topo--];
 }
 
+// Retorna o valor no topo da pilha
 int topoPilha(pilhaTAD* pilha) {
     if (pilhaVazia(pilha))
         return -1; 
     return pilha->array[pilha->topo];
 }
 
+// Libera a memoria alocada da pilha
 void liberarPilha(pilhaTAD* pilha) {
     free(pilha->array);
     free(pilha);

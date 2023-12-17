@@ -22,19 +22,21 @@ void scanfEntrada(registro *r);
 void retiraVirgula(char *str);
 
 //QuickSort para o Ordenamento dos Vertices
-int particionarVertice(grafo *g, int baixo, int topo);
 void quickSort(grafo *g, int baixo, int topo);
+int particionarVertice(grafo *g, int baixo, int topo);
 
 //QuickSort para o Ordanamento das Listas de Adjacencias
-lista* ultimoNo(lista *l);
+void quickSortLista(lista *primeiro, lista *ultimo);
 lista *particionarLista(lista *primeiro, lista *ultimo);
 void trocaLista(lista *l1, lista *l2);
-void quickSortLista(lista *primeiro, lista *ultimo);
+lista* ultimoNo(lista *l);
 
+// Funções utilizadas na manipulação de Pilhas
 pilhaTAD* criarPilha(int capacidade);
 int pilhaVazia(pilhaTAD* pilha);
 void empilhar(pilhaTAD* pilha, int item);
 int desempilhar(pilhaTAD* pilha);
 int topoPilha(pilhaTAD* pilha);
 void liberarPilha(pilhaTAD* pilha);
+
 #endif
