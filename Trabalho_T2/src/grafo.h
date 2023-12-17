@@ -1,10 +1,6 @@
 #ifndef GRAFO_H
 #define GRAFO_H
 
-#define BRANCO 0
-#define CINZA 1
-#define PRETO 2
-
 typedef struct lista{
     char *nomeDestino;
     int pesoAresta;
@@ -22,6 +18,12 @@ typedef struct grafo{
 }grafo;
 
 
+typedef struct pilha{
+	int topo; 
+	int *array;
+    int capacidade;
+}pilhaTAD;
+
 grafo *criarGrafo(int numVertices);
 lista *criarNo(registro r);
 void criarListaAdjacencia(grafo *g, int numVertice, FILE *arquivo);
@@ -31,7 +33,7 @@ void criaGrafoTransposto(grafo *grafoI, grafo *grafoT, int numVertice);
 
 void adicionarAresta(grafo *grafo, registro r, int numVertice);
 
-int inserirLista(lista **listaAdj, lista **novaAresta);
+int inserirLista(lista **listaAdj, lista *novaAresta);
 void inserirVertice(grafo *grafo, char*nome, int grupo, int numVertice);
 
 int particionarVertice(grafo *g, int baixo, int topo);
@@ -43,9 +45,8 @@ void calculaGrau(grafo *g, int numVertices);
 int indiceTecnologia(char *nome, grafo *g, int numVertice);
 int encontrarTecnologiasOrigem(grafo *grafo, int numVertices, char *tecnologiaDestino);
 
-//void calculaMin(int a, int b);
-void buscaEmProfundidade(grafo *g, int numVertices, int *ehFortementeConexo, int* numComponentes);
-void visitaVertice(grafo* g, int i, int numVertices,int* cor, int* pre, int* low, int* ehFortementeConexo, int* numComponentes);
-void algoritmoDeTarjan(grafo* g, int numVertices);
+void preencherPilhaFinalizacao(grafo *g, int v, int visitado[], pilhaTAD* pilha, int numVertice);
+void buscaProfundidade(grafo *g, int v, int visitado[], int currentComponent, int numVertice) ;
+int verificarFortementeConexo(grafo *g, grafo *grafoTransposto, int numVertice);
 
 #endif

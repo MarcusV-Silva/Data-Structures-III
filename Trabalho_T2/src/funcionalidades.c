@@ -51,6 +51,7 @@ void funcionalidade9(){
     criarVetElementos(grafoTransposto, numVertices, dataFile); //
     criaGrafoTransposto(grafoInicial, grafoTransposto, numVertices);
     calculaGrau(grafoTransposto, numVertices);
+
     imprimirGrafo(grafoTransposto, numVertices);
 
     fclose(dataFile);
@@ -75,11 +76,17 @@ void funcionalidade10(){
     criarListaAdjacencia(grafoInicial, numVertices, dataFile);
     calculaGrau(grafoInicial, numVertices);
 
+    grafo *grafoTransposto = criarGrafo(numVertices);
+    criarVetElementos(grafoTransposto, numVertices, dataFile); //
+    criaGrafoTransposto(grafoInicial, grafoTransposto, numVertices);
+    calculaGrau(grafoTransposto, numVertices);
+
     for(int i = 0; i<n; i++){
         char tmp[MAX_STRING];
         scan_quote_string(tmp);
         printf("%s: ", tmp);
-        int aux = encontrarTecnologiasOrigem(grafoInicial, numVertices, tmp);
+
+        int aux = encontrarTecnologiasOrigem(grafoTransposto, numVertices, tmp);
 
         if(!aux)
             printf("Registro inexistente.");
@@ -89,6 +96,7 @@ void funcionalidade10(){
     
     fclose(dataFile);
 }
+
 
 void funcionalidade11(){
     char *dataBIN = malloc(sizeof(char) * 40);
@@ -102,13 +110,24 @@ void funcionalidade11(){
     verifyStatus(rC);
 
     int numVertices = rC.nroTecnologias;
-    grafo *grafoFinal = criarGrafo(numVertices);
 
-    criarVetElementos(grafoFinal, numVertices, dataFile);
-    criarListaAdjacencia(grafoFinal, numVertices, dataFile);
+    grafo *grafoInicial = criarGrafo(numVertices);
+    criarVetElementos(grafoInicial, numVertices, dataFile);
+    criarListaAdjacencia(grafoInicial, numVertices, dataFile);
+    calculaGrau(grafoInicial, numVertices);
 
-    algoritmoDeTarjan(grafoFinal, numVertices);
+    grafo *grafoTransposto = criarGrafo(numVertices);
+    criarVetElementos(grafoTransposto, numVertices, dataFile); //
+    criaGrafoTransposto(grafoInicial, grafoTransposto, numVertices);
+    calculaGrau(grafoTransposto, numVertices);
 
+    int aux = verificarFortementeConexo(grafoInicial, grafoTransposto, numVertices);
+
+    if(aux == 1)
+        printf("Sim, o grafo é fortemente conexo e possui %d componente.", aux);
+    else
+        printf("Não, o grafo não é fortemente conexo e possui %d componentes.", aux);
+
+    fclose(dataFile);
 }
-
 void funcionalidade12(){}

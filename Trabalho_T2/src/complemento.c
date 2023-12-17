@@ -139,6 +139,96 @@ void quickSort(grafo *g, int baixo, int topo) {
     }
 }
 
+void trocaLista(lista *l1, lista* l2){
+	lista *tmp = malloc(sizeof(lista));
+	tmp->nomeDestino= malloc(sizeof(char)*MAX_STRING);
+
+	strcpy(tmp->nomeDestino,l1->nomeDestino);
+	tmp->pesoAresta = l1->pesoAresta;
+
+    strcpy(l1->nomeDestino, l2->nomeDestino);
+	l1->pesoAresta = l2->pesoAresta;
+
+	strcpy(l2->nomeDestino, tmp->nomeDestino);
+	l2->pesoAresta = tmp->pesoAresta;	
+
+	free(tmp->nomeDestino);
+	free(tmp);
+}
+
+lista *particionarLista(lista* primeiro, lista* ultimo) {
+
+    lista* pivo = primeiro;
+    lista* inicio = primeiro;
+    while (inicio != NULL && inicio != ultimo) {
+        if (strcmp(inicio->nomeDestino, ultimo->nomeDestino)<0) {
+            pivo = primeiro;
+			trocaLista(primeiro, inicio);
+            primeiro = primeiro->prox;
+        }
+ 
+        inicio = inicio->prox;
+    }
+	trocaLista(primeiro,ultimo);
+    return pivo;
+}
+ 
+lista* ultimoNo(lista *l){
+    lista* temp = l;
+    while (temp != NULL && temp->prox != NULL) {
+        temp = temp->prox;
+    }
+    return temp;
+}
+
+void quickSortLista(lista* primeiro, lista* ultimo){
+    if (primeiro == ultimo) 
+        return;
+    
+    lista* pivo = particionarLista(primeiro, ultimo);
+ 
+    if (pivo != NULL && pivo->prox != NULL) 
+        quickSortLista(pivo->prox, ultimo);
+    
+    if (pivo != NULL && primeiro != pivo) 
+        quickSortLista(primeiro, pivo);
+}
+
+
+// Funções para operações na pilha
+pilhaTAD* criarPilha(int capacidade) {
+    pilhaTAD* pilha = (pilhaTAD*)malloc(sizeof(pilhaTAD));
+    pilha->capacidade = capacidade;
+    pilha->topo = -1;
+    pilha->array = (int*)malloc(capacidade * sizeof(int));
+    return pilha;
+}
+
+int pilhaVazia(pilhaTAD* pilha) {
+    return pilha->topo == -1;
+}
+
+void empilhar(pilhaTAD* pilha, int item) {
+    pilha->array[++pilha->topo] = item;
+}
+
+int desempilhar(pilhaTAD* pilha) {
+    if (pilhaVazia(pilha))
+        return -1; 
+    return pilha->array[pilha->topo--];
+}
+
+int topoPilha(pilhaTAD* pilha) {
+    if (pilhaVazia(pilha))
+        return -1; 
+    return pilha->array[pilha->topo];
+}
+
+void liberarPilha(pilhaTAD* pilha) {
+    free(pilha->array);
+    free(pilha);
+}
+
 //---------------------(Funções fornecidas para o desenvolvimento do trabalho)---------------------
 
 void readline(char* string){

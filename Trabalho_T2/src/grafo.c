@@ -63,6 +63,10 @@ void criarListaAdjacencia(grafo *g, int numVertice, FILE *arquivo){
         adicionarAresta(g, *r, numVertice);
     }
 
+    for(int i = 0; i<numVertice; i++){
+        quickSortLista(g[i].iAdjacente, ultimoNo(g[i].iAdjacente));
+    }
+
     fseek(arquivo, TAM_CAB, SEEK_SET);
 }
 void criarVetElementos(grafo *g, int numVertice, FILE *arquivo){
@@ -123,7 +127,7 @@ void adicionarAresta(grafo *grafo, registro r, int numVertice){
     }
 
     lista *novaAresta = criarNo(r);
-    int aux = inserirLista(&grafo[iOrigem].iAdjacente, &novaAresta);
+    int aux = inserirLista(&grafo[iOrigem].iAdjacente, novaAresta);
 
     if(aux){
         grafo[iOrigem].grauSaida++;
@@ -146,7 +150,7 @@ void criaGrafoTransposto(grafo *grafoI, grafo *grafoT, int numVertice){
 
             aux->pesoAresta = tmp->pesoAresta;
 
-            int aux2 = inserirLista(&(grafoT[v].iAdjacente), &aux);
+            int aux2 = inserirLista(&(grafoT[v].iAdjacente), aux);
 
             if(aux2){
                 grafoT[v].grauSaida++;
@@ -179,22 +183,22 @@ int indiceTecnologia(char *nome, grafo *g, int numVertice){
     return inicio; // Retorna a posição onde esta
 }
 
-int inserirLista(lista **listaAdj, lista **novaAresta){
+int inserirLista(lista **listaAdj, lista *novaAresta){
 
-    if(*listaAdj == NULL || strcmp((*novaAresta)->nomeDestino, (*listaAdj)->nomeDestino) < 0) {
-        (*novaAresta)->prox = *listaAdj;
-        *listaAdj = *novaAresta;   
+    if(*listaAdj == NULL || strcmp((novaAresta)->nomeDestino, (*listaAdj)->nomeDestino) < 0) {
+        (novaAresta)->prox = *listaAdj;
+        *listaAdj = novaAresta;   
     }else{
         lista *tmp = *listaAdj;
 
-        if(strcmp((*novaAresta)->nomeDestino, (*listaAdj)->nomeDestino) == 0)
+        if(strcmp((novaAresta)->nomeDestino, (*listaAdj)->nomeDestino) == 0)
             return 0;
 
-        while(tmp->prox != NULL && strcmp((*novaAresta)->nomeDestino, (*listaAdj)->nomeDestino) > 0)
+        while(tmp->prox != NULL && strcmp(novaAresta->nomeDestino, (*listaAdj)->nomeDestino) > 0)
             tmp = tmp->prox;
         
-        (*novaAresta)->prox = tmp->prox;
-        tmp->prox = *novaAresta;
+        (novaAresta)->prox = tmp->prox;
+        tmp->prox = novaAresta;
     }
     return 1;
 }
@@ -231,105 +235,79 @@ void imprimirGrafo(grafo *g, int numVertices){
     }
 }
 
-int encontrarTecnologiasOrigem(grafo *grafo, int numVertices, char *tecnologiaDestino) {
-    int i;
-    for (i = 0; i < numVertices; i++) {
-        if (strcmp(grafo[i].nomeOrigem, tecnologiaDestino) == 0) {
-            lista *adjacente = grafo[i].iAdjacente;
-            while (adjacente != NULL) {
-                printf("%s, ", adjacente->nomeDestino);
-                adjacente = adjacente->prox;
-            }
-            printf("\n");
-            return 1;
-        }
-    }
+int encontrarTecnologiasOrigem(grafo *grafo, int numVertices, char *tecnologia) {
+    int aux = indiceTecnologia(tecnologia, grafo, numVertices);
+    lista *adjacente = grafo[aux].iAdjacente;
+    int lim = grafo[aux].grauSaida;
 
-    // Se chegou aqui, a tecnologia destino não foi encontrada no grafo
-  return 0;
+    while (adjacente != NULL && lim>1) {
+        lim--;
+        printf("%s, ", adjacente->nomeDestino);
+        adjacente = adjacente->prox;
+    }
+    printf("%s\n", adjacente->nomeDestino);
+
+    return 1;
 }
 
-//Função que realiza a busca em profundidade
-void buscaEmProfundidade(grafo *g, int numVertices, int* ehFortementeConexo, int* numComponentes){
-    int* cor = (int*)malloc(numVertices * sizeof(int));
-    int* pre = (int*)malloc(numVertices * sizeof(int));
-    int* low = (int*)malloc(numVertices * sizeof(int));
+// Ordem de finalização Kosaraju
+void preencherPilhaFinalizacao(grafo *g, int v, int visitado[], pilhaTAD* pilha, int numVertice) {
+    visitado[v] = 1;
 
-    //Atribui a cor branca a todos os vétices
-    for(int i=0; i<numVertices; i++){
-        cor[i] = BRANCO;
-    }
-    //Inicia a visita nos vértices
-    for(int i=0; i<numVertices; i++){
-        if(cor[i] == BRANCO){
-            visitaVertice(g, i, numVertices,cor, pre, low, ehFortementeConexo, numComponentes);
+    lista* temp = g[v].iAdjacente;
+    while (temp != NULL) {
+        int adjVertex = indiceTecnologia(temp->nomeDestino, g, numVertice);
+        if (!visitado[adjVertex]) {
+            preencherPilhaFinalizacao(g, adjVertex, visitado, pilha, numVertice);
         }
+        temp = temp->prox;
     }
 
-    free(pre);
-    free(low);
+    empilhar(pilha, v);
 }
 
-//Função que faz a visita nos vértices
-void visitaVertice(grafo* g, int i, int numVertices, int* cor, int* pre, int* low, int* ehFortementeConexo, int* numComponentes) {
-    int tempo = 0;
-    
-    cor[i] = CINZA;
-    pre[i] = low[i] = ++tempo;
+void buscaProfundidade(grafo *g, int v, int visitado[], int currentComponent, int numVertice) {
+    visitado[v] = 1;
 
-    lista* adjacente = g[i].iAdjacente;
-    int v = indiceTecnologia(adjacente->nomeDestino, g, numVertices);
-    lista* tmp = g[v].iAdjacente;
-    
-    //Percorre o grafo analisando e pintando os vértices
-    while (tmp != NULL) {
-        char* nomeAdjacente = tmp->nomeDestino;
-        int adj = -1; // Inicializa como -1, indicando que não encontrou o vértice
-        //int v = indiceTecnologia(adjacente->nomeDestino, g, numVertices);
-
-        // Procura o vértice no grafo
-        for (int j = 0; j < numVertices; j++) {
-            if (strcmp(g[j].nomeOrigem, nomeAdjacente) == 0) {
-                adj = j;
-                break;
-            }
+    lista* temp = g[v].iAdjacente;
+    while (temp != NULL) {
+        int adjVertex = indiceTecnologia(temp->nomeDestino, g, numVertice);
+        if (!visitado[adjVertex]) {
+            buscaProfundidade(g, adjVertex, visitado, currentComponent, numVertice);
         }
-
-        if (adj != -1) {
-            if (cor[adj] == BRANCO) {
-                visitaVertice(g, adj, numVertices,cor, pre, low, ehFortementeConexo, numComponentes);
-                low[i] = (low[i] < low[adj]) ? low[i] : low[adj];
-            } else if (cor[adj] == CINZA) {
-                low[i] = (low[i] < pre[adj]) ? low[i] : pre[adj];
-            }
-        }
-
-        tmp = tmp->prox;
-    }
-
-    cor[i] = PRETO;
-
-    if (pre[i] == low[i]) {
-        (*numComponentes)++;
-    }
-
-    // Se o número de componentes for igual ao número de vértices, o grafo é fortemente conexo
-    if (*numComponentes == numVertices) {
-        *ehFortementeConexo = 1;
+        temp = temp->prox;
     }
 }
 
-//Algoritmo de Tarjan para verificar se o grafo é ou não fortemente conexo
-void algoritmoDeTarjan(grafo* g, int numVertices) {
+int verificarFortementeConexo(grafo *g, grafo *grafoTransposto, int numVertice) {
+    int visitado[numVertice];
+    pilhaTAD *pilha = criarPilha(numVertice);
+
+    for (int i = 0; i < numVertice; i++) {
+        visitado[i] = 0;
+    }
+
+    for (int i = 0; i < numVertice; i++) {
+        if (!visitado[i]) {
+            preencherPilhaFinalizacao(g, i, visitado, pilha, numVertice);
+        }
+    }
+
+    for (int i = 0; i < numVertice; i++)
+        visitado[i] = 0;
+
     int numComponentes = 0;
-    int* ehFortementeConexo = (int*)malloc(sizeof(int));
-    *ehFortementeConexo = 1;
 
-    buscaEmProfundidade(g, numVertices, ehFortementeConexo, &numComponentes);
-
-    if(*ehFortementeConexo){
-        printf("O grafo é fortemente conexo e tem %d componentes\n", numComponentes);
-    }else{
-        printf("O grafo não é fortemente conexo e tem %d componentes\n", numComponentes);
+    while (!pilhaVazia(pilha)) {
+        int v = desempilhar(pilha);
+        if (!visitado[v]) {
+            numComponentes++;
+            buscaProfundidade(grafoTransposto, v, visitado, numComponentes, numVertice);
+        }
     }
+
+    liberarPilha(pilha);
+    return numComponentes;
 }
+
+    

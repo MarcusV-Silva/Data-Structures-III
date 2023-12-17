@@ -2,6 +2,7 @@
 #define COMPLEMENTO_H
 
 #include "funcionalidades.h"
+#include "grafo.h"
 
 // Função que verifica se o arquivo existe
 void checkFile(FILE *arquivo);
@@ -20,4 +21,20 @@ void verificarTecnologias(FILE *arquivo, registro r);
 void scanfEntrada(registro *r);
 void retiraVirgula(char *str);
 
+//QuickSort para o Ordenamento dos Vertices
+int particionarVertice(grafo *g, int baixo, int topo);
+void quickSort(grafo *g, int baixo, int topo);
+
+//QuickSort para o Ordanamento das Listas de Adjacencias
+lista* ultimoNo(lista *l);
+lista *particionarLista(lista *primeiro, lista *ultimo);
+void trocaLista(lista *l1, lista *l2);
+void quickSortLista(lista *primeiro, lista *ultimo);
+
+pilhaTAD* criarPilha(int capacidade);
+int pilhaVazia(pilhaTAD* pilha);
+void empilhar(pilhaTAD* pilha, int item);
+int desempilhar(pilhaTAD* pilha);
+int topoPilha(pilhaTAD* pilha);
+void liberarPilha(pilhaTAD* pilha);
 #endif
