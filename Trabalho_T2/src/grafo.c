@@ -58,15 +58,20 @@ void criarVetElementos(grafo *g, int numVertice, FILE *arquivo){
         // Caso em que chegou no fim do arquivo
         if(aux == 0){
             flag = -1;
+            freeRegistro(r);
             break;
         }
 
         // Caso em que o registro esta removido
-        if(aux == -1)
+        if(aux == -1){
+            freeRegistro(r);
             continue;
+        }
         
-        if(r->grupo == -1)
+        if(r->grupo == -1){
+            freeRegistro(r);
             continue;
+        }
 
         // Definição dos indices das tecnologias no vetor de elementos do grafo
         for(int i = 0; i< numVertice; i++){
@@ -89,6 +94,7 @@ void criarVetElementos(grafo *g, int numVertice, FILE *arquivo){
         if(iOrigem != -1 && g[iOrigem].iGrupo == -2)
             g[iOrigem].iGrupo = r->grupo;
 
+        freeRegistro(r);
     }
 
     // Ordenação do vetor de elementos
@@ -129,22 +135,30 @@ void criarListaAdjacencia(grafo *g, int numVertice, FILE *arquivo){
         // Caso em que chegou no fim do arquivo
         if(aux == 0){
             flag = -1;
+            freeRegistro(r);
             break;
         }
 
         // Caso em que o registro esta removido
-        if(aux == -1)
+        if(aux == -1){
+            freeRegistro(r);
             continue;
+        }
         
         // Valores que nao podem entrar no grafo
-        if(r->grupo == -1)
+        if(r->grupo == -1){
+            freeRegistro(r);
             continue;
+        }
         
-        if(r->peso== -1)
+        if(r->peso== -1){
+            freeRegistro(r);
             continue;
+        }
 
         // Adiciona a aresta na lista de adjacencia
         adicionarAresta(g, *r, numVertice);
+        freeRegistro(r);
     }
 
     // Ordena cada lista de adjacencia
@@ -419,4 +433,16 @@ int menorValor(int a, int b){
     return (a>b) ? b : a ;
 }
 
-        
+
+void liberaGrafo(grafo *g, int numVertice){
+    for(int i = 0; i < numVertice; i++){
+        while(g[i].iAdjacente != NULL){
+            free(g[i].iAdjacente->nomeDestino);
+            free(g[i].iAdjacente);
+            g[i].iAdjacente = g[i].iAdjacente->prox;
+        }
+        free(g[i].nomeOrigem);
+    }
+    free(g);
+}
+

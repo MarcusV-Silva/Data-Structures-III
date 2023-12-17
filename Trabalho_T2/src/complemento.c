@@ -142,6 +142,7 @@ int particionarVertice(grafo *g, int baixo, int topo) {
     g[i + 1] = g[topo];
     g[topo] = temp;
 
+	free(pivo);
     return (i + 1);
 }
 
@@ -160,6 +161,7 @@ void quickSortLista(lista* primeiro, lista* ultimo){
 	// Função na parte inferior
     if (pivo != NULL && primeiro != pivo) 
         quickSortLista(primeiro, pivo);
+	
 }
 
 // Função utilizada na rotina de quicksort da lista de ajacencia
@@ -220,7 +222,7 @@ pilhaTAD* criarPilha(int capacidade) {
     pilhaTAD* pilha = (pilhaTAD*)malloc(sizeof(pilhaTAD));
     pilha->capacidade = capacidade;
     pilha->topo = -1;
-    pilha->array = (int*)malloc(capacidade * sizeof(int));
+    pilha->vet = (int*)malloc(capacidade * sizeof(int));
     return pilha;
 }
 
@@ -231,26 +233,26 @@ int pilhaVazia(pilhaTAD* pilha) {
 
 // Insere um item na pilha (PUSH)
 void empilhar(pilhaTAD* pilha, int item) {
-    pilha->array[++pilha->topo] = item;
+    pilha->vet[++pilha->topo] = item;
 }
 
 // Remove um item da pilha (POP)
 int desempilhar(pilhaTAD* pilha) {
     if (pilhaVazia(pilha))
         return -1; 
-    return pilha->array[pilha->topo--];
+    return pilha->vet[pilha->topo--];
 }
 
 // Retorna o valor no topo da pilha
 int topoPilha(pilhaTAD* pilha) {
     if (pilhaVazia(pilha))
         return -1; 
-    return pilha->array[pilha->topo];
+    return pilha->vet[pilha->topo];
 }
 
 // Libera a memoria alocada da pilha
 void liberarPilha(pilhaTAD* pilha) {
-    free(pilha->array);
+    free(pilha->vet);
     free(pilha);
 }
 

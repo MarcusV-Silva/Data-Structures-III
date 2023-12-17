@@ -85,7 +85,9 @@ char *defineCampo(char *linha, int *posicao) {
 // Libera a memória alocada em um registro
 int freeRegistro(registro *r){
     if (r != NULL) {
-        free(r->nmTecnologiaDestino);
+        if(r->tamTecnologiaDestino != 0)
+            free(r->nmTecnologiaDestino);
+
         free(r->nmTecnologiaOrigem);
         free(r);
         return 0;

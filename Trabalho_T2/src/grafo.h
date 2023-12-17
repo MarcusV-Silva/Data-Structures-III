@@ -19,10 +19,10 @@ typedef struct grafo{
     lista *iAdjacente; 
 }grafo;
 
-// Struct que define a pilha utilizada na Funcionalidade
+// Struct que define a pilha utilizada na Funcionalidade 11
 typedef struct pilha{
 	int topo; 
-	int *array;
+	int *vet;
     int capacidade;
 }pilhaTAD;
 
@@ -61,4 +61,6 @@ int Dijkstra(grafo *g, char *nmOrigem, char *nmDestino, int numVertice);
 int menorValorCaminho(int *visitado, int *caminho, int numVertice);
 int menorValor(int a, int b);
 
+// Função que libera a memoria alocada do grafo
+void liberaGrafo(grafo *g, int numVertice);
 #endif

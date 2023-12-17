@@ -28,10 +28,11 @@ void funcionalidade8(){
 
     // Impressão do grafo
     imprimirGrafo(grafoOriginal, numVertices);
-
+     
     // Fechando o arquivo
     fclose(arquivo);
     free(arquivoBIN);
+    liberaGrafo(grafoOriginal, numVertices);
 }
 
 
@@ -69,6 +70,8 @@ void funcionalidade9(){
     // Fechando o arquivo
     fclose(arquivo);
     free(arquivoBIN);
+    liberaGrafo(grafoOriginal, numVertices);
+    liberaGrafo(grafoTransposto, numVertices);
 }
 
 void funcionalidade10(){
@@ -102,7 +105,7 @@ void funcionalidade10(){
 
     // Loop de execução da funcionalidade
     for(int i = 0; i<n; i++){
-        char tecnologia[MAX_STRING];
+        char *tecnologia = malloc(sizeof(char)*MAX_STRING);
         scan_quote_string(tecnologia);
         printf("%s: ", tecnologia);
 
@@ -113,11 +116,14 @@ void funcionalidade10(){
             printf("Registro inexistente.");
 
         printf("\n");
+        free(tecnologia);
     }
     
     // Fechando o arquivo
     fclose(arquivo);
     free(arquivoBIN);
+    liberaGrafo(grafoOriginal, numVertices);
+    liberaGrafo(grafoTransposto, numVertices);
 }
 
 
@@ -153,6 +159,8 @@ void funcionalidade11(){
 
     fclose(arquivo);
     free(arquivoBIN);
+    liberaGrafo(grafoOriginal, numVertices);
+    liberaGrafo(grafoTransposto, numVertices);
 }
 
 
@@ -188,8 +196,12 @@ void funcionalidade12(){
             printf("%s %s: CAMINHO INEXISTENTE.\n", tmp1, tmp2);
         else
             printf("%s %s: %d\n", tmp1, tmp2, aux);
+
+        free(tmp1);
+        free(tmp2);
     }
     
     fclose(arquivo);
     free(arquivoBIN);
+    liberaGrafo(grafoOriginal, numVertices);
 }
