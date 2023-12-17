@@ -147,7 +147,6 @@ void criaGrafoTransposto(grafo *grafoI, grafo *grafoT, int numVertice){
             lista *aux = malloc(sizeof(lista));
             aux->nomeDestino = malloc(sizeof(char)*MAX_STRING);
             strcpy(aux->nomeDestino, grafoI[u].nomeOrigem);
-
             aux->pesoAresta = tmp->pesoAresta;
 
             int aux2 = inserirLista(&(grafoT[v].iAdjacente), aux);
@@ -310,4 +309,52 @@ int verificarFortementeConexo(grafo *g, grafo *grafoTransposto, int numVertice) 
     return numComponentes;
 }
 
-    
+
+int Dijkstra(grafo *g, char *nmOrigem, char *nmDestino, int numVertice){
+    int menorCaminho[numVertice];
+    int visitado[numVertice];
+
+    for(int i = 0; i< numVertice; i++){
+        visitado[i] = 0;
+        menorCaminho[i]= INT_MAX;
+    }
+
+    int iOrigem = indiceTecnologia(nmOrigem, g, numVertice);
+    int iDestino = indiceTecnologia(nmDestino, g, numVertice);
+
+    visitado[iOrigem] = 1;
+    menorCaminho[iOrigem] = 0;
+
+    for(int i = 0; i< numVertice; i++){
+        lista *tmp = g[iOrigem].iAdjacente;
+        while(tmp != NULL){
+            int v = indiceTecnologia(tmp->nomeDestino, g, numVertice);
+            int w = indiceTecnologia(g[iOrigem].nomeOrigem, g, numVertice);
+            menorCaminho[v] = menorValor(menorCaminho[v], menorCaminho[w] + tmp->pesoAresta);
+            tmp = tmp->prox;
+        }
+
+        int aux = menorValorCaminho(visitado, menorCaminho, numVertice);
+
+        if(aux != INT_MAX)
+            iOrigem = aux;
+    }
+
+    return menorCaminho[iDestino];
+}
+
+int menorValorCaminho(int *visitado, int *caminho, int numVertice){
+    int aux = INT_MAX;
+    for(int i = 0; i< numVertice; i++){
+        if(caminho[i]<aux && visitado[i] != 1)
+            aux = caminho[i];
+    }
+
+    return aux;
+}
+
+int menorValor(int a, int b){
+    return (a>b) ? b : a ;
+}
+
+        

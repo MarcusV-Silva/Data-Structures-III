@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <ctype.h>
-
+#include <limits.h>
 // Funcionalidades do trabalho
 void funcionalidade8();
 void funcionalidade9();

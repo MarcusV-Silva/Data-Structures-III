@@ -124,10 +124,42 @@ void funcionalidade11(){
     int aux = verificarFortementeConexo(grafoInicial, grafoTransposto, numVertices);
 
     if(aux == 1)
-        printf("Sim, o grafo é fortemente conexo e possui %d componente.", aux);
+        printf("Sim, o grafo é fortemente conexo e possui 1 componente.");
     else
         printf("Não, o grafo não é fortemente conexo e possui %d componentes.", aux);
 
     fclose(dataFile);
 }
-void funcionalidade12(){}
+
+
+void funcionalidade12(){
+    int n;
+    char *dataBIN = malloc(sizeof(char) * 40);
+    scanf("%s %d", dataBIN, &n);
+
+    FILE *dataFile = fopen(dataBIN, "rb");
+    checkFile(dataFile);
+
+    registroCab rC;
+    readCabecalho(&rC, dataFile);
+    verifyStatus(rC);
+
+    int numVertices = rC.nroTecnologias;
+
+    grafo *grafoInicial = criarGrafo(numVertices);
+    criarVetElementos(grafoInicial, numVertices, dataFile);
+    criarListaAdjacencia(grafoInicial, numVertices, dataFile);
+    calculaGrau(grafoInicial, numVertices);
+
+     for(int i = 0; i<n; i++){
+        char *tmp1 = malloc(sizeof(char)*MAX_STRING);
+        char *tmp2 = malloc(sizeof(char)*MAX_STRING);
+        scan_quote_string(tmp1);
+        scan_quote_string(tmp2);
+
+        printf("%s %s:\n", tmp1, tmp2);
+
+    }
+    
+    fclose(dataFile);
+}

@@ -49,4 +49,7 @@ void preencherPilhaFinalizacao(grafo *g, int v, int visitado[], pilhaTAD* pilha,
 void buscaProfundidade(grafo *g, int v, int visitado[], int currentComponent, int numVertice) ;
 int verificarFortementeConexo(grafo *g, grafo *grafoTransposto, int numVertice);
 
+int Dijkstra(grafo *g, char *nmOrigem, char *nmDestino, int numVertice);
+int menorValorCaminho(int *visitado, int *caminho, int numVertice);
+int menorValor(int a, int b);
 #endif
