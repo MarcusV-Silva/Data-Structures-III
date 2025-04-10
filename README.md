@@ -4,7 +4,7 @@ Este repositório tem como armazenar os códigos referentes aos trabalhos da dis
 
 ## Autores
 
-[Marcus Vinicius da Silva](www.linkedin.com/in/silvamarcuss)
+[Marcus Vinicius da Silva](https://www.linkedin.com/in/silvamarcuss)
 
 [Rodrigo Rodrigues de Castro](https://www.linkedin.com/in/rodrigorcz)
 
